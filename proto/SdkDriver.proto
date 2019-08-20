@@ -1,0 +1,74 @@
+syntax = "proto3";
+
+package Jester;
+
+service SdkDriver {
+    rpc Create (CreateRequest) returns (Empty) {}
+    rpc Initialize (InitializeRequest) returns (Empty) {}
+    rpc Dispose (DisposeRequest) returns (Empty) {}
+    
+    rpc AcceptPayment (Request) returns (Empty) {}
+    rpc AcceptSignature (Request) returns (Empty) {}
+    rpc Auth (Request) returns (Empty) {}
+    rpc CapturePreAuth (Request) returns (Empty) {}
+    rpc Closeout (Request) returns (Empty) {}
+    rpc DisplayPaymentReceiptOptions (Request) returns (Empty) {}
+    rpc DisplayReceiptOptions (Request) returns (Empty) {}
+    rpc InvokeInputOption (Request) returns (Empty) {}
+    rpc ManualRefund (Request) returns (Empty) {}
+    rpc OpenCashDrawer (Request) returns (Empty) {}
+    rpc PreAuth (Request) returns (Empty) {}
+    rpc Print (Request) returns (Empty) {}
+    rpc ReadCardData (Request) returns (Empty) {}
+    rpc RefundPayment (Request) returns (Empty) {}
+    rpc RegisterForCustomerProvidedData (Request) returns (Empty) {}
+    rpc RejectPayment (RejectPaymentRequest) returns (Empty) {}
+    rpc RejectSignature (Request) returns (Empty) {}
+    rpc RemoveDisplayOrder (Request) returns (Empty) {}
+    rpc ResetDevice (Empty) returns (Empty) {}
+    rpc RetrieveDeviceStatus (Request) returns (Empty) {}
+    rpc RetrievePayment (Request) returns (Empty) {}
+    rpc RetrievePendingPayments (Request) returns (Empty) {}
+    rpc RetrievePrinters (Request) returns (Empty) {}
+    rpc RetrievePrintJobStatus (Request) returns (Empty) {}
+    rpc Sale (Request) returns (Empty) {}
+    rpc SendMessageToActivity (Request) returns (Empty) {}
+    rpc SetCustomerInfo (Request) returns (Empty) {}
+    rpc ShowDisplayOrder (Request) returns (Empty) {}
+    rpc ShowMessage (Request) returns (Empty) {}
+    rpc ShowThankYouScreen (Request) returns (Empty) {}
+    rpc ShowWelcomeScreen (Request) returns (Empty) {}
+    rpc StartCustomActivity (Request) returns (Empty) {}
+    rpc TipAdjustAuth (Request) returns (Empty) {}
+    rpc VaultCard (Request) returns (Empty) {}
+    rpc VoidPayment (Request) returns (Empty) {}
+    rpc VoidPaymentRefund (Request) returns (Empty) {}
+
+    rpc Listen (Empty) returns (stream Event);
+}
+
+message Empty {}
+
+message Object {
+    string type = 1;
+    string payload = 2;
+}
+
+message Request {
+    string payload = 1;
+}
+
+message RejectPaymentRequest {
+    string payment = 1;
+    string challenge = 2;
+}
+
+message CreateRequest {}
+message InitializeRequest {}
+message DisposeRequest {}
+
+message Event {
+    string name = 1;
+    string type = 2;
+    string payload = 3;
+}
