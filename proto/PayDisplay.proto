@@ -1,0 +1,256 @@
+syntax = "proto3";
+
+import "PayDisplay.common.proto";
+
+package com.clover.grpc;
+
+option csharp_namespace = "Clover.Grpc";
+
+service PayDisplay {
+  rpc AcceptPayment (AcceptPaymentRequest) returns (Empty) {}
+  rpc AcceptSignature (AcceptSignatureRequest) returns (Empty) {}
+  rpc Auth (AuthRequest) returns (Empty) {}
+  rpc CapturePreAuth (CapturePreAuthRequest) returns (Empty) {}
+  rpc Closeout (CloseoutRequest) returns (Empty) {}
+  rpc DisplayPaymentReceiptOptions (DisplayPaymentReceiptOptionsRequest) returns (Empty) {}
+  rpc DisplayReceiptOptions (DisplayReceiptOptionsRequest) returns (Empty) {}
+  rpc InvokeInputOption (InvokeInputOptionRequest) returns (Empty) {}
+  rpc ManualRefund (ManualRefundRequest) returns (Empty) {}
+  rpc OpenCashDrawer (OpenCashDrawerRequest) returns (Empty) {}
+  rpc PreAuth (PreAuthRequest) returns (Empty) {}
+  rpc Print (PrintRequest) returns (Empty) {}
+  rpc ReadCardData (ReadCardDataRequest) returns (Empty) {}
+  rpc RefundPayment (RefundPaymentRequest) returns (Empty) {}
+  rpc RegisterForCustomerProvidedData (RegisterForCustomerProvidedDataRequest) returns (Empty) {}
+  rpc RejectPayment (RejectPaymentRequest) returns (Empty) {}
+  rpc RejectSignature (RejectSignatureRequest) returns (Empty) {}
+  rpc RemoveDisplayOrder (RemoveDisplayOrderRequest) returns (Empty) {}
+  rpc ResetDevice (ResetDeviceRequest) returns (Empty) {}
+  rpc RetrieveDeviceStatus (RetrieveDeviceStatusRequest) returns (Empty) {}
+  rpc RetrievePayment (RetrievePaymentRequest) returns (Empty) {}
+  rpc RetrievePendingPayments (RetrievePendingPaymentsRequest) returns (Empty) {}
+  rpc RetrievePrinters (RetrievePrintersRequest) returns (Empty) {}
+  rpc RetrievePrintJobStatus (RetrievePrintJobStatusRequest) returns (Empty) {}
+  rpc Sale (SaleRequest) returns (Empty) {}
+  rpc SendMessageToActivity (SendMessageToActivityRequest) returns (Empty) {}
+  rpc SetCustomerInfo (SetCustomerInfoRequest) returns (Empty) {}
+  rpc ShowDisplayOrder (ShowDisplayOrderRequest) returns (Empty) {}
+  rpc ShowMessage (ShowMessageRequest) returns (Empty) {}
+  rpc ShowThankYouScreen (ShowThankYouScreenRequest) returns (Empty) {}
+  rpc ShowWelcomeScreen (ShowWelcomeScreenRequest) returns (Empty) {}
+  rpc StartCustomActivity (StartCustomActivityRequest) returns (Empty) {}
+  rpc TipAdjustAuth (TipAdjustAuthRequest) returns (Empty) {}
+  rpc VaultCard (VaultCardRequest) returns (Empty) {}
+  rpc VoidPayment (VoidPaymentRequest) returns (Empty) {}
+  rpc VoidPaymentRefund (VoidPaymentRefundRequest) returns (Empty) {}
+}
+
+message AcceptPaymentRequest {
+  Payment Payment = 1;
+}
+
+message AcceptSignatureRequest {
+  Payment Payment = 1;
+}
+
+message AuthRequest {
+  TransactionRequest Base = 1;
+  bool DisableCashback = 2;
+  int64 TaxAmount = 3;
+  int64 TippableAmount = 4;
+  bool AllowOfflinePayment = 5;
+  bool ApproveOfflinePaymentWithoutPrompt = 6;
+  bool ForceOfflinePayment = 7;
+}
+
+message CapturePreAuthRequest {
+  BaseRequest Base = 1;
+  string PaymentID = 2;
+  int64 Amount = 3;
+  int64 TipAmount = 4;
+}
+
+message CloseoutRequest {
+  BaseRequest Base = 1;
+  bool AllowOpenTabs = 2;
+  string BatchId = 3;
+}
+
+message DisplayPaymentReceiptOptionsRequest {
+  BaseRequest Base = 1;
+  string OrderID = 2;
+  string PaymentID = 3;
+  bool DisablePrinting = 4;
+}
+
+message DisplayReceiptOptionsRequest {
+  BaseRequest Base = 1;
+  string OrderId = 2;
+  string PaymentId = 3;
+  string RefundId = 4;
+  string CreditId = 5;
+  bool DisablePrinting = 6;
+}
+
+message Empty {
+}
+
+message InvokeInputOptionRequest {
+  InputOption InputOption = 1;
+}
+
+message ManualRefundRequest {
+  BaseTransactionRequest Base = 1;
+}
+
+message OpenCashDrawerRequest {
+  BaseRequest Base = 1;
+  string Reason = 2;
+  string PrinterId = 3;
+}
+
+message PreAuthRequest {
+  BaseTransactionRequest Base = 1;
+  bool AllowOfflinePayment = 2;
+  bool ApproveOfflinePaymentWithoutPrompt = 3;
+  bool ForceOfflinePayment = 4;
+}
+
+message PrintRequest {
+  BaseRequest Base = 1;
+  repeated bytes Images = 2;
+  repeated string ImageUrLs = 3;
+  repeated string Text = 4;
+  string PrintRequestId = 5;
+  string PrintDeviceId = 6;
+}
+
+message ReadCardDataRequest {
+  BaseRequest Base = 1;
+  int32 CardEntryMethods = 2;
+  bool IsForceSwipePinEntry = 3;
+}
+
+message RefundPaymentRequest {
+  BaseRequest Base = 1;
+  bool FullRefund = 2;
+  string OrderId = 3;
+  string PaymentId = 4;
+  int64 Amount = 5;
+  bool DisablePrinting = 6;
+  bool DisableReceiptSelection = 7;
+  map<string, string> Extras = 8;
+}
+
+message RegisterForCustomerProvidedDataRequest {
+  BaseRequest Base = 1;
+  repeated DataProviderConfig Configurations = 2;
+}
+
+message RejectPaymentRequest {
+  Payment Payment = 1;
+  Challenge Challenge = 2;
+}
+
+message RejectSignatureRequest {
+  Payment Payment = 1;
+}
+
+message RemoveDisplayOrderRequest {
+  DisplayOrder DisplayOrder = 1;
+}
+
+message ResetDeviceRequest {
+}
+
+message RetrieveDeviceStatusRequest {
+  bool SendLastMessage = 1;
+}
+
+message RetrievePaymentRequest {
+  string ExternalPaymentId = 1;
+}
+
+message RetrievePendingPaymentsRequest {
+}
+
+message RetrievePrintJobStatusRequest {
+  BaseRequest Base = 1;
+  string PrintRequestId = 2;
+}
+
+message RetrievePrintersRequest {
+  PrintCategory Category = 1;
+}
+
+message SaleRequest {
+  TransactionRequest Base = 1;
+  bool DisableCashback = 2;
+  int64 TaxAmount = 3;
+  int64 TippableAmount = 4;
+  bool AllowOfflinePayment = 5;
+  bool ApproveOfflinePaymentWithoutPrompt = 6;
+  int64 TipAmount = 7;
+  TipMode TipMode = 8;
+  bool ForceOfflinePayment = 9;
+}
+
+message SendMessageToActivityRequest {
+  string Action = 1;
+  string Payload = 2;
+}
+
+message SetCustomerInfoRequest {
+  CustomerInfo CustomerInfo = 1;
+}
+
+message ShowDisplayOrderRequest {
+  DisplayOrder DisplayOrder = 1;
+}
+
+message ShowMessageRequest {
+  string Message = 1;
+}
+
+message ShowThankYouScreenRequest {
+}
+
+message ShowWelcomeScreenRequest {
+}
+
+message StartCustomActivityRequest {
+  BaseRequest Base = 1;
+  string Action = 2;
+  string Payload = 3;
+  bool NonBlocking = 4;
+}
+
+message TipAdjustAuthRequest {
+  BaseRequest Base = 1;
+  string PaymentID = 2;
+  string OrderID = 3;
+  int64 TipAmount = 4;
+}
+
+message VaultCardRequest {
+  int32 CardEntryMethods = 1;
+}
+
+message VoidPaymentRequest {
+  BaseRequest Base = 1;
+  string PaymentId = 2;
+  VoidReason VoidReason = 3;
+  string EmployeeId = 4;
+  string OrderId = 5;
+  map<string, string> Extras = 6;
+}
+
+message VoidPaymentRefundRequest {
+  BaseRequest Base = 1;
+  string RefundId = 2;
+  string EmployeeId = 3;
+  string OrderId = 4;
+  bool DisablePrinting = 5;
+  bool DisableReceiptSelection = 6;
+  map<string, string> Extras = 7;
+}

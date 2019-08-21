@@ -1,0 +1,691 @@
+syntax = "proto3";
+
+package com.clover.grpc;
+
+option csharp_namespace = "Clover.Grpc";
+
+enum AccountType {
+  ACCOUNTTYPE_UNKNOWN = 0;
+  ACCOUNTTYPE_CREDIT = 1;
+  ACCOUNTTYPE_DEBIT = 2;
+  ACCOUNTTYPE_CHECKING = 3;
+  ACCOUNTTYPE_SAVINGS = 4;
+}
+
+enum AdditionalChargeType {
+  ADDITIONALCHARGETYPE_UNKNOWN = 0;
+  ADDITIONALCHARGETYPE_INTERAC = 1;
+}
+
+message AdditionalChargeAmount {
+  string Id = 1;
+  int64 Amount = 2;
+  AdditionalChargeType Type = 3;
+}
+
+message Address {
+  string Id = 1;
+  string Address1 = 2;
+  string Address2 = 3;
+  string Address3 = 4;
+  string City = 5;
+  string Country = 6;
+  string PhoneNumber = 7;
+  string State = 8;
+  string Zip = 9;
+}
+
+message AppTracking {
+  string DeveloperAppId = 1;
+  string ApplicationName = 2;
+  string ApplicationId = 3;
+  string ApplicationVersion = 4;
+  string SourceSdk = 5;
+  string SourceSdkVersion = 6;
+  Reference PaymentRef = 7;
+  Reference CreditRef = 8;
+  Reference RefundRef = 9;
+  Reference CreditRefundRef = 10;
+}
+
+enum AvsResult {
+  AVSRESULT_UNKNOWN = 0;
+  AVSRESULT_SUCCESS = 1;
+  AVSRESULT_ZIP_CODE_MATCH = 2;
+  AVSRESULT_ZIP_CODE_MATCH_ADDRESS_NOT_CHECKED = 3;
+  AVSRESULT_ADDRESS_MATCH = 4;
+  AVSRESULT_ADDRESS_MATCH_ZIP_NOT_CHECKED = 5;
+  AVSRESULT_NEITHER_MATCH = 6;
+  AVSRESULT_SERVICE_FAILURE = 7;
+  AVSRESULT_SERVICE_UNAVAILABLE = 8;
+  AVSRESULT_NOT_CHECKED = 9;
+  AVSRESULT_ZIP_CODE_NOT_MATCHED_ADDRESS_NOT_CHECKED = 10;
+  AVSRESULT_ADDRESS_NOT_MATCHED_ZIP_CODE_NOT_CHECKED = 11;
+}
+
+message BaseRequest {
+  string RequestId = 1;
+}
+
+message BaseTransactionRequest {
+  BaseRequest Base = 1;
+  bool DisablePrinting = 2;
+  bool CardNotPresent = 3;
+  bool DisableRestartTransactionOnFail = 4;
+  int64 Amount = 5;
+  int32 CardEntryMethods = 6;
+  VaultedCard VaultedCard = 7;
+  string ExternalId = 8;
+  TransactionType Type = 9;
+  bool DisableDuplicateChecking = 10;
+  bool DisableReceiptSelection = 11;
+  bool AutoAcceptPaymentConfirmations = 12;
+  map<string, string> Extras = 13;
+  map<string, string> RegionalExtras = 14;
+}
+
+message Card {
+  string Id = 1;
+  string First6 = 2;
+  string Last4 = 3;
+  string FirstName = 4;
+  string LastName = 5;
+  string ExpirationDate = 6;
+  string CardType = 7;
+  string Token = 8;
+}
+
+enum CardEntryType {
+  CARDENTRYTYPE_UNKNOWN = 0;
+  CARDENTRYTYPE_SWIPED = 1;
+  CARDENTRYTYPE_KEYED = 2;
+  CARDENTRYTYPE_VOICE = 3;
+  CARDENTRYTYPE_VAULTED = 4;
+  CARDENTRYTYPE_OFFLINE_SWIPED = 5;
+  CARDENTRYTYPE_OFFLINE_KEYED = 6;
+  CARDENTRYTYPE_EMV_CONTACT = 7;
+  CARDENTRYTYPE_EMV_CONTACTLESS = 8;
+  CARDENTRYTYPE_MSD_CONTACTLESS = 9;
+  CARDENTRYTYPE_PINPAD_MANUAL_ENTRY = 10;
+}
+
+message CardTransaction {
+  Reference PaymentRef = 1;
+  Reference CreditRef = 2;
+  CardType CardType = 3;
+  CardEntryType EntryType = 4;
+  string First6 = 5;
+  string Last4 = 6;
+  CardTransactionType Type = 7;
+  string AuthCode = 8;
+  string ReferenceId = 9;
+  string TransactionNo = 10;
+  CardTransactionState State = 11;
+  map<string, string> Extra = 12;
+  int64 BegBalance = 13;
+  int64 EndBalance = 14;
+  AvsResult AvsResult = 15;
+  string CardholderName = 16;
+  string Token = 17;
+  VaultedCard VaultedCard = 18;
+}
+
+enum CardTransactionState {
+  CARDTRANSACTIONSTATE_UNKNOWN = 0;
+  CARDTRANSACTIONSTATE_PENDING = 1;
+  CARDTRANSACTIONSTATE_CLOSED = 2;
+}
+
+enum CardTransactionType {
+  CARDTRANSACTIONTYPE_UNKNOWN = 0;
+  CARDTRANSACTIONTYPE_AUTH = 1;
+  CARDTRANSACTIONTYPE_PREAUTH = 2;
+  CARDTRANSACTIONTYPE_PREAUTHCAPTURE = 3;
+  CARDTRANSACTIONTYPE_ADJUST = 4;
+  CARDTRANSACTIONTYPE_VOID = 5;
+  CARDTRANSACTIONTYPE_VOIDRETURN = 6;
+  CARDTRANSACTIONTYPE_RETURN = 7;
+  CARDTRANSACTIONTYPE_REFUND = 8;
+  CARDTRANSACTIONTYPE_NAKEDREFUND = 9;
+  CARDTRANSACTIONTYPE_GETBALANCE = 10;
+  CARDTRANSACTIONTYPE_BATCHCLOSE = 11;
+  CARDTRANSACTIONTYPE_ACTIVATE = 12;
+  CARDTRANSACTIONTYPE_BALANCE_LOCK = 13;
+  CARDTRANSACTIONTYPE_LOAD = 14;
+  CARDTRANSACTIONTYPE_CASHOUT = 15;
+  CARDTRANSACTIONTYPE_CASHOUT_ACTIVE_STATUS = 16;
+  CARDTRANSACTIONTYPE_REDEMPTION = 17;
+  CARDTRANSACTIONTYPE_REDEMPTION_UNLOCK = 18;
+  CARDTRANSACTIONTYPE_RELOAD = 19;
+}
+
+enum CardType {
+  CARDTYPE_UNKNOWN = 0;
+  CARDTYPE_VISA = 1;
+  CARDTYPE_MC = 2;
+  CARDTYPE_AMEX = 3;
+  CARDTYPE_DISCOVER = 4;
+  CARDTYPE_DINERS_CLUB = 5;
+  CARDTYPE_JCB = 6;
+  CARDTYPE_MAESTRO = 7;
+  CARDTYPE_SOLO = 8;
+  CARDTYPE_LASER = 9;
+  CARDTYPE_CHINA_UNION_PAY = 10;
+  CARDTYPE_CARTE_BLANCHE = 11;
+  CARDTYPE_GIFT_CARD = 12;
+  CARDTYPE_EBT = 13;
+  CARDTYPE_INTERAC = 14;
+  CARDTYPE_OTHER = 15;
+}
+
+message CashAdvanceExtra {
+  string cashAdvaNceSerialNum = 1;
+  CashAdvanceCustomerIdentification CashAdvanceCustomerIdentification = 2;
+  Reference PaymentRef = 3;
+}
+
+message CashAdvanceCustomerIdentification {
+  IdType IdType = 1;
+  string SerialNumber = 2;
+  string MaskedSerialNumber = 3;
+  string EncryptedSerialNumber = 4;
+  string ExpirationDate = 5;
+  string IssuingState = 6;
+  string IssuingCountry = 7;
+  string CustomerName = 8;
+  string AddressStreet1 = 9;
+  string AddressStreet2 = 10;
+  string AddressCity = 11;
+  string AddressState = 12;
+  string AddressZipCode = 13;
+  string AddressCountry = 14;
+}
+
+message Challenge {
+  string Message = 1;
+  ChallengeType Type = 2;
+  VoidReason Reason = 3;
+}
+
+enum ChallengeType {
+  CHALLENGE_TYPE_UNKNOWN = 0;
+  CHALLENGETYPE_DUPLICATE_CHALLENGE = 1;
+  CHALLENGETYPE_OFFLINE_CHALLENGE = 2;
+}
+
+message Customer {
+  string Id = 1;
+  Reference OrderRef = 2;
+  string FirstName = 3;
+  string LastName = 4;
+  bool MarketingAllowed = 5;
+  int64 CustomerSince = 6;
+  repeated Reference Orders = 7;
+  repeated Address Addresses = 8;
+  repeated EmailAddress EmailAddresses = 9;
+  repeated PhoneNumber PhoneNumbers = 10;
+  repeated Card Cards = 11;
+}
+
+message CustomerInfo {
+  Customer Customer = 1;
+  string DisplayString = 2;
+  string ExternalId = 3;
+  string ExternalSystemName = 4;
+  map<string, string> Extras = 5;
+}
+
+enum DataEntryLocation {
+  DATAENTRYLOCATION_UNKNOWN = 0;
+  DATAENTRYLOCATION_ON_SCREEN = 1;
+  DATAENTRYLOCATION_ON_PAPER = 2;
+  DATAENTRYLOCATION_NONE = 3;
+}
+
+message DataProviderConfig {
+  string Type = 1;
+  map<string, string> Configuration = 2;
+}
+
+message DccInfo {
+  int64 InquiryRateId = 1;
+  bool DccApplied = 2;
+  string ForeignCurrencyCode = 3;
+  int64 ForeignAmount = 4;
+  double ExchangeRate = 5;
+  string MarginRatePercentage = 6;
+  string ExchangeRateSourceName = 7;
+  string ExchangeRateSourceTimeStamp = 8;
+  Reference PaymentRef = 9;
+  Reference CreditRef = 10;
+}
+
+message DisplayDiscount {
+  string Id = 1;
+  string LineItemId = 2;
+  string Name = 3;
+  string Amount = 4;
+  string Percentage = 5;
+}
+
+message DisplayLineItem {
+  string Id = 1;
+  string OrderId = 2;
+  string Name = 3;
+  string AlternateName = 4;
+  string Price = 5;
+  string UnitPrice = 6;
+  string Quantity = 7;
+  string UnitQuantity = 8;
+  string Note = 9;
+  bool Printed = 10;
+  string BinName = 11;
+  string UserData = 12;
+  repeated DisplayDiscount Discounts = 13;
+  string DiscountAmount = 14;
+  bool Exchanged = 15;
+  string ExchangedAmount = 16;
+  repeated DisplayModification Modifications = 17;
+  bool Refunded = 18;
+  string RefundedAmount = 19;
+  string Percent = 20;
+}
+
+message DisplayModification {
+  string Id = 1;
+  string Name = 2;
+  string Amount = 3;
+}
+
+message DisplayPayment {
+  string Id = 1;
+  string Label = 2;
+  string Amount = 3;
+  string TipAmount = 4;
+  string TaxAmount = 5;
+}
+
+message DisplayOrder {
+  string Id = 1;
+  string Currency = 2;
+  string Employee = 3;
+  string Subtotal = 4;
+  string Tax = 5;
+  string Total = 6;
+  string Title = 7;
+  string Note = 8;
+  string ServiceChargeName = 9;
+  string ServiceChargeAmount = 10;
+  repeated DisplayDiscount Discounts = 11;
+  repeated DisplayLineItem LineItems = 12;
+  string AmountRemaining = 13;
+  repeated DisplayPayment Payments = 14;
+}
+
+message EmailAddress {
+  string Id = 1;
+  string EmailAddress = 2;
+  int64 VerifiedTime = 3;
+}
+
+message GermanInfo {
+  string CardTrack2 = 1;
+  string CardSequenceNumber = 2;
+  string TransactionCaseGermany = 3;
+  string TransactionTypeGermany = 4;
+  string TerminalId = 5;
+  string TraceNumber = 6;
+  string OldTraceNumber = 7;
+  string ReceiptNumber = 8;
+  string TransactionAid = 9;
+  string TransactionMsApp = 10;
+  string TransactionScriptResults = 11;
+  string ReceiptType = 12;
+  string CustomerTransactionDolValues = 13;
+  string MerchantTransactionDolValues = 14;
+  string MerchantJournalDol = 15;
+  string MerchantJournalDolValues = 16;
+  string ConfigMerchantId = 17;
+  string ConfigProductLabel = 18;
+  string HostResponseAidParBmp53 = 19;
+  string HostResponsePrintDataBm60 = 20;
+  string SepaElvReceiptFormat = 21;
+  string SepaElvExtAppLabel = 22;
+  string SepaElvPreNotification = 23;
+  string SepaElvMandate = 24;
+  string SepaElvCreditorId = 25;
+  string SepaElvMandateId = 26;
+  string SepaElvIban = 27;
+  Reference PaymentRef = 28;
+  Reference CreditRef = 29;
+  Reference RefundRef = 30;
+  Reference CreditRefundRef = 31;
+}
+
+message IdentityDocument {
+  string Type = 1;
+  string Number = 2;
+}
+
+enum IdType {
+  IDTYPE_UNKNOWN = 0;
+  IDTYPE_DRIVERS_LICENSE = 1;
+  IDTYPE_PASSPORT = 2;
+}
+
+message InputOption {
+  KeyPress KeyPress = 1;
+  string Description = 2;
+}
+
+enum KeyPress {
+  KEYPRESS_NONE = 0;
+  KEYPRESS_ENTER = 40;
+  KEYPRESS_ESC = 41;
+  KEYPRESS_BACKSPACE = 42;
+  KEYPRESS_TAB = 43;
+  KEYPRESS_STAR = 85;
+  KEYPRESS_BUTTON_1 = 58;
+  KEYPRESS_BUTTON_2 = 59;
+  KEYPRESS_BUTTON_3 = 60;
+  KEYPRESS_BUTTON_4 = 61;
+  KEYPRESS_BUTTON_5 = 62;
+  KEYPRESS_BUTTON_6 = 63;
+  KEYPRESS_DIGIT_1 = 89;
+  KEYPRESS_DIGIT_2 = 90;
+  KEYPRESS_DIGIT_3 = 91;
+  KEYPRESS_DIGIT_4 = 92;
+  KEYPRESS_DIGIT_5 = 93;
+  KEYPRESS_DIGIT_6 = 94;
+  KEYPRESS_DIGIT_7 = 95;
+  KEYPRESS_DIGIT_8 = 96;
+  KEYPRESS_DIGIT_9 = 97;
+  KEYPRESS_DIGIT_0 = 98;
+}
+
+message LineItemPayment {
+  string Id = 1;
+  Reference LineItemRef = 2;
+  Reference PaymentRef = 3;
+  int64 Percentage = 4;
+  string BinName = 5;
+  bool Refunded = 6;
+}
+
+message Payment {
+  string Id = 1;
+  Reference Order = 2;
+  Reference Device = 3;
+  Tender Tender = 4;
+  int64 Amount = 5;
+  int64 TipAmount = 6;
+  int64 TaxAmount = 7;
+  int64 CashbackAmount = 8;
+  int64 CashTendered = 9;
+  string ExternalPaymentId = 10;
+  Reference Employee = 11;
+  int64 CreatedTime = 12;
+  int64 ClientCreatedTime = 13;
+  int64 ModifiedTime = 14;
+  bool Offline = 15;
+  PaymentResult Result = 16;
+  CardTransaction CardTransaction = 17;
+  ServiceChargeAmount ServiceCharge = 18;
+  repeated PaymentTaxRate TaxRates = 19;
+  repeated Refund Refund = 20;
+  string Note = 21;
+  repeated LineItemPayment LineItemPayments = 22;
+  repeated AdditionalChargeAmount AdditionalCharges = 23;
+  VoidReason VoidReason = 24;
+  DccInfo dccInfo = 25;
+  TransactionSettings TransactionSettings = 26;
+  GermanInfo GermanInfo = 27;
+  AppTracking AppTracking = 28;
+  CashAdvanceExtra CashAdvanceExtra = 29;
+  TransactionInfo TransactionInfo = 30;
+  SignatureDisclaimer SignatureDisclaimer = 31;
+  string ExternalReferenceId = 32;
+  Reference Merchant = 33;
+}
+
+enum PaymentResult {
+  PAYMENTRESULT_UNKNOWN = 0;
+  PAYMENTRESULT_SUCCESS = 1;
+  PAYMENTRESULT_FAIL = 2;
+  PAYMENTRESULT_INITIATED = 3;
+  PAYMENTRESULT_VOIDED = 4;
+  PAYMENTRESULT_VOIDING = 5;
+  PAYMENTRESULT_AUTH = 6;
+  PAYMENTRESULT_AUTH_COMPLETED = 7;
+}
+
+message PaymentTaxRate {
+  string Id = 1;
+  Reference PaymentRef = 2;
+  string Name = 3;
+  int64 Rate = 4;
+  bool IsDefault = 5;
+  int64 TaxableAmount = 6;
+}
+
+message PhoneNumber {
+  string Id = 1;
+  string PhoneNumber = 2;
+}
+
+enum PrintCategory {
+  PRINTCATEGORY_NONE = 0;
+  ORDER = 1;
+  RECEIPT = 2;
+}
+
+message Reference {
+  string Id = 1;
+}
+
+message Refund {
+  string Id = 1;
+  Reference OrderRef = 2;
+  Reference Device = 3;
+  int64 Amount = 4;
+  int64 TaxAmount = 5;
+  int64 CreatedTime = 6;
+  int64 ClientCreatedTime = 7;
+  Reference Payment = 8;
+  Reference Employee = 9;
+  repeated Reference LineItems = 10;
+  Tender OverrideMerchantTender = 11;
+  repeated TaxableAmountRate TaxableAmountRates = 12;
+  ServiceChargeAmount ServiceChargeAmount = 13;
+}
+
+enum ReversalReason {
+  REVERSALREASON_UNKNOWN = 0;
+  REVERSALREASON_CHIP_DECLINE = 1;
+  REVERSALREASON_CARDHOLDER_CANCELLATION = 2;
+  REVERSALREASON_COMMUNICATION_ERROR = 3;
+  REVERSALREASON_OTHER_REASON = 4;
+}
+
+enum SelectedService {
+  SELECTEDSERVICE_UNKNOWN = 0;
+  SELECTEDSERVICE_NONE = 1;
+  SELECTEDSERVICE_PAYMENT = 2;
+  SELECTEDSERVICE_REFUND = 3;
+  SELECTEDSERVICE_CANCELLATION = 4;
+  SELECTEDSERVICE_PRE_AUTH = 5;
+  SELECTEDSERVICE_UPDATE_PRE_AUTH = 6;
+  SELECTEDSERVICE_PAYMENT_COMPLETION = 7;
+  SELECTEDSERVICE_CASH_ADVANCE = 8;
+  SELECTEDSERVICE_DEFERRED_PAYMENT = 9;
+  SELECTEDSERVICE_DEFERRED_PAYMENT_COMPLETION = 10;
+  SELECTEDSERVICE_VOICE_AUTHORISATION = 11;
+  SELECTEDSERVICE_CARDHOLDER_DETECTION = 12;
+}
+
+message ServiceChargeAmount {
+  string Id = 1;
+  string Name = 2;
+  int64 Amount = 3;
+  Reference PaymentRef = 4;
+}
+
+message SignatureDisclaimer {
+  string DisclaimerText = 1;
+  map<string, string> DisclaimerValues = 2;
+  Reference PaymentRef = 3;
+}
+
+message TaxableAmountRate {
+  string Id = 1;
+  string Name = 2;
+  int64 TaxableAmount = 3;
+  int64 Rate = 4;
+  int64 TaxAmount = 5;
+  bool IsVat = 6;
+}
+
+enum TipMode {
+  TIPMODE_UNKNOWN = 0;
+  TIPMODE_TIP_PROVIDED = 1;
+  TIPMODE_ON_SCREEN_BEFORE_PAYMENT = 2;
+  TIPMODE_ON_SCREEN_AFTER_PAYMENT = 3;
+  TIPMODE_ON_PAPER = 4;
+  TIPMODE_NO_TIP = 5;
+}
+
+message TipSuggestion {
+  string Id = 1;
+  string Name = 2;
+  int64 Percentage = 3;
+  bool IsEnabled = 4;
+}
+
+message Tender {
+  string Id = 1;
+  bool Editable = 2;
+  string LabelKey = 3;
+  string Label = 4;
+  bool OpensCashDrawer = 5;
+  bool SupportsTipping = 6;
+  bool Enabled = 7;
+  bool Visible = 8;
+  string Instructions = 9;
+}
+
+enum TransactionFormat {
+  TRANSACTIONFORMAT_UNKNOWN = 0;
+  TRANSACTIONFORMAT_DEFAULT = 1;
+  TRANSACTIONFORMAT_NEXO = 2;
+}
+
+message TransactionInfo {
+  string LanguageIndicator = 1;
+  string TransactionLocale = 2;
+  AccountType AccountSelection = 3;
+  Reference PaymentRef = 4;
+  Reference CreditRef = 5;
+  Reference RefundRef = 6;
+  Reference CreditRefundRef = 7;
+  string FiscalInvoiceNumber = 8;
+  int32 InstallmentsQuantity = 9;
+  string InstallmentsPlanCode = 10;
+  string InstallmentsPlanId = 11;
+  string InstallmentsPlanDesc = 12;
+  string CardTypeLabel = 13;
+  int32 Stan = 14;
+  IdentityDocument IdentityDocument = 15;
+  string BatchNumber = 16;
+  string ReceiptNumber = 17;
+  int32 ReversalStan = 18;
+  string ReversalMac = 19;
+  string ReversalMacKsn = 20;
+  string TerminalIdentification = 21;
+  string MerchantIdentifier = 22;
+  string MerchantNameLocation = 23;
+  string MaskedTrack2 = 24;
+  string ReceiptExtraData = 25;
+  SelectedService SelectedService = 26;
+  TransactionResult TransactionResult = 27;
+  string TransactionTags = 28;
+  TransactionFormat TxFormat = 29;
+  string PanMask = 30;
+  string TransactionSequenceCounter = 31;
+  string ApplicationPanSequenceNumber = 32;
+  ReversalReason ReversalReason = 33;
+  bool IsTokenBasedTx = 34;
+  string OrigTransactionSequenceCounter = 35;
+  string TransactionSequenceCounterUpdate = 36;
+}
+
+message TransactionRequest {
+  BaseTransactionRequest Base = 1;
+  int64 SignatureThreshold = 2;
+  DataEntryLocation SignatureEntryLocation = 3;
+  bool AutoAcceptSignature = 4;
+  repeated TipSuggestion TipSuggestions = 5;
+}
+
+enum TransactionResult {
+  TRANSACTIONRESULT_UNKNOWN = 0;
+  TRANSACTIONRESULT_APPROVED = 1;
+  TRANSACTIONRESULT_DECLINED = 2;
+  TRANSACTIONRESULT_ABORTED = 3;
+  TRANSACTIONRESULT_VOICE_AUTHORISATION = 4;
+  TRANSACTIONRESULT_PAYMENT_PART_ONLY = 5;
+  TRANSACTIONRESULT_PARTIALLY_APPROVED = 6;
+  TRANSACTIONRESULT_NONE = 7;
+}
+
+message TransactionSettings {
+  int32 CardEntryMethods = 1;
+  bool DisableCashBack = 2;
+  bool CloverShouldHandleReceipts = 3;
+  bool ForcePinEntryOnSwipe = 4;
+  bool DisableRestartTransactionOnFailure = 5;
+  bool AllowOfflinePayment = 6;
+  bool ApproveOfflinePaymentWithoutPrompt = 7;
+  int64 SignatureThreshold = 8;
+  DataEntryLocation SignatureEntryLocation = 9;
+  TipMode TipMode = 10;
+  int64 TippableAmount = 11;
+  bool DisableReceiptSelection = 12;
+  bool DisableDuplicateCheck = 13;
+  bool AutoAcceptPaymentConfirmations = 14;
+  bool AutoAcceptSignature = 15;
+  bool ForceOfflinePayment = 16;
+  repeated TipSuggestion TipSuggestions = 17;
+  map<string, string> RegionalExtras = 18;
+}
+
+enum TransactionType {
+  TRANSACTIONTYPE_UNKNOWN = 0;
+  TRANSACTIONTYPE_PAYMENT = 1;
+  TRANSACTIONTYPE_CREDIT = 2;
+  TRANSACTIONTYPE_AUTH = 3;
+  TRANSACTIONTYPE_DATA = 4;
+  TRANSACTIONTYPE_BALANCE_INQUIRY = 5;
+  TRANSACTIONTYPE_CAPTURE_PREAUT = 6;
+}
+
+message VaultedCard {
+  string First6 = 1;
+  string Last4 = 2;
+  string CardholderName = 3;
+  string ExpirationDate = 4;
+  string Token = 5;
+}
+
+enum VoidReason {
+  VOIDREASON_UNKNOWN = 0;
+  VOIDREASON_USER_CANCEL = 1;
+  VOIDREASON_TRANSPORT_ERROR = 2;
+  VOIDREASON_REJECT_SIGNATURE = 3;
+  VOIDREASON_REJECT_PARTIAL_AUTH = 4;
+  VOIDREASON_NOT_APPROVED = 5;
+  VOIDREASON_FAILED = 6;
+  VOIDREASON_AUTH_CLOSED_NEW_CARD = 7;
+  VOIDREASON_DEVELOPER_PAY_PARTIAL_AUTH = 8;
+  VOIDREASON_REJECT_DUPLICATE = 9;
+  VOIDREASON_REJECT_OFFLINE = 10;
+}
