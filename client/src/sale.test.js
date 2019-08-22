@@ -1,9 +1,9 @@
-const createDriver = require('./driver');
+const createDriver = require('./client');
 const externalId = require('./externalId');
 
 describe('Sale', () => {
   it('should', async () => {
-    jest.setTimeout(30000);
+    jest.setTimeout(120000);
 
     const driver = createDriver();
 
@@ -11,6 +11,7 @@ describe('Sale', () => {
 
     const waitForEvent = eventName =>
       new Promise(resolve => {
+        console.log("waiting for " + eventName);
         const test =
           eventName instanceof Function
             ? eventName
@@ -18,6 +19,7 @@ describe('Sale', () => {
         const handler = ({ type, name, payload }) => {
           const evt = { type, name, payload: JSON.parse(payload) };
           if (test(evt)) {
+            console.log("got it! " + eventName);
             onEvent.off('data', handler);
             resolve(evt);
           }
@@ -37,14 +39,14 @@ describe('Sale', () => {
 
     const acceptPayment = new Promise(async resolve => {
       const { payload } = await waitForEvent('ConfirmPaymentRequest');
-      await driver.AcceptPayment({ payload: JSON.stringify(payload.Payment) });
+      await driver.AcceptPayment({ payload: JSON.stringify(payload.payment) });
       resolve(payload);
     });
 
     const acceptSignature = new Promise(async resolve => {
       const { payload } = await waitForEvent('VerifySignatureRequest');
       await driver.AcceptSignature({
-        payload: JSON.stringify(payload.Signature),
+        payload: JSON.stringify(payload),
       });
       resolve(payload);
     });
@@ -52,7 +54,7 @@ describe('Sale', () => {
     const noReceipt = new Promise(async resolve => {
       const receiptOptions = ({ name, payload }) =>
         name === 'DeviceActivityStart' &&
-        payload.EventState === 'RECEIPT_OPTIONS';
+        payload.eventState === 'RECEIPT_OPTIONS';
       await waitForEvent(receiptOptions);
       const inputOption = { keyPress: 'BUTTON_1', description: 'No receipt' };
       driver.InvokeInputOption({ payload: JSON.stringify(inputOption) });
@@ -64,14 +66,14 @@ describe('Sale', () => {
     });
 
     const saleRequest = {
-      ExternalId: externalId(),
-      Amount: 200,
+      externalId: externalId(),
+      amount: 200,
     };
     await driver.Sale({ payload: JSON.stringify(saleRequest) });
 
     const sale = await saleResponse;
 
-    expect(sale.Success).toBe(true);
+    expect(sale.success).toBe(true);
 
     await driver.Dispose({});
   });

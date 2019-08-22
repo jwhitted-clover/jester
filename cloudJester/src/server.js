@@ -3,7 +3,7 @@ const protoLoader = require('@grpc/proto-loader');
 
 const service = require('./service');
 
-const PROTO_PATH = __dirname + '../../proto/SdkDriver.proto';
+const PROTO_PATH = __dirname + '../../../proto/SdkDriver.proto';
 
 const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
   keepCase: true,
@@ -14,7 +14,7 @@ const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
 });
 const proto = grpc.loadPackageDefinition(packageDefinition).Jester;
 
-const GRPC_HOST = '0.0.0.0';
+const GRPC_HOST = '127.0.0.1';
 const GRPC_PORT = 12346;
 
 const main = () => {

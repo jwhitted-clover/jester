@@ -6,6 +6,7 @@
   "dependencies": {
     "@grpc/proto-loader": "^0.5.1",
     "grpc": "^1.23.1",
-    "remote-pay-cloud": "^3.1.0"
+    "remote-pay-cloud": "dev",
+    "ws": "6.2.1"
   }
 }
