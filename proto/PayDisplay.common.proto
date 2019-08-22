@@ -67,6 +67,13 @@ message BaseRequest {
   string RequestId = 1;
 }
 
+message BaseResponse {
+  bool Success = 1;
+  ResponseCode Result = 2;
+  string Reason = 3;
+  string Message = 4;
+}
+
 message BaseTransactionRequest {
   BaseRequest Base = 1;
   bool DisablePrinting = 2;
@@ -84,6 +91,66 @@ message BaseTransactionRequest {
   map<string, string> RegionalExtras = 14;
 }
 
+message Batch {
+  string Id = 1;
+  int64 MerchantId = 2;
+  int64 FirstGatewayTxId = 3;
+  int64 LastGatewayTxId = 4;
+  int64 AccountId = 5;
+  int64 TxCount = 6;
+  int64 TotalBatchAmount = 7;
+  string Devices = 8;
+  BatchState State = 9;
+  BatchType BatchType = 10;
+  int64 CreatedTime = 11;
+  int64 ModifiedTime = 12;
+  BatchDetail BatchDetails = 13;
+}
+
+message BatchCardTotal {
+  CardType cardType = 1;
+  int64 count = 2;
+  int64 total = 3;
+}
+
+message BatchDetail {
+  repeated BatchTotalStats batchTotals = 1;
+  repeated ServerTotalStats serverTotals = 2;
+  repeated BatchCardTotal cardTotals = 3;
+  int64 openTips = 4;
+  int64 openTabs = 5;
+}
+
+enum BatchState {
+  BATCHSTATE_UNKNOWN = 0;
+  BATCHSTATE_OPEN = 1;
+  BATCHSTATE_QUEUED_FOR_PROCESSING = 2;
+  BATCHSTATE_PROCESSING = 3;
+  BATCHSTATE_CLOSED = 4;
+  BATCHSTATE_FAILED = 5;
+}
+
+message BatchTotalStats {
+  BatchTotalType Sales = 1;
+  BatchTotalType Refunds = 2;
+  BatchTotalType Net = 3;
+  BatchTotalType GiftCardLoads = 4;
+  BatchTotalType GiftCardCashOuts = 5;
+  BatchTotalType Tax = 6;
+  BatchTotalType Tips = 7;
+}
+
+message BatchTotalType {
+  int64 count = 1;
+  int64 total = 2;
+}
+
+enum BatchType {
+  BATCHTYPE_UNKNOWN = 0;
+  BATCHTYPE_MANUAL_CLOSE = 1;
+  BATCHTYPE_AUTO_CLOSE = 2;
+}
+
 message Card {
   string Id = 1;
   string First6 = 2;
@@ -93,6 +160,23 @@ message Card {
   string ExpirationDate = 6;
   string CardType = 7;
   string Token = 8;
+}
+
+message CardData {
+  string Track1 = 1;
+  string Track2 = 2;
+  string Track3 = 3;
+  bool Encrypted = 4;
+  string MaskedTrack1 = 5;
+  string MaskedTrack2 = 6;
+  string MaskedTrack3 = 7;
+  string Pan = 8;
+  string CardholderName = 9;
+  string FirstName = 10;
+  string LastName = 11;
+  string Exp = 12;
+  string Last4 = 13;
+  string First6 = 14;
 }
 
 enum CardEntryType {
@@ -213,6 +297,23 @@ enum ChallengeType {
   CHALLENGETYPE_OFFLINE_CHALLENGE = 2;
 }
 
+message Credit {
+  string Id = 1;
+  Reference OrderRef = 2;
+  Reference Device = 3;
+  Tender Tender = 4;
+  Reference Employee = 5;
+  Customer Customers = 6;
+  int64 Amount = 7;
+  int64 TaxAmount = 8;
+  repeated TaxableAmountRate TaxRates = 9;
+  int64 CreatedTime = 10;
+  int64 ClientCreatedTime = 11;
+  CardTransaction CardTransaction = 12;
+  bool Voided = 13;
+  string VoidReason = 14;
+}
+
 message Customer {
   string Id = 1;
   Reference OrderRef = 2;
@@ -225,6 +326,13 @@ message Customer {
   repeated EmailAddress EmailAddresses = 9;
   repeated PhoneNumber PhoneNumbers = 10;
   repeated Card Cards = 11;
+}
+
+enum CustomerIdMethod {
+  CUSTOMERIDMETHOD_UNKNOWN = 0;
+  CUSTOMERIDMETHOD_NAME = 1;
+  CUSTOMERIDMETHOD_TABLE = 2;
+  CUSTOMERIDMETHOD_NAME_TABLE = 3;
 }
 
 message CustomerInfo {
@@ -258,6 +366,123 @@ message DccInfo {
   string ExchangeRateSourceTimeStamp = 8;
   Reference PaymentRef = 9;
   Reference CreditRef = 10;
+}
+
+enum DeviceErrorType {
+  DEVICEERRORTYPE_UNKNOWN = 0;
+  DEVICEERRORTYPE_COMMUNICATION_ERROR = 1;
+  DEVICEERRORTYPE_VALIDATION_ERROR = 2;
+  DEVICEERRORTYPE_EXCEPTION = 3;
+}
+
+enum DeviceErrorCode {
+  DEVICEERRORCODE_NONE = 0;
+  DEVICEERRORCODE_INVALID_CONFIG = -16384;
+  DEVICEERRORCODE_IO_SYNC_FAILED = -16383;
+  DEVICEERRORCODE_GET_STRING = -16382;
+  DEVICEERRORCODE_INVALID_ENDPOINT = -16381;
+  DEVICEERRORCODE_ABORT_ENDPOINT = -16380;
+  DEVICEERRORCODE_DEVICE_IO_CONTROL = -16379;
+  DEVICEERRORCODE_GET_OVERLAPPED_RESULT = -16378;
+  DEVICEERRORCODE_RECEIVE_THREAD_TERMINATED = -16377;
+  DEVICEERRORCODE_WRITE_FAILED = -16376;
+  DEVICEERRORCODE_READ_FAILED = -16375;
+  DEVICEERRORCODE_IO_CONTROL_MESSAGE = -16374;
+  DEVICEERRORCODE_CANCEL_IO_FAILED = -16373;
+  DEVICEERRORCODE_IO_CANCELLED = -16372;
+  DEVICEERRORCODE_IO_TIMED_OUT = -16371;
+  DEVICEERRORCODE_IO_ENDPOINT_GLOBAL_CANCEL_REDO = -16370;
+  DEVICEERRORCODE_GET_DEVICE_KEY_VALUE_FAILED = -16369;
+  DEVICEERRORCODE_SET_DEVICE_KEY_VALUE_FAILED = -16368;
+  DEVICEERRORCODE_WIN32_ERROR = -16367;
+  DEVICEERRORCODE_DEVICE_ALLREADY_LOCKED = -16366;
+  DEVICEERRORCODE_ENDPOINT_ALLREADY_LOCKED = -16365;
+  DEVICEERRORCODE_DEVICE_NOT_FOUND = -16364;
+  DEVICEERRORCODE_USER_ABORTED = -16363;
+  DEVICEERRORCODE_INVALID_PARAM = -16362;
+  DEVICEERRORCODE_ACCESS_DENIED = -16361;
+  DEVICEERRORCODE_RESOURCE_BUSY = -16360;
+  DEVICEERRORCODE_OVERFLOW = -16359;
+  DEVICEERRORCODE_PIPE_ERROR = -16358;
+  DEVICEERRORCODE_INTERRUPTED = -16357;
+  DEVICEERRORCODE_INSUFFICIENT_MEMORY = -16356;
+  DEVICEERRORCODE_NOT_SUPPORTED = -16355;
+  DEVICEERRORCODE_UNKNOWN_ERROR = -16354;
+  DEVICEERRORCODE_MONO_API_ERROR = -16353;
+}
+
+enum DeviceEventState {
+  DEVICEEVENTSTATE_UNKNOWN = 0;
+  DEVICEEVENTSTATE_START = 1;
+  DEVICEEVENTSTATE_FAILED = 2;
+  DEVICEEVENTSTATE_FATAL = 3;
+  DEVICEEVENTSTATE_TRY_AGAIN = 4;
+  DEVICEEVENTSTATE_INPUT_ERROR = 5;
+  DEVICEEVENTSTATE_PIN_BYPASS_CONFIRM = 6;
+  DEVICEEVENTSTATE_CANCELED = 7;
+  DEVICEEVENTSTATE_TIMED_OUT = 8;
+  DEVICEEVENTSTATE_DECLINED = 9;
+  DEVICEEVENTSTATE_VOIDED = 10;
+  DEVICEEVENTSTATE_CONFIGURING = 11;
+  DEVICEEVENTSTATE_PROCESSING = 12;
+  DEVICEEVENTSTATE_REMOVE_CARD = 13;
+  DEVICEEVENTSTATE_PROCESSING_GO_ONLINE = 14;
+  DEVICEEVENTSTATE_PROCESSING_CREDIT = 15;
+  DEVICEEVENTSTATE_PROCESSING_SWIPE = 16;
+  DEVICEEVENTSTATE_SELECT_APPLICATION = 17;
+  DEVICEEVENTSTATE_PIN_PAD = 18;
+  DEVICEEVENTSTATE_MANUAL_CARD_NUMBER = 19;
+  DEVICEEVENTSTATE_MANUAL_CARD_CVV = 20;
+  DEVICEEVENTSTATE_MANUAL_CARD_CVV_UNREADABLE = 21;
+  DEVICEEVENTSTATE_MANUAL_CARD_EXPIRATION = 22;
+  DEVICEEVENTSTATE_SELECT_ACCOUNT = 23;
+  DEVICEEVENTSTATE_CASHBACK_CONFIRM = 24;
+  DEVICEEVENTSTATE_CASHBACK_SELECT = 25;
+  DEVICEEVENTSTATE_CONTACTLESS_TAP_REQUIRED = 26;
+  DEVICEEVENTSTATE_VOICE_REFERRAL_RESULT = 27;
+  DEVICEEVENTSTATE_CONFIRM_PARTIAL_AUTH = 28;
+  DEVICEEVENTSTATE_PACKET_EXCEPTION = 29;
+  DEVICEEVENTSTATE_CONFIRM_DUPLICATE_CHECK = 30;
+  DEVICEEVENTSTATE_VERIFY_SIGNATURE_ON_PAPER = 31;
+  DEVICEEVENTSTATE_VERIFY_SIGNATURE_ON_PAPER_CONFIRM_VOID = 32;
+  DEVICEEVENTSTATE_VERIFY_SIGNATURE_ON_SCREEN = 33;
+  DEVICEEVENTSTATE_VERIFY_SIGNATURE_ON_SCREEN_CONFIRM_VOID = 34;
+  DEVICEEVENTSTATE_ADD_SIGNATURE = 35;
+  DEVICEEVENTSTATE_SIGNATURE_ON_SCREEN_FALLBACK = 36;
+  DEVICEEVENTSTATE_RETURN_TO_MERCHANT = 37;
+  DEVICEEVENTSTATE_SIGNATURE_REJECT = 38;
+  DEVICEEVENTSTATE_ADD_SIGNATURE_CANCEL_CONFIRM = 39;
+  DEVICEEVENTSTATE_STARTING_CUSTOM_ACTIVITY = 40;
+  DEVICEEVENTSTATE_CUSTOM_ACTIVITY = 41;
+  DEVICEEVENTSTATE_ADD_TIP = 42;
+  DEVICEEVENTSTATE_RECEIPT_OPTIONS = 43;
+  DEVICEEVENTSTATE_HANDLE_TENDER = 44;
+  DEVICEEVENTSTATE_SELECT_WITHDRAW_FROM_ACCOUNT = 45;
+  DEVICEEVENTSTATE_VERIFY_SURCHARGES = 46;
+  DEVICEEVENTSTATE_VOID_CONFIRM = 47;
+  // for Argentina
+  DEVICEEVENTSTATE_ENTER_PAN_LAST_FOUR = 48;
+  DEVICEEVENTSTATE_ERROR_SCREEN = 49;
+  DEVICEEVENTSTATE_FISCAL_INVOICE_NUMBER = 50;
+  DEVICEEVENTSTATE_ENTER_INSTALLMENTS = 51;
+  DEVICEEVENTSTATE_SELECT_INSTALLMENT_PLAN = 52;
+  DEVICEEVENTSTATE_ENTER_INSTALLMENT_CODE = 53;
+  DEVICEEVENTSTATE_PERSONAL_ID_ENTRY = 54;
+  DEVICEEVENTSTATE_PERSONAL_ID_ENTRY_PAS = 55;
+  DEVICEEVENTSTATE_SWIPE_CVV_ENTRY = 56;
+  DEVICEEVENTSTATE_SIGNATURE_CUSTOMER_MODE = 57;
+  DEVICEEVENTSTATE_MANUAL_ENTRY_FALLBACK = 58;
+  DEVICEEVENTSTATE_SELECT_MULTI_MID = 59;
+}
+
+message Discount {
+  string Id = 1;
+  Reference OrderRef = 2;
+  Reference LineItemRef = 3;
+  Reference Discount = 4;
+  string Name = 5;
+  int64 Amount = 6;
+  int64 Percentage = 7;
 }
 
 message DisplayDiscount {
@@ -328,6 +553,19 @@ message EmailAddress {
   int64 VerifiedTime = 3;
 }
 
+enum ExternalDeviceState {
+  EXTERNALDEVICESTATE_UNKNOWN = 0;
+  EXTERNALDEVICESTATE_IDLE = 1;
+  EXTERNALDEVICESTATE_BUSY = 2;
+  EXTERNALDEVICESTATE_WAITING_FOR_POS = 3;
+  EXTERNALDEVICESTATE_WAITING_FOR_CUSTOMER = 4;
+}
+
+message ExternalDeviceStateData {
+  string ExternalPaymentId = 1;
+  string CustomActivityId = 2;
+}
+
 message GermanInfo {
   string CardTrack2 = 1;
   string CardSequenceNumber = 2;
@@ -360,6 +598,31 @@ message GermanInfo {
   Reference CreditRef = 29;
   Reference RefundRef = 30;
   Reference CreditRefundRef = 31;
+}
+
+enum HoursAvailable {
+  HOURSAVAILABLE_UNKNOWN = 0;
+  HOURSAVAILABLE_ALL = 1;
+  HOURSAVAILABLE_BUSINESS = 2;
+  HOURSAVAILABLE_CUSTOM = 3;
+}
+
+message HourRange {
+  int32 start = 1;
+  int32 end = 2;
+}
+
+message HoursSet {
+  string Id = 1;
+  string Name = 2;
+  Reference Reference = 3;
+  repeated HourRange Sunday = 4;
+  repeated HourRange Monday = 5;
+  repeated HourRange Tuesday = 6;
+  repeated HourRange Wednesday = 7;
+  repeated HourRange Thursday = 8;
+  repeated HourRange Friday = 9;
+  repeated HourRange Saturday = 10;
 }
 
 message IdentityDocument {
@@ -403,6 +666,33 @@ enum KeyPress {
   KEYPRESS_DIGIT_0 = 98;
 }
 
+message LineItem {
+  string Id = 1;
+  Reference OrderRef = 2;
+  Reference Item = 3;
+  string Name = 4;
+  string AlternateName = 5;
+  int64 Price = 6;
+  int32 UnitQty = 7;
+  string UnitName = 8;
+  string ItemCode = 9;
+  string Note = 10;
+  bool Printed = 11;
+  Reference ExchangedLineItem = 12;
+  string BinName = 13;
+  string UserData = 14;
+  int64 CreatedTime = 15;
+  int64 OrderClientCreatedTime = 16;
+  repeated Discount Discounts = 17;
+  int64 DiscountAmount = 18;
+  bool Exchanged = 19;
+  repeated Modification Modifications = 20;
+  bool Refunded = 21;
+  bool IsRevenue = 22;
+  repeated TaxRate TaxRates = 23;
+  repeated LineItemPayment Payments = 24;
+}
+
 message LineItemPayment {
   string Id = 1;
   Reference LineItemRef = 2;
@@ -410,6 +700,175 @@ message LineItemPayment {
   int64 Percentage = 4;
   string BinName = 5;
   bool Refunded = 6;
+}
+
+message Message {
+  int32 Version = 1;
+  Methods method = 2;
+}
+
+enum Methods {
+  METHODS_UNKNOWN = 0;
+  METHODS_AAA_NULL = 1;
+  METHODS_ACK = 2;
+  METHODS_CLOSEOUT_RESPONSE = 3;
+  METHODS_CLOSEOUT_REQUEST = 4;
+  METHODS_CAPTURE_PREAUTH_RESPONSE = 5;
+  METHODS_CAPTURE_PREAUTH = 6;
+  METHODS_LAST_MSG_REQUEST = 7;
+  METHODS_LAST_MSG_RESPONSE = 8;
+  METHODS_TIP_ADJUST = 9;
+  METHODS_TIP_ADJUST_RESPONSE = 10;
+  METHODS_OPEN_CASH_DRAWER = 11;
+  METHODS_SHOW_PAYMENT_RECEIPT_OPTIONS = 12;
+  METHODS_SHOW_REFUND_RECEIPT_OPTIONS = 13;
+  METHODS_SHOW_CREDIT_RECEIPT_OPTIONS = 14;
+  METHODS_REFUND_RESPONSE = 15;
+  METHODS_REFUND_REQUEST = 16;
+  METHODS_TX_START = 17;
+  METHODS_TX_START_RESPONSE = 18;
+  METHODS_KEY_PRESS = 19;
+  METHODS_UI_STATE = 20;
+  METHODS_TX_STATE = 21;
+  METHODS_FINISH_OK = 22;
+  METHODS_FINISH_CANCEL = 23;
+  METHODS_DISCOVERY_REQUEST = 24;
+  METHODS_DISCOVERY_RESPONSE = 25;
+  METHODS_TIP_ADDED = 26;
+  METHODS_VERIFY_SIGNATURE = 27;
+  METHODS_SIGNATURE_VERIFIED = 28;
+  METHODS_PAYMENT_VOIDED = 29;
+  METHODS_PRINT_PAYMENT = 30;
+  METHODS_REFUND_PRINT_PAYMENT = 31;
+  METHODS_PRINT_PAYMENT_MERCHANT_COPY = 32;
+  METHODS_PRINT_CREDIT = 33;
+  METHODS_PRINT_PAYMENT_DECLINE = 34;
+  METHODS_PRINT_CREDIT_DECLINE = 35;
+  METHODS_PRINT_TEXT = 36;
+  METHODS_PRINT_IMAGE = 37;
+  METHODS_TERMINAL_MESSAGE = 38;
+  METHODS_SHOW_WELCOME_SCREEN = 39;
+  METHODS_SHOW_THANK_YOU_SCREEN = 40;
+  METHODS_SHOW_ORDER_SCREEN = 41;
+  METHODS_BREAK = 42;
+  METHODS_CASHBACK_SELECTED = 43;
+  METHODS_PARTIAL_AUTH = 44;
+  METHODS_VOID_PAYMENT = 45;
+  METHODS_VOID_PAYMENT_RESPONSE = 46;
+  METHODS_ORDER_ACTION_ADD_DISCOUNT = 47;
+  METHODS_ORDER_ACTION_REMOVE_DISCOUNT = 48;
+  METHODS_ORDER_ACTION_ADD_LINE_ITEM = 49;
+  METHODS_ORDER_ACTION_REMOVE_LINE_ITEM = 50;
+  METHODS_ORDER_ACTION_RESPONSE = 51;
+  METHODS_VAULT_CARD = 52;
+  METHODS_VAULT_CARD_RESPONSE = 53;
+  METHODS_CARD_DATA = 54;
+  METHODS_CARD_DATA_RESPONSE = 55;
+  METHODS_LOG_MESSAGE = 56;
+  METHODS_CONFIRM_PAYMENT_MESSAGE = 57;
+  METHODS_PAYMENT_CONFIRMED = 58;
+  METHODS_PAYMENT_REJECTED = 59;
+  METHODS_RETRIEVE_PENDING_PAYMENTS = 60;
+  METHODS_RETRIEVE_PENDING_PAYMENTS_RESPONSE = 61;
+  METHODS_ACTIVITY_REQUEST = 62;
+  METHODS_ACTIVITY_RESPONSE = 63;
+  METHODS_REMOTE_ERROR = 64;
+  METHODS_RETRIEVE_DEVICE_STATUS_REQUEST = 65;
+  METHODS_RETRIEVE_DEVICE_STATUS_RESPONSE = 66;
+  METHODS_CONFIGURATION_CHANGE = 67;
+  METHODS_RESET_DEVICE_RESPONSE = 68;
+  METHODS_ACTIVITY_MESSAGE_TO_ACTIVITY = 69;
+  METHODS_ACTIVITY_MESSAGE_FROM_ACTIVITY = 70;
+  METHODS_RETRIEVE_PAYMENT_REQUEST = 71;
+  METHODS_RETRIEVE_PAYMENT_RESPONSE = 72;
+  METHODS_PRINT_JOB_STATUS_REQUEST = 73;
+  METHODS_PRINT_JOB_STATUS_RESPONSE = 74;
+  METHODS_GET_PRINTERS_REQUEST = 75;
+  METHODS_GET_PRINTERS_RESPONSE = 76;
+  METHODS_CLOVER_DEVICE_LOG_REQUEST = 77;
+  METHODS_SHOW_RECEIPT_OPTIONS = 78;
+  METHODS_SHOW_RECEIPT_OPTIONS_RESPONSE = 79;
+  METHODS_VOID_PAYMENT_REFUND = 80;
+  METHODS_VOID_PAYMENT_REFUND_RESPONSE = 81;
+  METHODS_REGISTER_FOR_CUST_DATA = 82;
+  METHODS_CUSTOMER_INFO_MESSAGE = 83;
+  METHODS_CUSTOMER_PROVIDED_DATA_MESSAGE = 84;
+  METHODS_INVALID_STATE_TRANSITION = 85;
+}
+
+message Modification {
+  string id = 1;
+  Reference lineItemRef = 2;
+  string name = 3;
+  string alternateName = 4;
+  int64 amount = 5;
+  Modifier modifier = 6;
+}
+
+message Modifier {
+  string Id = 1;
+  string Name = 2;
+  string AlternateName = 3;
+  int64 Price = 4;
+  Reference ModifierGroup = 5;
+}
+
+message Order {
+  string Id = 1;
+  string Currency = 2;
+  repeated Customer Customers = 3;
+  Reference Employee = 4;
+  int64 Total = 5;
+  string Title = 6;
+  string Note = 7;
+  OrderType OrderType = 8;
+  bool TaxRemoved = 9;
+  bool IsVat = 10;
+  string State = 11;
+  bool ManualTransaction = 12;
+  bool GroupLineItems = 13;
+  bool TestMode = 14;
+  PayType PayType = 15;
+  int64 CreatedTime = 16;
+  int64 ClientCreatedTime = 17;
+  int64 ModifiedTime = 18;
+  int64 DeletedTimestamp = 19;
+  ServiceCharge ServiceCharge = 20;
+  repeated Discount Discounts = 21;
+  repeated LineItem LineItems = 22;
+  repeated OrderTaxRate TaxRates = 23;
+  repeated Payment Payments = 24;
+  repeated Refund Refunds = 25;
+  repeated Credit Credits = 26;
+  repeated Payment Voids = 27;
+  Reference Device = 28;
+}
+
+message OrderTaxRate {
+  string id = 1;
+  string name = 2;
+  int64 amount = 3;
+}
+
+message OrderType {
+  string Id = 1;
+  string LabelKey = 2;
+  string Label = 3;
+  bool Taxable = 4;
+  bool IsDefault = 5;
+  bool FilterCategories = 6;
+  bool IsHidden = 7;
+  int64 Fee = 8;
+  int64 MinOrderAmount = 9;
+  int64 MaxOrderAmount = 10;
+  int64 MaxRadius = 11;
+  int64 AvgOrderTime = 12;
+  HoursAvailable HoursAvailable = 13;
+  CustomerIdMethod CustomerIdMethod = 14;
+  bool IsDeleted = 15;
+  string SystemOrderTypeId = 16;
+  HoursSet Hours = 17;
+  repeated Reference Categories = 18;
 }
 
 message Payment {
@@ -448,6 +907,12 @@ message Payment {
   Reference Merchant = 33;
 }
 
+message PaymentResponse {
+  BaseResponse Base = 1;
+  Payment Payment = 2;
+  Signature Signature = 3;
+}
+
 enum PaymentResult {
   PAYMENTRESULT_UNKNOWN = 0;
   PAYMENTRESULT_SUCCESS = 1;
@@ -468,15 +933,75 @@ message PaymentTaxRate {
   int64 TaxableAmount = 6;
 }
 
+enum PayType {
+  PAYTYPE_UNKNOWN = 0;
+  PAYTYPE_SPLIT_GUEST = 1;
+  PAYTYPE_SPLIT_ITEM = 2;
+  PAYTYPE_SPLIT_CUSTOM = 3;
+  PAYTYPE_FULL = 4;
+}
+
+message PendingPaymentEntry {
+  string PaymentId = 1;
+  int64 Amount = 2;
+}
+
 message PhoneNumber {
   string Id = 1;
   string PhoneNumber = 2;
+}
+
+enum PingType {
+  PINGTYPE_UNKNOWN = 0;
+  PINGTYPE_PING = 1;
+  PINGTYPE_PONG = 2;
+}
+
+message PlatformError {
+  string Message = 1;
+}
+
+message Point {
+  int32 X = 1;
+  int32 Y = 2;
 }
 
 enum PrintCategory {
   PRINTCATEGORY_NONE = 0;
   ORDER = 1;
   RECEIPT = 2;
+}
+
+enum PrintJobStatus {
+  PRINTJOBSTATUS_UNKNOWN = 0;
+  PRINTJOBSTATUS_IN_QUEUE = 1;
+  PRINTJOBSTATUS_PRINTING = 2;
+  PRINTJOBSTATUS_DONE = 3;
+  PRINTJOBSTATUS_ERROR = 4;
+  PRINTJOBSTATUS_NOT_FOUND = 5;
+
+}
+
+message Printer {
+  string Id = 1;
+  string Mac = 2;
+  string Model = 3;
+  string Name = 4;
+  string IpAddress = 5;
+  PrinterType Type = 6;
+}
+
+enum PrinterType {
+  PRINTERTYPE_UNKNOWN = 0;
+  PRINTERTYPE_NETWORK = 1;
+  PRINTERTYPE_MY_LOCAL = 2;
+}
+
+enum QueryStatus {
+  QUERYSTATUS_UNKNOWN = 0;
+  QUERYSTATUS_FOUND = 1;
+  QUERYSTATUS_NOT_FOUND = 2;
+  QUERYSTATUS_IN_PROGRESS = 3;
 }
 
 message Reference {
@@ -497,6 +1022,22 @@ message Refund {
   Tender OverrideMerchantTender = 11;
   repeated TaxableAmountRate TaxableAmountRates = 12;
   ServiceChargeAmount ServiceChargeAmount = 13;
+}
+
+enum ResponseCode {
+  RESPONSECODE_UNKNOWN = 0;
+  RESPONSECODE_SUCCESS = 1;
+  RESPONSECODE_FAIL = 2;
+  RESPONSECODE_UNSUPPORTED = 3;
+  RESPONSECODE_CANCEL = 4;
+  RESPONSECODE_ERROR = 5;
+}
+
+enum ResultStatus {
+  RESULTSTATUS_UNKNOWN = 0;
+  RESULTSTATUS_SUCCESS = 1;
+  RESULTSTATUS_FAIL = 2;
+  RESULTSTATUS_CANCEL = 3;
 }
 
 enum ReversalReason {
@@ -523,6 +1064,27 @@ enum SelectedService {
   SELECTEDSERVICE_CARDHOLDER_DETECTION = 12;
 }
 
+message ServiceCharge {
+  string id = 1;
+  Reference orderRef = 2;
+  string name = 3;
+  bool enabled = 4;
+  int64 percentage = 5;
+  int64 percentageDecimal = 6;
+}
+
+message ServerTotalStats {
+  string EmployeeId = 1;
+  string EmployeeName = 2;
+  BatchTotalType Sales = 3;
+  BatchTotalType Refunds = 4;
+  BatchTotalType Net = 5;
+  BatchTotalType GiftCardLoads = 6;
+  BatchTotalType GiftCardCashOuts = 7;
+  BatchTotalType Tax = 8;
+  BatchTotalType Tips = 9;
+}
+
 message ServiceChargeAmount {
   string Id = 1;
   string Name = 2;
@@ -530,10 +1092,20 @@ message ServiceChargeAmount {
   Reference PaymentRef = 4;
 }
 
+message Signature {
+  int32 Width = 1;
+  int32 Height = 2;
+  repeated Stroke Strokes = 3;
+}
+
 message SignatureDisclaimer {
   string DisclaimerText = 1;
   map<string, string> DisclaimerValues = 2;
   Reference PaymentRef = 3;
+}
+
+message Stroke {
+  repeated Point Points = 1;
 }
 
 message TaxableAmountRate {
@@ -543,6 +1115,15 @@ message TaxableAmountRate {
   int64 Rate = 4;
   int64 TaxAmount = 5;
   bool IsVat = 6;
+}
+
+message TaxRate {
+  string Id = 1;
+  Reference LineItemRef = 2;
+  string Name = 3;
+  int64 Rate = 4;
+  bool IsDefault = 5;
+  repeated Reference Items = 6;
 }
 
 enum TipMode {

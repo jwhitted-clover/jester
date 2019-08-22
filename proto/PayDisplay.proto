@@ -7,42 +7,90 @@ package com.clover.grpc;
 option csharp_namespace = "Clover.Grpc";
 
 service PayDisplay {
-  rpc AcceptPayment (AcceptPaymentRequest) returns (Empty) {}
-  rpc AcceptSignature (AcceptSignatureRequest) returns (Empty) {}
-  rpc Auth (AuthRequest) returns (Empty) {}
-  rpc CapturePreAuth (CapturePreAuthRequest) returns (Empty) {}
-  rpc Closeout (CloseoutRequest) returns (Empty) {}
-  rpc DisplayPaymentReceiptOptions (DisplayPaymentReceiptOptionsRequest) returns (Empty) {}
-  rpc DisplayReceiptOptions (DisplayReceiptOptionsRequest) returns (Empty) {}
-  rpc InvokeInputOption (InvokeInputOptionRequest) returns (Empty) {}
-  rpc ManualRefund (ManualRefundRequest) returns (Empty) {}
-  rpc OpenCashDrawer (OpenCashDrawerRequest) returns (Empty) {}
-  rpc PreAuth (PreAuthRequest) returns (Empty) {}
-  rpc Print (PrintRequest) returns (Empty) {}
-  rpc ReadCardData (ReadCardDataRequest) returns (Empty) {}
-  rpc RefundPayment (RefundPaymentRequest) returns (Empty) {}
-  rpc RegisterForCustomerProvidedData (RegisterForCustomerProvidedDataRequest) returns (Empty) {}
-  rpc RejectPayment (RejectPaymentRequest) returns (Empty) {}
-  rpc RejectSignature (RejectSignatureRequest) returns (Empty) {}
-  rpc RemoveDisplayOrder (RemoveDisplayOrderRequest) returns (Empty) {}
-  rpc ResetDevice (ResetDeviceRequest) returns (Empty) {}
-  rpc RetrieveDeviceStatus (RetrieveDeviceStatusRequest) returns (Empty) {}
-  rpc RetrievePayment (RetrievePaymentRequest) returns (Empty) {}
-  rpc RetrievePendingPayments (RetrievePendingPaymentsRequest) returns (Empty) {}
-  rpc RetrievePrinters (RetrievePrintersRequest) returns (Empty) {}
-  rpc RetrievePrintJobStatus (RetrievePrintJobStatusRequest) returns (Empty) {}
-  rpc Sale (SaleRequest) returns (Empty) {}
-  rpc SendMessageToActivity (SendMessageToActivityRequest) returns (Empty) {}
-  rpc SetCustomerInfo (SetCustomerInfoRequest) returns (Empty) {}
-  rpc ShowDisplayOrder (ShowDisplayOrderRequest) returns (Empty) {}
-  rpc ShowMessage (ShowMessageRequest) returns (Empty) {}
-  rpc ShowThankYouScreen (ShowThankYouScreenRequest) returns (Empty) {}
-  rpc ShowWelcomeScreen (ShowWelcomeScreenRequest) returns (Empty) {}
-  rpc StartCustomActivity (StartCustomActivityRequest) returns (Empty) {}
-  rpc TipAdjustAuth (TipAdjustAuthRequest) returns (Empty) {}
-  rpc VaultCard (VaultCardRequest) returns (Empty) {}
-  rpc VoidPayment (VoidPaymentRequest) returns (Empty) {}
-  rpc VoidPaymentRefund (VoidPaymentRefundRequest) returns (Empty) {}
+  // Connection
+  rpc Create (CreateRequest) returns (CreateResponse);
+  rpc Initialize (InitializeRequest) returns (InitializeResponse);
+  rpc Dispose (DisposeRequest) returns (DisposeResponse);
+  rpc Ping (stream PingPacket) returns (stream PingPacket);
+
+  // Connector
+  rpc AcceptPayment (AcceptPaymentRequest) returns (Empty);
+  rpc AcceptSignature (AcceptSignatureRequest) returns (Empty);
+  rpc Auth (AuthRequest) returns (Empty);
+  rpc CapturePreAuth (CapturePreAuthRequest) returns (Empty);
+  rpc Closeout (CloseoutRequest) returns (Empty);
+  rpc DisplayPaymentReceiptOptions (DisplayPaymentReceiptOptionsRequest) returns (Empty);
+  rpc DisplayReceiptOptions (DisplayReceiptOptionsRequest) returns (Empty);
+  rpc InvokeInputOption (InvokeInputOptionRequest) returns (Empty);
+  rpc ManualRefund (ManualRefundRequest) returns (Empty);
+  rpc OpenCashDrawer (OpenCashDrawerRequest) returns (Empty);
+  rpc PreAuth (PreAuthRequest) returns (Empty);
+  rpc Print (PrintRequest) returns (Empty);
+  rpc ReadCardData (ReadCardDataRequest) returns (Empty);
+  rpc RefundPayment (RefundPaymentRequest) returns (Empty);
+  rpc RegisterForCustomerProvidedData (RegisterForCustomerProvidedDataRequest) returns (Empty);
+  rpc RejectPayment (RejectPaymentRequest) returns (Empty);
+  rpc RejectSignature (RejectSignatureRequest) returns (Empty);
+  rpc RemoveDisplayOrder (RemoveDisplayOrderRequest) returns (Empty);
+  rpc ResetDevice (ResetDeviceRequest) returns (Empty);
+  rpc RetrieveDeviceStatus (RetrieveDeviceStatusRequest) returns (Empty);
+  rpc RetrievePayment (RetrievePaymentRequest) returns (Empty);
+  rpc RetrievePendingPayments (RetrievePendingPaymentsRequest) returns (Empty);
+  rpc RetrievePrinters (RetrievePrintersRequest) returns (Empty);
+  rpc RetrievePrintJobStatus (RetrievePrintJobStatusRequest) returns (Empty);
+  rpc Sale (SaleRequest) returns (Empty);
+  rpc SendMessageToActivity (SendMessageToActivityRequest) returns (Empty);
+  rpc SetCustomerInfo (SetCustomerInfoRequest) returns (Empty);
+  rpc ShowDisplayOrder (ShowDisplayOrderRequest) returns (Empty);
+  rpc ShowMessage (ShowMessageRequest) returns (Empty);
+  rpc ShowThankYouScreen (ShowThankYouScreenRequest) returns (Empty);
+  rpc ShowWelcomeScreen (ShowWelcomeScreenRequest) returns (Empty);
+  rpc StartCustomActivity (StartCustomActivityRequest) returns (Empty);
+  rpc TipAdjustAuth (TipAdjustAuthRequest) returns (Empty);
+  rpc VaultCard (VaultCardRequest) returns (Empty);
+  rpc VoidPayment (VoidPaymentRequest) returns (Empty);
+  rpc VoidPaymentRefund (VoidPaymentRefundRequest) returns (Empty);
+
+  // Listener
+  rpc OnDeviceActivityStart (Empty) returns (stream DeviceEvent);
+  rpc OnDeviceActivityEnd (Empty) returns (stream DeviceEvent);
+  rpc OnDeviceError (Empty) returns (stream DeviceErrorEvent);
+  rpc OnPreAuthResponse (Empty) returns (stream PreAuthResponse);
+  rpc OnAuthResponse (Empty) returns (stream AuthResponse);
+  rpc OnTipAdjustAuthResponse (Empty) returns (stream TipAdjustAuthResponse);
+  rpc OnCapturePreAuthResponse (Empty) returns (stream CapturePreAuthResponse);
+  rpc OnVerifySignatureRequest (Empty) returns (stream VerifySignatureRequest);
+  rpc OnConfirmPaymentRequest (Empty) returns (stream ConfirmPaymentRequest);
+  rpc OnCloseoutResponse (Empty) returns (stream CloseoutResponse);
+  rpc OnSaleResponse (Empty) returns (stream SaleResponse);
+  rpc OnManualRefundResponse (Empty) returns (stream ManualRefundResponse);
+  rpc OnRefundPaymentResponse (Empty) returns (stream RefundPaymentResponse);
+  rpc OnVoidPaymentRefundResponse (Empty) returns (stream VoidPaymentRefundResponse);
+  rpc OnTipAdded (Empty) returns (stream TipAddedMessage);
+  rpc OnVoidPaymentResponse (Empty) returns (stream VoidPaymentResponse);
+  rpc OnDeviceConnected (Empty) returns (stream Empty);
+  rpc OnDeviceReady (Empty) returns (stream MerchantInfo);
+  rpc OnDeviceDisconnected (Empty) returns (stream Empty);
+  rpc OnVaultCardResponse (Empty) returns (stream VaultCardResponse);
+  rpc OnRetrievePendingPaymentsResponse (Empty) returns (stream RetrievePendingPaymentsResponse);
+  rpc OnReadCardDataResponse (Empty) returns (stream ReadCardDataResponse);
+  rpc OnPrintManualRefundReceipt (Empty) returns (stream PrintManualRefundReceiptMessage);
+  rpc OnPrintManualRefundDeclineReceipt (Empty) returns (stream PrintManualRefundDeclineReceiptMessage);
+  rpc OnPrintPaymentReceipt (Empty) returns (stream PrintPaymentReceiptMessage);
+  rpc OnPrintPaymentDeclineReceipt (Empty) returns (stream PrintPaymentDeclineReceiptMessage);
+  rpc OnPrintPaymentMerchantCopyReceipt (Empty) returns (stream PrintPaymentMerchantCopyReceiptMessage);
+  rpc OnPrintRefundPaymentReceipt (Empty) returns (stream PrintRefundPaymentReceiptMessage);
+  rpc OnPrintJobStatusResponse (Empty) returns (stream PrintJobStatusResponse);
+  rpc OnRetrievePrintersResponse (Empty) returns (stream RetrievePrintersResponse);
+  rpc OnCustomActivityResponse (Empty) returns (stream CustomActivityResponse);
+  rpc OnRetrieveDeviceStatusResponse (Empty) returns (stream RetrieveDeviceStatusResponse);
+  rpc OnMessageFromActivity (Empty) returns (stream MessageFromActivity);
+  rpc OnResetDeviceResponse (Empty) returns (stream ResetDeviceResponse);
+  rpc OnRetrievePaymentResponse (Empty) returns (stream RetrievePaymentResponse);
+  rpc OnPrintJobStatusRequest (Empty) returns (stream PrintJobStatusRequest);
+  rpc OnDisplayReceiptOptionsResponse (Empty) returns (stream DisplayReceiptOptionsResponse);
+  rpc OnInvalidStateTransitionResponse (Empty) returns (stream InvalidStateTransitionNotification);
+  rpc OnCustomerProvidedData (Empty) returns (stream CustomerProvidedDataEvent);
 }
 
 message AcceptPaymentRequest {
@@ -63,6 +111,10 @@ message AuthRequest {
   bool ForceOfflinePayment = 7;
 }
 
+message AuthResponse {
+  PaymentResponse Base = 1;
+}
+
 message CapturePreAuthRequest {
   BaseRequest Base = 1;
   string PaymentID = 2;
@@ -70,10 +122,66 @@ message CapturePreAuthRequest {
   int64 TipAmount = 4;
 }
 
+message CapturePreAuthResponse {
+  string PaymentId = 1;
+  int64 Amount = 2;
+  int64 TipAmount = 3;
+}
+
 message CloseoutRequest {
   BaseRequest Base = 1;
   bool AllowOpenTabs = 2;
   string BatchId = 3;
+}
+
+message CloseoutResponse {
+  BaseResponse Base = 1;
+  Batch Batch = 2;
+}
+
+message ConfirmPaymentRequest {
+    Payment Payment = 1;
+    repeated Challenge Challenges = 2;
+}
+
+message CreateRequest {
+}
+
+message CreateResponse { 
+}
+
+message CustomActivityResponse {
+  BaseResponse Base = 1;
+  string Action = 2;
+  string Payload = 3;
+}
+
+message CustomerProvidedDataEvent {
+  BaseResponse Base = 1;
+  string EventId = 2;
+  DataProviderConfig Config = 3;
+  string Data = 4;
+}
+
+message DeviceEvent {
+  DeviceEventState EventState = 1;
+  int32 Code = 2;
+  string Message = 3;
+  repeated InputOption InputOptions = 4;
+}
+
+message DeviceErrorEvent {
+  DeviceErrorType ErrorType = 1;
+  DeviceErrorCode Code = 2;
+  PlatformError Cause = 3;
+  string Message = 4;
+}
+
+message DeviceInfo {
+  string Name = 1;
+  string Serial = 2;
+  string Model = 3;
+  bool SupportsAcks = 4;
 }
 
 message DisplayPaymentReceiptOptionsRequest {
@@ -92,7 +200,32 @@ message DisplayReceiptOptionsRequest {
   bool DisablePrinting = 6;
 }
 
+message DisplayReceiptOptionsResponse {
+  BaseResponse Base = 1;
+  ResultStatus Status = 2;
+}
+
+message DisposeRequest {
+}
+
+message DisposeResponse {
+}
+
 message Empty {
+}
+
+message InitializeRequest {
+}
+
+message InitializeResponse {
+}
+
+message InvalidStateTransitionNotification {
+  BaseResponse Base = 1;
+  string RequestedTransition = 2;
+  string State = 3;
+  string Substate = 4;
+  ExternalDeviceStateData Data = 5;
 }
 
 message InvokeInputOptionRequest {
@@ -101,6 +234,35 @@ message InvokeInputOptionRequest {
 
 message ManualRefundRequest {
   BaseTransactionRequest Base = 1;
+}
+
+message ManualRefundResponse {
+  BaseResponse Base = 1;
+  Credit Credit = 2;
+}
+
+message MerchantInfo {
+  DeviceInfo Device = 1;
+  string merchantID = 2;
+  string merchantName = 3;
+  string merchantMId = 4;
+  bool supportsPreAuths = 5;
+  bool supportsVaultCards = 6;
+  bool supportsManualRefunds = 7;
+  bool supportsTipAdjust = 8;
+  bool supportsRemoteConfirmation = 9;
+  bool supportsNakedCredit = 10;
+  bool supportsMultiPayToken = 11;
+  bool supportsAcknowledgement = 12;
+  bool supportsVoidPaymentResponse = 13;
+  bool supportsPreAuth = 14;
+  bool supportsAuth = 15;
+  bool supportsVaultCard = 16;
+}
+
+message MessageFromActivity {
+  string Action = 1;
+  string Payload = 2;
 }
 
 message OpenCashDrawerRequest {
@@ -114,6 +276,59 @@ message PreAuthRequest {
   bool AllowOfflinePayment = 2;
   bool ApproveOfflinePaymentWithoutPrompt = 3;
   bool ForceOfflinePayment = 4;
+}
+
+message PreAuthResponse {
+  PaymentResponse Base = 1;
+}
+
+message PingPacket {
+  int32 Id = 1;
+  PingType Type = 2;
+}
+
+message PrintJobStatusRequest {
+  BaseRequest Base = 1;
+  string PrintRequestId = 2;
+}
+
+message PrintJobStatusResponse {
+  BaseResponse Base = 1;
+  string printRequestId = 2;
+  PrintJobStatus status = 3;
+}
+
+message PrintManualRefundDeclineReceiptMessage {
+  BaseResponse Base = 1;
+  Credit Credit = 2;
+}
+
+message PrintManualRefundReceiptMessage {
+  BaseResponse Base = 1;
+  Credit Credit = 2;
+}
+
+message PrintPaymentDeclineReceiptMessage {
+  BaseResponse Base = 1;
+  Payment Payment = 2;
+}
+
+message PrintPaymentMerchantCopyReceiptMessage {
+  BaseResponse Base = 1;
+  Payment Payment = 2;
+}
+
+message PrintPaymentReceiptMessage {
+  BaseResponse Base = 1;
+  Order Order = 2;
+  Payment Payment = 3;
+}
+
+message PrintRefundPaymentReceiptMessage {
+  BaseResponse Base = 1;
+  Payment Payment = 2;
+  Refund Refund = 3;
+  Order Order = 4;
 }
 
 message PrintRequest {
@@ -131,6 +346,11 @@ message ReadCardDataRequest {
   bool IsForceSwipePinEntry = 3;
 }
 
+message ReadCardDataResponse {
+  BaseResponse Base = 1;
+  CardData CardData = 2;
+}
+
 message RefundPaymentRequest {
   BaseRequest Base = 1;
   bool FullRefund = 2;
@@ -140,6 +360,13 @@ message RefundPaymentRequest {
   bool DisablePrinting = 6;
   bool DisableReceiptSelection = 7;
   map<string, string> Extras = 8;
+}
+
+message RefundPaymentResponse {
+  BaseResponse Base = 1;
+  string OrderId = 2;
+  string PaymentId = 3;
+  Refund Refund = 4;
 }
 
 message RegisterForCustomerProvidedDataRequest {
@@ -163,15 +390,38 @@ message RemoveDisplayOrderRequest {
 message ResetDeviceRequest {
 }
 
+message ResetDeviceResponse {
+  BaseResponse Base = 1;
+  ExternalDeviceState State = 2;
+}
+
 message RetrieveDeviceStatusRequest {
   bool SendLastMessage = 1;
+}
+
+message RetrieveDeviceStatusResponse {
+  BaseResponse Base = 1;
+  ExternalDeviceState State = 2;
+  ExternalDeviceStateData Data = 3;
 }
 
 message RetrievePaymentRequest {
   string ExternalPaymentId = 1;
 }
 
+message RetrievePaymentResponse {
+  BaseResponse Base = 1;
+  string ExternalPaymentId = 2;
+  QueryStatus QueryStatus = 3;
+  Payment Payment = 4;
+}
+
 message RetrievePendingPaymentsRequest {
+}
+
+message RetrievePendingPaymentsResponse {
+  BaseResponse Base = 1;
+  repeated PendingPaymentEntry PendingPayments = 2;
 }
 
 message RetrievePrintJobStatusRequest {
@@ -181,6 +431,11 @@ message RetrievePrintJobStatusRequest {
 
 message RetrievePrintersRequest {
   PrintCategory Category = 1;
+}
+
+message RetrievePrintersResponse {
+  BaseResponse Base = 1;
+  repeated Printer Printers = 2;
 }
 
 message SaleRequest {
@@ -193,6 +448,10 @@ message SaleRequest {
   int64 TipAmount = 7;
   TipMode TipMode = 8;
   bool ForceOfflinePayment = 9;
+}
+
+message SaleResponse {
+  PaymentResponse Base = 1;
 }
 
 message SendMessageToActivityRequest {
@@ -225,6 +484,11 @@ message StartCustomActivityRequest {
   bool NonBlocking = 4;
 }
 
+message TipAddedMessage {
+  Message Message = 1;
+  int64 tipAmount = 2;
+}
+
 message TipAdjustAuthRequest {
   BaseRequest Base = 1;
   string PaymentID = 2;
@@ -232,8 +496,39 @@ message TipAdjustAuthRequest {
   int64 TipAmount = 4;
 }
 
+message TipAdjustAuthResponse {
+  BaseResponse Base = 1;
+  string PaymentId = 2;
+  int64 TipAmount = 3;
+}
+
 message VaultCardRequest {
   int32 CardEntryMethods = 1;
+}
+
+message VaultCardResponse {
+  BaseResponse Base = 1;
+  VaultedCard Card = 2;
+}
+
+message VerifySignatureRequest {
+  Signature Signature = 3;
+  Payment Payment = 4;
+}
+
+message VoidPaymentRefundRequest {
+  BaseRequest Base = 1;
+  string RefundId = 2;
+  string EmployeeId = 3;
+  string OrderId = 4;
+  bool DisablePrinting = 5;
+  bool DisableReceiptSelection = 6;
+  map<string, string> Extras = 7;
+}
+
+message VoidPaymentRefundResponse {
+  BaseResponse Base = 1;
+  string RefundId = 2;
 }
 
 message VoidPaymentRequest {
@@ -245,12 +540,8 @@ message VoidPaymentRequest {
   map<string, string> Extras = 6;
 }
 
-message VoidPaymentRefundRequest {
-  BaseRequest Base = 1;
-  string RefundId = 2;
-  string EmployeeId = 3;
-  string OrderId = 4;
-  bool DisablePrinting = 5;
-  bool DisableReceiptSelection = 6;
-  map<string, string> Extras = 7;
+message VoidPaymentResponse {
+  BaseResponse Base = 1;
+  string PaymentId = 2;
+  Payment Payment = 3;
 }
