@@ -52,45 +52,45 @@ service PayDisplay {
   rpc VoidPaymentRefund (VoidPaymentRefundRequest) returns (Empty);
 
   // Listener
-  rpc OnDeviceActivityStart (Empty) returns (stream DeviceEvent);
-  rpc OnDeviceActivityEnd (Empty) returns (stream DeviceEvent);
-  rpc OnDeviceError (Empty) returns (stream DeviceErrorEvent);
-  rpc OnPreAuthResponse (Empty) returns (stream PreAuthResponse);
   rpc OnAuthResponse (Empty) returns (stream AuthResponse);
-  rpc OnTipAdjustAuthResponse (Empty) returns (stream TipAdjustAuthResponse);
   rpc OnCapturePreAuthResponse (Empty) returns (stream CapturePreAuthResponse);
-  rpc OnVerifySignatureRequest (Empty) returns (stream VerifySignatureRequest);
-  rpc OnConfirmPaymentRequest (Empty) returns (stream ConfirmPaymentRequest);
   rpc OnCloseoutResponse (Empty) returns (stream CloseoutResponse);
-  rpc OnSaleResponse (Empty) returns (stream SaleResponse);
-  rpc OnManualRefundResponse (Empty) returns (stream ManualRefundResponse);
-  rpc OnRefundPaymentResponse (Empty) returns (stream RefundPaymentResponse);
-  rpc OnVoidPaymentRefundResponse (Empty) returns (stream VoidPaymentRefundResponse);
-  rpc OnTipAdded (Empty) returns (stream TipAddedMessage);
-  rpc OnVoidPaymentResponse (Empty) returns (stream VoidPaymentResponse);
-  rpc OnDeviceConnected (Empty) returns (stream Empty);
-  rpc OnDeviceReady (Empty) returns (stream MerchantInfo);
-  rpc OnDeviceDisconnected (Empty) returns (stream Empty);
-  rpc OnVaultCardResponse (Empty) returns (stream VaultCardResponse);
-  rpc OnRetrievePendingPaymentsResponse (Empty) returns (stream RetrievePendingPaymentsResponse);
-  rpc OnReadCardDataResponse (Empty) returns (stream ReadCardDataResponse);
-  rpc OnPrintManualRefundReceipt (Empty) returns (stream PrintManualRefundReceiptMessage);
-  rpc OnPrintManualRefundDeclineReceipt (Empty) returns (stream PrintManualRefundDeclineReceiptMessage);
-  rpc OnPrintPaymentReceipt (Empty) returns (stream PrintPaymentReceiptMessage);
-  rpc OnPrintPaymentDeclineReceipt (Empty) returns (stream PrintPaymentDeclineReceiptMessage);
-  rpc OnPrintPaymentMerchantCopyReceipt (Empty) returns (stream PrintPaymentMerchantCopyReceiptMessage);
-  rpc OnPrintRefundPaymentReceipt (Empty) returns (stream PrintRefundPaymentReceiptMessage);
-  rpc OnPrintJobStatusResponse (Empty) returns (stream PrintJobStatusResponse);
-  rpc OnRetrievePrintersResponse (Empty) returns (stream RetrievePrintersResponse);
+  rpc OnConfirmPaymentRequest (Empty) returns (stream ConfirmPaymentRequest);
   rpc OnCustomActivityResponse (Empty) returns (stream CustomActivityResponse);
-  rpc OnRetrieveDeviceStatusResponse (Empty) returns (stream RetrieveDeviceStatusResponse);
-  rpc OnMessageFromActivity (Empty) returns (stream MessageFromActivity);
-  rpc OnResetDeviceResponse (Empty) returns (stream ResetDeviceResponse);
-  rpc OnRetrievePaymentResponse (Empty) returns (stream RetrievePaymentResponse);
-  rpc OnPrintJobStatusRequest (Empty) returns (stream PrintJobStatusRequest);
+  rpc OnCustomerProvidedData (Empty) returns (stream CustomerProvidedDataEvent);
+  rpc OnDeviceActivityEnd (Empty) returns (stream DeviceEvent);
+  rpc OnDeviceActivityStart (Empty) returns (stream DeviceEvent);
+  rpc OnDeviceConnected (Empty) returns (stream Empty);
+  rpc OnDeviceDisconnected (Empty) returns (stream Empty);
+  rpc OnDeviceError (Empty) returns (stream DeviceErrorEvent);
+  rpc OnDeviceReady (Empty) returns (stream MerchantInfo);
   rpc OnDisplayReceiptOptionsResponse (Empty) returns (stream DisplayReceiptOptionsResponse);
   rpc OnInvalidStateTransitionResponse (Empty) returns (stream InvalidStateTransitionNotification);
-  rpc OnCustomerProvidedData (Empty) returns (stream CustomerProvidedDataEvent);
+  rpc OnManualRefundResponse (Empty) returns (stream ManualRefundResponse);
+  rpc OnMessageFromActivity (Empty) returns (stream MessageFromActivity);
+  rpc OnPreAuthResponse (Empty) returns (stream PreAuthResponse);
+  rpc OnPrintJobStatusRequest (Empty) returns (stream PrintJobStatusRequest);
+  rpc OnPrintJobStatusResponse (Empty) returns (stream PrintJobStatusResponse);
+  rpc OnPrintManualRefundDeclineReceipt (Empty) returns (stream PrintManualRefundDeclineReceiptMessage);
+  rpc OnPrintManualRefundReceipt (Empty) returns (stream PrintManualRefundReceiptMessage);
+  rpc OnPrintPaymentDeclineReceipt (Empty) returns (stream PrintPaymentDeclineReceiptMessage);
+  rpc OnPrintPaymentMerchantCopyReceipt (Empty) returns (stream PrintPaymentMerchantCopyReceiptMessage);
+  rpc OnPrintPaymentReceipt (Empty) returns (stream PrintPaymentReceiptMessage);
+  rpc OnPrintRefundPaymentReceipt (Empty) returns (stream PrintRefundPaymentReceiptMessage);
+  rpc OnReadCardDataResponse (Empty) returns (stream ReadCardDataResponse);
+  rpc OnRefundPaymentResponse (Empty) returns (stream RefundPaymentResponse);
+  rpc OnResetDeviceResponse (Empty) returns (stream ResetDeviceResponse);
+  rpc OnRetrieveDeviceStatusResponse (Empty) returns (stream RetrieveDeviceStatusResponse);
+  rpc OnRetrievePaymentResponse (Empty) returns (stream RetrievePaymentResponse);
+  rpc OnRetrievePendingPaymentsResponse (Empty) returns (stream RetrievePendingPaymentsResponse);
+  rpc OnRetrievePrintersResponse (Empty) returns (stream RetrievePrintersResponse);
+  rpc OnSaleResponse (Empty) returns (stream SaleResponse);
+  rpc OnTipAdded (Empty) returns (stream TipAddedMessage);
+  rpc OnTipAdjustAuthResponse (Empty) returns (stream TipAdjustAuthResponse);
+  rpc OnVaultCardResponse (Empty) returns (stream VaultCardResponse);
+  rpc OnVerifySignatureRequest (Empty) returns (stream VerifySignatureRequest);
+  rpc OnVoidPaymentRefundResponse (Empty) returns (stream VoidPaymentRefundResponse);
+  rpc OnVoidPaymentResponse (Empty) returns (stream VoidPaymentResponse);
 }
 
 message AcceptPaymentRequest {
@@ -243,21 +243,21 @@ message ManualRefundResponse {
 
 message MerchantInfo {
   DeviceInfo Device = 1;
-  string merchantID = 2;
-  string merchantName = 3;
-  string merchantMId = 4;
-  bool supportsPreAuths = 5;
-  bool supportsVaultCards = 6;
-  bool supportsManualRefunds = 7;
-  bool supportsTipAdjust = 8;
-  bool supportsRemoteConfirmation = 9;
-  bool supportsNakedCredit = 10;
-  bool supportsMultiPayToken = 11;
-  bool supportsAcknowledgement = 12;
-  bool supportsVoidPaymentResponse = 13;
-  bool supportsPreAuth = 14;
-  bool supportsAuth = 15;
-  bool supportsVaultCard = 16;
+  string MerchantId = 2;
+  string MerchantName = 3;
+  string MerchantMId = 4;
+  bool SupportsPreAuths = 5;
+  bool SupportsVaultCards = 6;
+  bool SupportsManualRefunds = 7;
+  bool SupportsTipAdjust = 8;
+  bool SupportsRemoteConfirmation = 9;
+  bool SupportsNakedCredit = 10;
+  bool SupportsMultiPayToken = 11;
+  bool SupportsAcknowledgement = 12;
+  bool SupportsVoidPaymentResponse = 13;
+  bool SupportsPreAuth = 14;
+  bool SupportsAuth = 15;
+  bool SupportsVaultCard = 16;
 }
 
 message MessageFromActivity {
