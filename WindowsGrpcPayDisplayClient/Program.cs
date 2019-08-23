@@ -23,6 +23,7 @@ namespace WindowsGrpcPayDisplayClient
             var confirmStream = client.OnConfirmPaymentRequest(new Empty()).ResponseStream;
             var saleStream = client.OnSaleResponse(new Empty()).ResponseStream;
             var verifyStream = client.OnVerifySignatureRequest(new Empty()).ResponseStream;
+            var activityStream = client.OnDeviceActivityStart(new Empty()).ResponseStream;
 
             var confirmTask = Task.Run(async () =>
              {
@@ -40,6 +41,17 @@ namespace WindowsGrpcPayDisplayClient
                 }
             });
 
+            var receiptTask = Task.Run(async () =>
+            {
+                while(await activityStream.MoveNext())
+                {
+                    if (activityStream.Current.EventState == DeviceEventState.ReceiptOptions)
+                    {
+                        client.InvokeInputOption(new InvokeInputOptionRequest { InputOption = activityStream.Current.InputOptions.First() });
+                    }
+                }
+            });
+
             client.Create(new CreateRequest());
             await readyStream.MoveNext();
 
@@ -51,7 +63,6 @@ namespace WindowsGrpcPayDisplayClient
                 ExternalId = ExternalId(),
                 Amount = 123,
             });
-
             var sale = await saleStream.MoveNext();
 
             client.Dispose(new DisposeRequest());

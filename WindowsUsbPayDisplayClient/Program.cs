@@ -1,5 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 using com.clover.remotepay.sdk;
+using Newtonsoft.Json;
 
 namespace WindowsUsbPayDisplayClient
 {
@@ -31,6 +34,8 @@ namespace WindowsUsbPayDisplayClient
                 Amount = 123
             });
             var sale = await listener.SaleResponsePromise.Task;
+
+            await Task.Delay(100);
 
             connector.Dispose();
         }
@@ -71,6 +76,14 @@ namespace WindowsUsbPayDisplayClient
         public override void OnSaleResponse(SaleResponse response)
         {
             SaleResponsePromise?.TrySetResult(response);
+        }
+
+        public override void OnDeviceActivityStart(CloverDeviceEvent deviceEvent)
+        {
+            if(deviceEvent.EventState == CloverDeviceEvent.DeviceEventState.RECEIPT_OPTIONS)
+            {
+                Connector.InvokeInputOption(deviceEvent.InputOptions.First());
+            }
         }
     }
 }

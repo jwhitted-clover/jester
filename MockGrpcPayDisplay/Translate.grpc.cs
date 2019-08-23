@@ -357,6 +357,146 @@ namespace MockGrpcPayDisplay
             };
         }
 
+        public static grpc.DeviceEvent From(remotepay.CloverDeviceEvent src)
+        {
+            if (src == null) return null;
+            var result = new grpc.DeviceEvent
+            {
+                Code = From(src.Code),
+                EventState = From(src.EventState),
+                Message = From(src.Message),
+            };
+            src.InputOptions?.Select(o => From(o))?.ToList()?.ForEach(o => result.InputOptions.Add(o));
+            return result;
+        }
+
+        public static grpc.DeviceEventState From(remotepay.CloverDeviceEvent.DeviceEventState src)
+        {
+            switch (src)
+            {
+                case remotepay.CloverDeviceEvent.DeviceEventState.START:
+                    return grpc.DeviceEventState.Start;
+                case remotepay.CloverDeviceEvent.DeviceEventState.FAILED:
+                    return grpc.DeviceEventState.Failed;
+                case remotepay.CloverDeviceEvent.DeviceEventState.FATAL:
+                    return grpc.DeviceEventState.Fatal;
+                case remotepay.CloverDeviceEvent.DeviceEventState.TRY_AGAIN:
+                    return grpc.DeviceEventState.TryAgain;
+                case remotepay.CloverDeviceEvent.DeviceEventState.INPUT_ERROR:
+                    return grpc.DeviceEventState.InputError;
+                case remotepay.CloverDeviceEvent.DeviceEventState.PIN_BYPASS_CONFIRM:
+                    return grpc.DeviceEventState.PinBypassConfirm;
+                case remotepay.CloverDeviceEvent.DeviceEventState.CANCELED:
+                    return grpc.DeviceEventState.Canceled;
+                case remotepay.CloverDeviceEvent.DeviceEventState.TIMED_OUT:
+                    return grpc.DeviceEventState.TimedOut;
+                case remotepay.CloverDeviceEvent.DeviceEventState.DECLINED:
+                    return grpc.DeviceEventState.Declined;
+                case remotepay.CloverDeviceEvent.DeviceEventState.VOIDED:
+                    return grpc.DeviceEventState.Voided;
+                case remotepay.CloverDeviceEvent.DeviceEventState.CONFIGURING:
+                    return grpc.DeviceEventState.Configuring;
+                case remotepay.CloverDeviceEvent.DeviceEventState.PROCESSING:
+                    return grpc.DeviceEventState.Processing;
+                case remotepay.CloverDeviceEvent.DeviceEventState.REMOVE_CARD:
+                    return grpc.DeviceEventState.RemoveCard;
+                case remotepay.CloverDeviceEvent.DeviceEventState.PROCESSING_GO_ONLINE:
+                    return grpc.DeviceEventState.ProcessingGoOnline;
+                case remotepay.CloverDeviceEvent.DeviceEventState.PROCESSING_CREDIT:
+                    return grpc.DeviceEventState.ProcessingCredit;
+                case remotepay.CloverDeviceEvent.DeviceEventState.PROCESSING_SWIPE:
+                    return grpc.DeviceEventState.ProcessingSwipe;
+                case remotepay.CloverDeviceEvent.DeviceEventState.SELECT_APPLICATION:
+                    return grpc.DeviceEventState.SelectApplication;
+                case remotepay.CloverDeviceEvent.DeviceEventState.PIN_PAD:
+                    return grpc.DeviceEventState.PinPad;
+                case remotepay.CloverDeviceEvent.DeviceEventState.MANUAL_CARD_NUMBER:
+                    return grpc.DeviceEventState.ManualCardNumber;
+                case remotepay.CloverDeviceEvent.DeviceEventState.MANUAL_CARD_CVV:
+                    return grpc.DeviceEventState.ManualCardCvv;
+                case remotepay.CloverDeviceEvent.DeviceEventState.MANUAL_CARD_CVV_UNREADABLE:
+                    return grpc.DeviceEventState.ManualCardCvvUnreadable;
+                case remotepay.CloverDeviceEvent.DeviceEventState.MANUAL_CARD_EXPIRATION:
+                    return grpc.DeviceEventState.ManualCardExpiration;
+                case remotepay.CloverDeviceEvent.DeviceEventState.SELECT_ACCOUNT:
+                    return grpc.DeviceEventState.SelectAccount;
+                case remotepay.CloverDeviceEvent.DeviceEventState.CASHBACK_CONFIRM:
+                    return grpc.DeviceEventState.CashbackConfirm;
+                case remotepay.CloverDeviceEvent.DeviceEventState.CASHBACK_SELECT:
+                    return grpc.DeviceEventState.CashbackSelect;
+                case remotepay.CloverDeviceEvent.DeviceEventState.CONTACTLESS_TAP_REQUIRED:
+                    return grpc.DeviceEventState.ContactlessTapRequired;
+                case remotepay.CloverDeviceEvent.DeviceEventState.VOICE_REFERRAL_RESULT:
+                    return grpc.DeviceEventState.VoiceReferralResult;
+                case remotepay.CloverDeviceEvent.DeviceEventState.CONFIRM_PARTIAL_AUTH:
+                    return grpc.DeviceEventState.ConfirmPartialAuth;
+                case remotepay.CloverDeviceEvent.DeviceEventState.PACKET_EXCEPTION:
+                    return grpc.DeviceEventState.PacketException;
+                case remotepay.CloverDeviceEvent.DeviceEventState.CONFIRM_DUPLICATE_CHECK:
+                    return grpc.DeviceEventState.ConfirmDuplicateCheck;
+                case remotepay.CloverDeviceEvent.DeviceEventState.VERIFY_SIGNATURE_ON_PAPER:
+                    return grpc.DeviceEventState.VerifySignatureOnPaper;
+                case remotepay.CloverDeviceEvent.DeviceEventState.VERIFY_SIGNATURE_ON_PAPER_CONFIRM_VOID:
+                    return grpc.DeviceEventState.VerifySignatureOnPaperConfirmVoid;
+                case remotepay.CloverDeviceEvent.DeviceEventState.VERIFY_SIGNATURE_ON_SCREEN:
+                    return grpc.DeviceEventState.VerifySignatureOnScreen;
+                case remotepay.CloverDeviceEvent.DeviceEventState.VERIFY_SIGNATURE_ON_SCREEN_CONFIRM_VOID:
+                    return grpc.DeviceEventState.VerifySignatureOnScreenConfirmVoid;
+                case remotepay.CloverDeviceEvent.DeviceEventState.ADD_SIGNATURE:
+                    return grpc.DeviceEventState.AddSignature;
+                case remotepay.CloverDeviceEvent.DeviceEventState.SIGNATURE_ON_SCREEN_FALLBACK:
+                    return grpc.DeviceEventState.SignatureOnScreenFallback;
+                case remotepay.CloverDeviceEvent.DeviceEventState.RETURN_TO_MERCHANT:
+                    return grpc.DeviceEventState.ReturnToMerchant;
+                case remotepay.CloverDeviceEvent.DeviceEventState.SIGNATURE_REJECT:
+                    return grpc.DeviceEventState.SignatureReject;
+                case remotepay.CloverDeviceEvent.DeviceEventState.ADD_SIGNATURE_CANCEL_CONFIRM:
+                    return grpc.DeviceEventState.AddSignatureCancelConfirm;
+                case remotepay.CloverDeviceEvent.DeviceEventState.STARTING_CUSTOM_ACTIVITY:
+                    return grpc.DeviceEventState.StartingCustomActivity;
+                case remotepay.CloverDeviceEvent.DeviceEventState.CUSTOM_ACTIVITY:
+                    return grpc.DeviceEventState.CustomActivity;
+                case remotepay.CloverDeviceEvent.DeviceEventState.ADD_TIP:
+                    return grpc.DeviceEventState.AddTip;
+                case remotepay.CloverDeviceEvent.DeviceEventState.RECEIPT_OPTIONS:
+                    return grpc.DeviceEventState.ReceiptOptions;
+                case remotepay.CloverDeviceEvent.DeviceEventState.HANDLE_TENDER:
+                    return grpc.DeviceEventState.HandleTender;
+                case remotepay.CloverDeviceEvent.DeviceEventState.SELECT_WITHDRAW_FROM_ACCOUNT:
+                    return grpc.DeviceEventState.SelectWithdrawFromAccount;
+                case remotepay.CloverDeviceEvent.DeviceEventState.VERIFY_SURCHARGES:
+                    return grpc.DeviceEventState.VerifySurcharges;
+                case remotepay.CloverDeviceEvent.DeviceEventState.VOID_CONFIRM:
+                    return grpc.DeviceEventState.VoidConfirm;
+                case remotepay.CloverDeviceEvent.DeviceEventState.ENTER_PAN_LAST_FOUR:
+                    return grpc.DeviceEventState.EnterPanLastFour;
+                case remotepay.CloverDeviceEvent.DeviceEventState.ERROR_SCREEN:
+                    return grpc.DeviceEventState.ErrorScreen;
+                case remotepay.CloverDeviceEvent.DeviceEventState.FISCAL_INVOICE_NUMBER:
+                    return grpc.DeviceEventState.FiscalInvoiceNumber;
+                case remotepay.CloverDeviceEvent.DeviceEventState.ENTER_INSTALLMENTS:
+                    return grpc.DeviceEventState.EnterInstallments;
+                case remotepay.CloverDeviceEvent.DeviceEventState.SELECT_INSTALLMENT_PLAN:
+                    return grpc.DeviceEventState.SelectInstallmentPlan;
+                case remotepay.CloverDeviceEvent.DeviceEventState.ENTER_INSTALLMENT_CODE:
+                    return grpc.DeviceEventState.EnterInstallmentCode;
+                case remotepay.CloverDeviceEvent.DeviceEventState.PERSONAL_ID_ENTRY:
+                    return grpc.DeviceEventState.PersonalIdEntry;
+                case remotepay.CloverDeviceEvent.DeviceEventState.PERSONAL_ID_ENTRY_PAS:
+                    return grpc.DeviceEventState.PersonalIdEntryPas;
+                case remotepay.CloverDeviceEvent.DeviceEventState.SWIPE_CVV_ENTRY:
+                    return grpc.DeviceEventState.SwipeCvvEntry;
+                case remotepay.CloverDeviceEvent.DeviceEventState.SIGNATURE_CUSTOMER_MODE:
+                    return grpc.DeviceEventState.SignatureCustomerMode;
+                case remotepay.CloverDeviceEvent.DeviceEventState.MANUAL_ENTRY_FALLBACK:
+                    return grpc.DeviceEventState.ManualEntryFallback;
+                case remotepay.CloverDeviceEvent.DeviceEventState.SELECT_MULTI_MID:
+                    return grpc.DeviceEventState.SelectMultiMid;
+                default:
+                    return default(grpc.DeviceEventState);
+            }
+        }
+
         public static grpc.DeviceInfo From(remotepay.DeviceInfo src)
         {
             if (src == null) return null;
@@ -447,6 +587,69 @@ namespace MockGrpcPayDisplay
                     return grpc.IdType.Passport;
                 default:
                     return grpc.IdType.Unknown;
+            }
+        }
+
+        public static grpc.InputOption From(transport.InputOption src)
+        {
+            if (src == null) return null;
+            return new grpc.InputOption
+            {
+                Description = From(src.description),
+                KeyPress = From(src.keyPress),
+            };
+        }
+
+        public static grpc.KeyPress From(transport.KeyPress src)
+        {
+            switch (src)
+            {
+                case transport.KeyPress.NONE:
+                    return grpc.KeyPress.None;
+                case transport.KeyPress.ENTER:
+                    return grpc.KeyPress.Enter;
+                case transport.KeyPress.ESC:
+                    return grpc.KeyPress.Esc;
+                case transport.KeyPress.BACKSPACE:
+                    return grpc.KeyPress.Backspace;
+                case transport.KeyPress.TAB:
+                    return grpc.KeyPress.Tab;
+                case transport.KeyPress.STAR:
+                    return grpc.KeyPress.Star;
+                case transport.KeyPress.BUTTON_1:
+                    return grpc.KeyPress.Button1;
+                case transport.KeyPress.BUTTON_2:
+                    return grpc.KeyPress.Button2;
+                case transport.KeyPress.BUTTON_3:
+                    return grpc.KeyPress.Button3;
+                case transport.KeyPress.BUTTON_4:
+                    return grpc.KeyPress.Button4;
+                case transport.KeyPress.BUTTON_5:
+                    return grpc.KeyPress.Button5;
+                case transport.KeyPress.BUTTON_6:
+                    return grpc.KeyPress.Button6;
+                case transport.KeyPress.DIGIT_1:
+                    return grpc.KeyPress.Digit1;
+                case transport.KeyPress.DIGIT_2:
+                    return grpc.KeyPress.Digit2;
+                case transport.KeyPress.DIGIT_3:
+                    return grpc.KeyPress.Digit3;
+                case transport.KeyPress.DIGIT_4:
+                    return grpc.KeyPress.Digit4;
+                case transport.KeyPress.DIGIT_5:
+                    return grpc.KeyPress.Digit5;
+                case transport.KeyPress.DIGIT_6:
+                    return grpc.KeyPress.Digit6;
+                case transport.KeyPress.DIGIT_7:
+                    return grpc.KeyPress.Digit7;
+                case transport.KeyPress.DIGIT_8:
+                    return grpc.KeyPress.Digit8;
+                case transport.KeyPress.DIGIT_9:
+                    return grpc.KeyPress.Digit9;
+                case transport.KeyPress.DIGIT_0:
+                    return grpc.KeyPress.Digit0;
+                default:
+                    return default(grpc.KeyPress);
             }
         }
 

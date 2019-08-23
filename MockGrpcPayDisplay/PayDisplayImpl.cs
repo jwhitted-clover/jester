@@ -258,6 +258,15 @@ namespace MockGrpcPayDisplay
 
 
         #region Listener
+        public override Task OnDeviceActivityStart(Empty request, IServerStreamWriter<DeviceEvent> responseStream, ServerCallContext context)
+        {
+            DeviceActivityStartHandler = new StreamHandler<sdk.CloverDeviceEvent, DeviceEvent>(
+                responseStream,
+                o => Translate.From(o)
+            );
+            return DeviceActivityStartHandler.Promise.Task;
+        }
+
         public override Task OnDeviceReady(Empty request, IServerStreamWriter<MerchantInfo> responseStream, ServerCallContext context)
         {
             DeviceReadyHandler = new StreamHandler<sdk.MerchantInfo, MerchantInfo>(
