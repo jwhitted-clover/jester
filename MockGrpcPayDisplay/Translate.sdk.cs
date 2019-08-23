@@ -695,6 +695,9 @@ namespace MockGrpcPayDisplay
 
         public static remotepay.SaleRequest From(grpc.SaleRequest src)
         {
+            var json = Newtonsoft.Json.JsonConvert.SerializeObject(src);
+            var attempt = Newtonsoft.Json.JsonConvert.DeserializeObject<remotepay.SaleRequest>(json);
+
             if (src == null) return null;
             var result = new remotepay.SaleRequest
             {
