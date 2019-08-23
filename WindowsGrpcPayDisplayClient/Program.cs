@@ -48,14 +48,8 @@ namespace WindowsGrpcPayDisplayClient
 
             client.Sale(new SaleRequest
             {
-                Base = new TransactionRequest
-                {
-                    Base = new BaseTransactionRequest
-                    {
-                        ExternalId = ExternalId(),
-                        Amount = 123,
-                    }
-                }
+                ExternalId = ExternalId(),
+                Amount = 123,
             });
 
             var sale = await saleStream.MoveNext();

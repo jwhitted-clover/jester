@@ -102,24 +102,52 @@ message AcceptSignatureRequest {
 }
 
 message AuthRequest {
-  TransactionRequest Base = 1;
-  bool DisableCashback = 2;
-  int64 TaxAmount = 3;
-  int64 TippableAmount = 4;
-  bool AllowOfflinePayment = 5;
-  bool ApproveOfflinePaymentWithoutPrompt = 6;
-  bool ForceOfflinePayment = 7;
+  bool DisableCashback = 1;
+  int64 TaxAmount = 2;
+  int64 TippableAmount = 3;
+  bool AllowOfflinePayment = 4;
+  bool ApproveOfflinePaymentWithoutPrompt = 5;
+  bool ForceOfflinePayment = 6;
+  // TransactionRequest
+  int64 SignatureThreshold = 7;
+  DataEntryLocation SignatureEntryLocation = 8;
+  bool AutoAcceptSignature = 9;
+  repeated TipSuggestion TipSuggestions = 10;
+  // BaseTransactionRequest
+  bool DisablePrinting = 11;
+  bool CardNotPresent = 12;
+  bool DisableRestartTransactionOnFail = 13;
+  int64 Amount = 14;
+  int32 CardEntryMethods = 15;
+  VaultedCard VaultedCard = 16;
+  string ExternalId = 17;
+  TransactionType Type = 18;
+  bool DisableDuplicateChecking = 19;
+  bool DisableReceiptSelection = 20;
+  bool AutoAcceptPaymentConfirmations = 21;
+  map<string, string> Extras = 22;
+  map<string, string> RegionalExtras = 23;
+  // BaseRequest
+  string RequestId = 24;
 }
 
 message AuthResponse {
-  PaymentResponse Base = 1;
+  // PaymentResponse
+  Payment Payment = 1;
+  Signature Signature = 2;
+  // BaseResponse
+  bool Success = 3;
+  ResponseCode Result = 4;
+  string Reason = 5;
+  string Message = 6;
 }
 
 message CapturePreAuthRequest {
-  BaseRequest Base = 1;
-  string PaymentID = 2;
-  int64 Amount = 3;
-  int64 TipAmount = 4;
+  string PaymentID = 1;
+  int64 Amount = 2;
+  int64 TipAmount = 3;
+  // BaseRequest
+  string RequestId = 4;
 }
 
 message CapturePreAuthResponse {
@@ -129,14 +157,19 @@ message CapturePreAuthResponse {
 }
 
 message CloseoutRequest {
-  BaseRequest Base = 1;
-  bool AllowOpenTabs = 2;
-  string BatchId = 3;
+  bool AllowOpenTabs = 1;
+  string BatchId = 2;
+    // BaseRequest
+  string RequestId = 3;
 }
 
 message CloseoutResponse {
-  BaseResponse Base = 1;
-  Batch Batch = 2;
+  Batch Batch = 1;
+  // BaseResponse
+  bool Success = 2;
+  ResponseCode Result = 3;
+  string Reason = 4;
+  string Message = 5;
 }
 
 message ConfirmPaymentRequest {
@@ -151,16 +184,24 @@ message CreateResponse {
 }
 
 message CustomActivityResponse {
-  BaseResponse Base = 1;
-  string Action = 2;
-  string Payload = 3;
+  string Action = 1;
+  string Payload = 2;
+  // BaseResponse
+  bool Success = 3;
+  ResponseCode Result = 4;
+  string Reason = 5;
+  string Message = 6;
 }
 
 message CustomerProvidedDataEvent {
-  BaseResponse Base = 1;
-  string EventId = 2;
-  DataProviderConfig Config = 3;
-  string Data = 4;
+  string EventId = 1;
+  DataProviderConfig Config = 2;
+  string Data = 3;
+  // BaseResponse
+  bool Success = 4;
+  ResponseCode Result = 5;
+  string Reason = 6;
+  string Message = 7;
 }
 
 message DeviceEvent {
@@ -185,24 +226,30 @@ message DeviceInfo {
 }
 
 message DisplayPaymentReceiptOptionsRequest {
-  BaseRequest Base = 1;
-  string OrderID = 2;
-  string PaymentID = 3;
-  bool DisablePrinting = 4;
+  string OrderID = 1;
+  string PaymentID = 2;
+  bool DisablePrinting = 3;
+  // BaseRequest
+  string RequestId = 4;
 }
 
 message DisplayReceiptOptionsRequest {
-  BaseRequest Base = 1;
-  string OrderId = 2;
-  string PaymentId = 3;
-  string RefundId = 4;
-  string CreditId = 5;
-  bool DisablePrinting = 6;
+  string OrderId = 1;
+  string PaymentId = 2;
+  string RefundId = 3;
+  string CreditId = 4;
+  bool DisablePrinting = 5;
+  // BaseRequest
+  string RequestId = 6;
 }
 
 message DisplayReceiptOptionsResponse {
-  BaseResponse Base = 1;
-  ResultStatus Status = 2;
+  ResultStatus Status = 1;
+  // BaseResponse
+  bool Success = 2;
+  ResponseCode Result = 3;
+  string Reason = 4;
+  string Message = 5;
 }
 
 message DisposeRequest {
@@ -221,11 +268,15 @@ message InitializeResponse {
 }
 
 message InvalidStateTransitionNotification {
-  BaseResponse Base = 1;
-  string RequestedTransition = 2;
-  string State = 3;
-  string Substate = 4;
-  ExternalDeviceStateData Data = 5;
+  string RequestedTransition = 1;
+  string State = 2;
+  string Substate = 3;
+  ExternalDeviceStateData Data = 4;
+  // BaseResponse
+  bool Success = 5;
+  ResponseCode Result = 6;
+  string Reason = 7;
+  string Message = 8;
 }
 
 message InvokeInputOptionRequest {
@@ -233,12 +284,31 @@ message InvokeInputOptionRequest {
 }
 
 message ManualRefundRequest {
-  BaseTransactionRequest Base = 1;
+  // BaseTransactionRequest
+  bool DisablePrinting = 1;
+  bool CardNotPresent = 2;
+  bool DisableRestartTransactionOnFail = 3;
+  int64 Amount = 4;
+  int32 CardEntryMethods = 5;
+  VaultedCard VaultedCard = 6;
+  string ExternalId = 7;
+  TransactionType Type = 8;
+  bool DisableDuplicateChecking = 9;
+  bool DisableReceiptSelection = 10;
+  bool AutoAcceptPaymentConfirmations = 11;
+  map<string, string> Extras = 12;
+  map<string, string> RegionalExtras = 13;
+  // BaseRequest
+  string RequestId = 14;
 }
 
 message ManualRefundResponse {
-  BaseResponse Base = 1;
-  Credit Credit = 2;
+  Credit Credit = 1;
+  // BaseResponse
+  bool Success = 2;
+  ResponseCode Result = 3;
+  string Reason = 4;
+  string Message = 5;
 }
 
 message MerchantInfo {
@@ -266,20 +336,43 @@ message MessageFromActivity {
 }
 
 message OpenCashDrawerRequest {
-  BaseRequest Base = 1;
-  string Reason = 2;
-  string PrinterId = 3;
+  string Reason = 1;
+  string PrinterId = 2;
+  // BaseRequest
+  string RequestId = 3;
 }
 
 message PreAuthRequest {
-  BaseTransactionRequest Base = 1;
-  bool AllowOfflinePayment = 2;
-  bool ApproveOfflinePaymentWithoutPrompt = 3;
-  bool ForceOfflinePayment = 4;
+  bool AllowOfflinePayment = 1;
+  bool ApproveOfflinePaymentWithoutPrompt = 2;
+  bool ForceOfflinePayment = 3;
+  // BaseTransactionRequest
+  bool DisablePrinting = 4;
+  bool CardNotPresent = 5;
+  bool DisableRestartTransactionOnFail = 6;
+  int64 Amount = 7;
+  int32 CardEntryMethods = 8;
+  VaultedCard VaultedCard = 9;
+  string ExternalId = 10;
+  TransactionType Type = 11;
+  bool DisableDuplicateChecking = 12;
+  bool DisableReceiptSelection = 13;
+  bool AutoAcceptPaymentConfirmations = 14;
+  map<string, string> Extras = 15;
+  map<string, string> RegionalExtras = 16;
+  // BaseRequest
+  string RequestId = 17;
 }
 
 message PreAuthResponse {
-  PaymentResponse Base = 1;
+  // PaymentResponse
+  Payment Payment = 1;
+  Signature Signature = 2;
+  // BaseResponse
+  bool Success = 3;
+  ResponseCode Result = 4;
+  string Reason = 5;
+  string Message = 6;
 }
 
 message PingPacket {
@@ -288,90 +381,131 @@ message PingPacket {
 }
 
 message PrintJobStatusRequest {
-  BaseRequest Base = 1;
-  string PrintRequestId = 2;
+  string PrintRequestId = 1;
+  // BaseRequest
+  string RequestId = 2;
 }
 
 message PrintJobStatusResponse {
-  BaseResponse Base = 1;
-  string printRequestId = 2;
-  PrintJobStatus status = 3;
+  string printRequestId = 1;
+  PrintJobStatus status = 2;
+  // BaseResponse
+  bool Success = 3;
+  ResponseCode Result = 4;
+  string Reason = 5;
+  string Message = 6;
 }
 
 message PrintManualRefundDeclineReceiptMessage {
-  BaseResponse Base = 1;
-  Credit Credit = 2;
+  Credit Credit = 1;
+  // BaseResponse
+  bool Success = 2;
+  ResponseCode Result = 3;
+  string Reason = 4;
+  string Message = 5;
 }
 
 message PrintManualRefundReceiptMessage {
-  BaseResponse Base = 1;
-  Credit Credit = 2;
+  Credit Credit = 1;
+  // BaseResponse
+  bool Success = 2;
+  ResponseCode Result = 3;
+  string Reason = 4;
+  string Message = 5;
 }
 
 message PrintPaymentDeclineReceiptMessage {
-  BaseResponse Base = 1;
-  Payment Payment = 2;
+  Payment Payment = 1;
+  // BaseResponse
+  bool Success = 2;
+  ResponseCode Result = 3;
+  string Reason = 4;
+  string Message = 5;
 }
 
 message PrintPaymentMerchantCopyReceiptMessage {
-  BaseResponse Base = 1;
-  Payment Payment = 2;
+  Payment Payment = 1;
+  // BaseResponse
+  bool Success = 2;
+  ResponseCode Result = 3;
+  string Reason = 4;
+  string Message = 5;
 }
 
 message PrintPaymentReceiptMessage {
-  BaseResponse Base = 1;
-  Order Order = 2;
-  Payment Payment = 3;
+  Order Order = 1;
+  Payment Payment = 2;
+  // BaseResponse
+  bool Success = 3;
+  ResponseCode Result = 4;
+  string Reason = 5;
+  string Message = 6;
 }
 
 message PrintRefundPaymentReceiptMessage {
-  BaseResponse Base = 1;
-  Payment Payment = 2;
-  Refund Refund = 3;
-  Order Order = 4;
+  Payment Payment = 1;
+  Refund Refund = 2;
+  Order Order = 3;
+  // BaseResponse
+  bool Success = 4;
+  ResponseCode Result = 5;
+  string Reason = 6;
+  string Message = 7;
 }
 
 message PrintRequest {
-  BaseRequest Base = 1;
-  repeated bytes Images = 2;
-  repeated string ImageUrLs = 3;
-  repeated string Text = 4;
-  string PrintRequestId = 5;
-  string PrintDeviceId = 6;
+  repeated bytes Images = 1;
+  repeated string ImageUrLs = 2;
+  repeated string Text = 3;
+  string PrintRequestId = 4;
+  string PrintDeviceId = 5;
+  // BaseRequest
+  string RequestId = 6;
 }
 
 message ReadCardDataRequest {
-  BaseRequest Base = 1;
-  int32 CardEntryMethods = 2;
-  bool IsForceSwipePinEntry = 3;
+  int32 CardEntryMethods = 1;
+  bool IsForceSwipePinEntry = 2;
+  // BaseRequest
+  string RequestId = 3;
 }
 
 message ReadCardDataResponse {
-  BaseResponse Base = 1;
-  CardData CardData = 2;
+  CardData CardData = 1;
+  // BaseResponse
+  bool Success = 2;
+  ResponseCode Result = 3;
+  string Reason = 4;
+  string Message = 5;
 }
 
 message RefundPaymentRequest {
-  BaseRequest Base = 1;
-  bool FullRefund = 2;
-  string OrderId = 3;
-  string PaymentId = 4;
-  int64 Amount = 5;
-  bool DisablePrinting = 6;
-  bool DisableReceiptSelection = 7;
-  map<string, string> Extras = 8;
+  bool FullRefund = 1;
+  string OrderId = 2;
+  string PaymentId = 3;
+  int64 Amount = 4;
+  bool DisablePrinting = 5;
+  bool DisableReceiptSelection = 6;
+  map<string, string> Extras = 7;
+  // BaseRequest
+  string RequestId = 8;
 }
 
 message RefundPaymentResponse {
-  BaseResponse Base = 1;
-  string OrderId = 2;
-  string PaymentId = 3;
-  Refund Refund = 4;
+  string OrderId = 1;
+  string PaymentId = 2;
+  Refund Refund = 3;
+  // BaseResponse
+  bool Success = 4;
+  ResponseCode Result = 5;
+  string Reason = 6;
+  string Message = 7;
 }
 
 message RegisterForCustomerProvidedDataRequest {
-  BaseRequest Base = 1;
-  repeated DataProviderConfig Configurations = 2;
+  repeated DataProviderConfig Configurations = 1;
+  // BaseRequest
+  string RequestId = 2;
 }
 
 message RejectPaymentRequest {
@@ -391,8 +525,12 @@ message ResetDeviceRequest {
 }
 
 message ResetDeviceResponse {
-  BaseResponse Base = 1;
-  ExternalDeviceState State = 2;
+  ExternalDeviceState State = 1;
+  // BaseResponse
+  bool Success = 2;
+  ResponseCode Result = 3;
+  string Reason = 4;
+  string Message = 5;
 }
 
 message RetrieveDeviceStatusRequest {
@@ -400,9 +538,13 @@ message RetrieveDeviceStatusRequest {
 }
 
 message RetrieveDeviceStatusResponse {
-  BaseResponse Base = 1;
-  ExternalDeviceState State = 2;
-  ExternalDeviceStateData Data = 3;
+  ExternalDeviceState State = 1;
+  ExternalDeviceStateData Data = 2;
+  // BaseResponse
+  bool Success = 3;
+  ResponseCode Result = 4;
+  string Reason = 5;
+  string Message = 6;
 }
 
 message RetrievePaymentRequest {
@@ -410,23 +552,32 @@ message RetrievePaymentRequest {
 }
 
 message RetrievePaymentResponse {
-  BaseResponse Base = 1;
-  string ExternalPaymentId = 2;
-  QueryStatus QueryStatus = 3;
-  Payment Payment = 4;
+  string ExternalPaymentId = 1;
+  QueryStatus QueryStatus = 2;
+  Payment Payment = 3;
+  // BaseResponse
+  bool Success = 4;
+  ResponseCode Result = 5;
+  string Reason = 6;
+  string Message = 7;
 }
 
 message RetrievePendingPaymentsRequest {
 }
 
 message RetrievePendingPaymentsResponse {
-  BaseResponse Base = 1;
-  repeated PendingPaymentEntry PendingPayments = 2;
+  repeated PendingPaymentEntry PendingPayments = 1;
+  // BaseResponse
+  bool Success = 2;
+  ResponseCode Result = 3;
+  string Reason = 4;
+  string Message = 5;
 }
 
 message RetrievePrintJobStatusRequest {
-  BaseRequest Base = 1;
-  string PrintRequestId = 2;
+  string PrintRequestId = 1;
+  // BaseRequest
+  string RequestId = 2;
 }
 
 message RetrievePrintersRequest {
@@ -434,24 +585,55 @@ message RetrievePrintersRequest {
 }
 
 message RetrievePrintersResponse {
-  BaseResponse Base = 1;
-  repeated Printer Printers = 2;
+  repeated Printer Printers = 1;
+  // BaseResponse
+  bool Success = 2;
+  ResponseCode Result = 3;
+  string Reason = 4;
+  string Message = 5;
 }
 
 message SaleRequest {
-  TransactionRequest Base = 1;
-  bool DisableCashback = 2;
-  int64 TaxAmount = 3;
-  int64 TippableAmount = 4;
-  bool AllowOfflinePayment = 5;
-  bool ApproveOfflinePaymentWithoutPrompt = 6;
-  int64 TipAmount = 7;
-  TipMode TipMode = 8;
-  bool ForceOfflinePayment = 9;
+  bool DisableCashback = 1;
+  int64 TaxAmount = 2;
+  int64 TippableAmount = 3;
+  bool AllowOfflinePayment = 4;
+  bool ApproveOfflinePaymentWithoutPrompt = 5;
+  int64 TipAmount = 6;
+  TipMode TipMode = 7;
+  bool ForceOfflinePayment = 8;
+  // TransactionRequest
+  int64 SignatureThreshold = 9;
+  DataEntryLocation SignatureEntryLocation = 10;
+  bool AutoAcceptSignature = 11;
+  repeated TipSuggestion TipSuggestions = 12;
+  // BaseTransactionRequest
+  bool DisablePrinting = 13;
+  bool CardNotPresent = 14;
+  bool DisableRestartTransactionOnFail = 15;
+  int64 Amount = 16;
+  int32 CardEntryMethods = 17;
+  VaultedCard VaultedCard = 18;
+  string ExternalId = 19;
+  TransactionType Type = 20;
+  bool DisableDuplicateChecking = 21;
+  bool DisableReceiptSelection = 22;
+  bool AutoAcceptPaymentConfirmations = 23;
+  map<string, string> Extras = 24;
+  map<string, string> RegionalExtras = 25;
+  // BaseRequest
+  string RequestId = 26;
 }
 
 message SaleResponse {
-  PaymentResponse Base = 1;
+  // PaymentResponse
+  Payment Payment = 1;
+  Signature Signature = 2;
+  // BaseResponse
+  bool Success = 3;
+  ResponseCode Result = 4;
+  string Reason = 5;
+  string Message = 6;
 }
 
 message SendMessageToActivityRequest {
@@ -478,10 +660,11 @@ message ShowWelcomeScreenRequest {
 }
 
 message StartCustomActivityRequest {
-  BaseRequest Base = 1;
-  string Action = 2;
-  string Payload = 3;
-  bool NonBlocking = 4;
+  string Action = 1;
+  string Payload = 2;
+  bool NonBlocking = 3;
+  // BaseRequest
+  string RequestId = 4;
 }
 
 message TipAddedMessage {
@@ -490,16 +673,21 @@ message TipAddedMessage {
 }
 
 message TipAdjustAuthRequest {
-  BaseRequest Base = 1;
-  string PaymentID = 2;
-  string OrderID = 3;
-  int64 TipAmount = 4;
+  string PaymentID = 1;
+  string OrderID = 2;
+  int64 TipAmount = 3;
+  // BaseRequest
+  string RequestId = 4;
 }
 
 message TipAdjustAuthResponse {
-  BaseResponse Base = 1;
-  string PaymentId = 2;
-  int64 TipAmount = 3;
+  string PaymentId = 1;
+  int64 TipAmount = 2;
+  // BaseResponse
+  bool Success = 3;
+  ResponseCode Result = 4;
+  string Reason = 5;
+  string Message = 6;
 }
 
 message VaultCardRequest {
@@ -507,8 +695,12 @@ message VaultCardRequest {
 }
 
 message VaultCardResponse {
-  BaseResponse Base = 1;
-  VaultedCard Card = 2;
+  VaultedCard Card = 1;
+  // BaseResponse
+  bool Success = 2;
+  ResponseCode Result = 3;
+  string Reason = 4;
+  string Message = 5;
 }
 
 message VerifySignatureRequest {
@@ -517,31 +709,41 @@ message VerifySignatureRequest {
 }
 
 message VoidPaymentRefundRequest {
-  BaseRequest Base = 1;
-  string RefundId = 2;
-  string EmployeeId = 3;
-  string OrderId = 4;
-  bool DisablePrinting = 5;
-  bool DisableReceiptSelection = 6;
-  map<string, string> Extras = 7;
+  string RefundId = 1;
+  string EmployeeId = 2;
+  string OrderId = 3;
+  bool DisablePrinting = 4;
+  bool DisableReceiptSelection = 5;
+  map<string, string> Extras = 6;
+  // BaseRequest
+  string RequestId = 7;
 }
 
 message VoidPaymentRefundResponse {
-  BaseResponse Base = 1;
-  string RefundId = 2;
+  string RefundId = 1;
+  // BaseResponse
+  bool Success = 2;
+  ResponseCode Result = 3;
+  string Reason = 4;
+  string Message = 5;
 }
 
 message VoidPaymentRequest {
-  BaseRequest Base = 1;
-  string PaymentId = 2;
-  VoidReason VoidReason = 3;
-  string EmployeeId = 4;
-  string OrderId = 5;
-  map<string, string> Extras = 6;
+  string PaymentId = 1;
+  VoidReason VoidReason = 2;
+  string EmployeeId = 3;
+  string OrderId = 4;
+  map<string, string> Extras = 5;
+  // BaseRequest
+  string RequestId = 6;
 }
 
 message VoidPaymentResponse {
-  BaseResponse Base = 1;
-  string PaymentId = 2;
-  Payment Payment = 3;
+  string PaymentId = 1;
+  Payment Payment = 2;
+  // BaseResponse
+  bool Success = 3;
+  ResponseCode Result = 4;
+  string Reason = 5;
+  string Message = 6;
 }

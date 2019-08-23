@@ -97,18 +97,6 @@ namespace MockGrpcPayDisplay
             }
         }
 
-        public static grpc.BaseResponse From(remotepay.BaseResponse src)
-        {
-            if (src == null) return null;
-            return new grpc.BaseResponse
-            {
-                Message = From(src.Message),
-                Reason = From(src.Reason),
-                Result = From(src.Result),
-                Success = From(src.Success),
-            };
-        }
-
         public static grpc.CardEntryType From(payments.CardEntryType src)
         {
             switch (src)
@@ -542,17 +530,6 @@ namespace MockGrpcPayDisplay
             return result;
         }
 
-        public static grpc.PaymentResponse From(remotepay.PaymentResponse src)
-        {
-            if (src == null) return null;
-            return new grpc.PaymentResponse
-            {
-                Base = From((remotepay.BaseResponse)src),
-                Payment = From(src.Payment),
-                Signature = From(src.Signature),
-            };
-        }
-
         public static grpc.PaymentResult From(payments.Result src)
         {
             switch (src)
@@ -636,8 +613,12 @@ namespace MockGrpcPayDisplay
             if (src == null) return null;
             return new grpc.ResetDeviceResponse
             {
-                Base = From((remotepay.BaseResponse)src),
                 State = From(src.State),
+                // BaseResponse
+                Message = From(src.Message),
+                Reason = From(src.Reason),
+                Result = From(src.Result),
+                Success = From(src.Success),
             };
         }
 
@@ -682,7 +663,14 @@ namespace MockGrpcPayDisplay
             if (src == null) return null;
             return new grpc.SaleResponse
             {
-                Base = From((remotepay.PaymentResponse)src),
+                // PaymentResponse
+                Payment = From(src.Payment),
+                Signature = From(src.Signature),
+                // BaseResponse
+                Message = From(src.Message),
+                Reason = From(src.Reason),
+                Result = From(src.Result),
+                Success = From(src.Success),
             };
         }
 

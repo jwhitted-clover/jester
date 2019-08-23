@@ -695,8 +695,8 @@ namespace MockGrpcPayDisplay
 
         public static remotepay.SaleRequest From(grpc.SaleRequest src)
         {
-            var json = Newtonsoft.Json.JsonConvert.SerializeObject(src);
-            var attempt = Newtonsoft.Json.JsonConvert.DeserializeObject<remotepay.SaleRequest>(json);
+            //var json = Newtonsoft.Json.JsonConvert.SerializeObject(src);
+            //var attempt = Newtonsoft.Json.JsonConvert.DeserializeObject<remotepay.SaleRequest>(json);
 
             if (src == null) return null;
             var result = new remotepay.SaleRequest
@@ -710,27 +710,27 @@ namespace MockGrpcPayDisplay
                 TipMode = From<remotepay.TipMode>(src.TipMode),
                 ForceOfflinePayment = From(src.ForceOfflinePayment),
                 // TransactionRequest
-                SignatureThreshold = From(src.Base.SignatureThreshold),
-                SignatureEntryLocation = From(src.Base.SignatureEntryLocation),
-                AutoAcceptSignature = From(src.Base.AutoAcceptSignature),
+                SignatureThreshold = From(src.SignatureThreshold),
+                SignatureEntryLocation = From(src.SignatureEntryLocation),
+                AutoAcceptSignature = From(src.AutoAcceptSignature),
                 // BaseTransactionRequest
-                DisablePrinting = From(src.Base.Base.DisablePrinting),
-                CardNotPresent = From(src.Base.Base.CardNotPresent),
-                DisableRestartTransactionOnFail = From(src.Base.Base.DisableRestartTransactionOnFail),
-                Amount = From(src.Base.Base.Amount),
-                CardEntryMethods = From<int?>(src.Base.Base.CardEntryMethods),
-                VaultedCard = From(src.Base.Base.VaultedCard),
-                ExternalId = From(src.Base.Base.ExternalId),
-                Type = From(src.Base.Base.Type),
-                DisableDuplicateChecking = From(src.Base.Base.DisableDuplicateChecking),
-                DisableReceiptSelection = From(src.Base.Base.DisableReceiptSelection),
-                AutoAcceptPaymentConfirmations = From(src.Base.Base.AutoAcceptPaymentConfirmations),
+                DisablePrinting = From(src.DisablePrinting),
+                CardNotPresent = From(src.CardNotPresent),
+                DisableRestartTransactionOnFail = From(src.DisableRestartTransactionOnFail),
+                Amount = From(src.Amount),
+                CardEntryMethods = From<int?>(src.CardEntryMethods),
+                VaultedCard = From(src.VaultedCard),
+                ExternalId = From(src.ExternalId),
+                Type = From(src.Type),
+                DisableDuplicateChecking = From(src.DisableDuplicateChecking),
+                DisableReceiptSelection = From(src.DisableReceiptSelection),
+                AutoAcceptPaymentConfirmations = From(src.AutoAcceptPaymentConfirmations),
             };
-            result.TipSuggestions = src.Base.TipSuggestions.Select(o => From(o)).ToList();
-            src.Base.Base.Extras.ToList().ForEach(kvp => result.Extras.Add(kvp.Key, kvp.Value));
-            src.Base.Base.RegionalExtras.ToList().ForEach(kvp => result.RegionalExtras.Add(kvp.Key, kvp.Value));
+            result.TipSuggestions = src.TipSuggestions.Select(o => From(o)).ToList();
+            src.Extras.ToList().ForEach(kvp => result.Extras.Add(kvp.Key, kvp.Value));
+            src.RegionalExtras.ToList().ForEach(kvp => result.RegionalExtras.Add(kvp.Key, kvp.Value));
             // HACK: BaseRequest.RequestId is protected (and doesn't look like it is used anywhere?!)
-            result.GetType().GetProperty("RequestId", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(result, src.Base?.Base?.Base?.RequestId);
+            result.GetType().GetProperty("RequestId", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(result, src.RequestId);
             return result;
         }
 
@@ -740,13 +740,13 @@ namespace MockGrpcPayDisplay
             return new remotepay.SaleResponse
             {
                 // PaymentResponse
-                Payment = From(src.Base.Payment),
-                Signature = From(src.Base.Signature),
+                Payment = From(src.Payment),
+                Signature = From(src.Signature),
                 // BaseResponse
-                Message = From(src.Base.Base.Message),
-                Reason = From(src.Base.Base.Reason),
-                Result = From(src.Base.Base.Result),
-                Success = From(src.Base.Base.Success),
+                Message = From(src.Message),
+                Reason = From(src.Reason),
+                Result = From(src.Result),
+                Success = From(src.Success),
             };
         }
 

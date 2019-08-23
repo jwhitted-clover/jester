@@ -63,34 +63,6 @@ enum AvsResult {
   AVSRESULT_ADDRESS_NOT_MATCHED_ZIP_CODE_NOT_CHECKED = 11;
 }
 
-message BaseRequest {
-  string RequestId = 1;
-}
-
-message BaseResponse {
-  bool Success = 1;
-  ResponseCode Result = 2;
-  string Reason = 3;
-  string Message = 4;
-}
-
-message BaseTransactionRequest {
-  BaseRequest Base = 1;
-  bool DisablePrinting = 2;
-  bool CardNotPresent = 3;
-  bool DisableRestartTransactionOnFail = 4;
-  int64 Amount = 5;
-  int32 CardEntryMethods = 6;
-  VaultedCard VaultedCard = 7;
-  string ExternalId = 8;
-  TransactionType Type = 9;
-  bool DisableDuplicateChecking = 10;
-  bool DisableReceiptSelection = 11;
-  bool AutoAcceptPaymentConfirmations = 12;
-  map<string, string> Extras = 13;
-  map<string, string> RegionalExtras = 14;
-}
-
 message Batch {
   string Id = 1;
   int64 MerchantId = 2;
@@ -907,12 +879,6 @@ message Payment {
   Reference Merchant = 33;
 }
 
-message PaymentResponse {
-  BaseResponse Base = 1;
-  Payment Payment = 2;
-  Signature Signature = 3;
-}
-
 enum PaymentResult {
   PAYMENTRESULT_UNKNOWN = 0;
   PAYMENTRESULT_SUCCESS = 1;
@@ -1197,14 +1163,6 @@ message TransactionInfo {
   bool IsTokenBasedTx = 34;
   string OrigTransactionSequenceCounter = 35;
   string TransactionSequenceCounterUpdate = 36;
-}
-
-message TransactionRequest {
-  BaseTransactionRequest Base = 1;
-  int64 SignatureThreshold = 2;
-  DataEntryLocation SignatureEntryLocation = 3;
-  bool AutoAcceptSignature = 4;
-  repeated TipSuggestion TipSuggestions = 5;
 }
 
 enum TransactionResult {
