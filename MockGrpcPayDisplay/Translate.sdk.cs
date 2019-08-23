@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 using base_ = com.clover.sdk.v3.base_;
 using customers = com.clover.sdk.v3.customers;
 using grpc = Clover.Grpc;
@@ -26,17 +27,20 @@ namespace MockGrpcPayDisplay
                 case grpc.AccountType.Savings:
                     return payments.AccountType.SAVINGS;
                 default:
-                    throw new NotSupportedException();
+                    return default(payments.AccountType);
             }
         }
 
-        public static payments.AdditionalChargeAmount From(grpc.AdditionalChargeAmount src) =>
-            new payments.AdditionalChargeAmount
+        public static payments.AdditionalChargeAmount From(grpc.AdditionalChargeAmount src)
+        {
+            if (src == null) return null;
+            return new payments.AdditionalChargeAmount
             {
                 amount = From(src.Amount),
                 id = From(src.Id),
                 type = From(src.Type),
             };
+        }
 
         public static payments.AdditionalChargeType From(grpc.AdditionalChargeType src)
         {
@@ -45,12 +49,14 @@ namespace MockGrpcPayDisplay
                 case grpc.AdditionalChargeType.Interac:
                     return payments.AdditionalChargeType.INTERAC;
                 default:
-                    throw new NotSupportedException();
+                    return default(payments.AdditionalChargeType);
             }
         }
 
-        public static payments.AppTracking From(grpc.AppTracking src) =>
-            new payments.AppTracking
+        public static payments.AppTracking From(grpc.AppTracking src)
+        {
+            if (src == null) return null;
+            return new payments.AppTracking
             {
                 applicationID = From(src.ApplicationId),
                 applicationName = From(src.ApplicationId),
@@ -63,6 +69,7 @@ namespace MockGrpcPayDisplay
                 sourceSDK = From(src.SourceSdk),
                 sourceSDKVersion = From(src.SourceSdkVersion),
             };
+        }
 
         public static payments.AVSResult From(grpc.AvsResult src)
         {
@@ -91,7 +98,7 @@ namespace MockGrpcPayDisplay
                 case grpc.AvsResult.AddressNotMatchedZipCodeNotChecked:
                     return payments.AVSResult.ADDRESS_NOT_MATCHED_ZIP_CODE_NOT_CHECKED;
                 default:
-                    throw new NotSupportedException();
+                    return default(payments.AVSResult);
             }
         }
 
@@ -120,12 +127,13 @@ namespace MockGrpcPayDisplay
                 case grpc.CardEntryType.PinpadManualEntry:
                     return payments.CardEntryType.PINPAD_MANUAL_ENTRY;
                 default:
-                    throw new NotImplementedException();
+                    return default(payments.CardEntryType);
             }
         }
 
         public static payments.CardTransaction From(grpc.CardTransaction src)
         {
+            if (src == null) return null;
             var result = new payments.CardTransaction
             {
                 paymentRef = From(src.PaymentRef),
@@ -159,7 +167,7 @@ namespace MockGrpcPayDisplay
                 case grpc.CardTransactionState.Closed:
                     return payments.CardTransactionState.CLOSED;
                 default:
-                    throw new NotSupportedException();
+                    return default(payments.CardTransactionState);
             }
         }
 
@@ -206,7 +214,7 @@ namespace MockGrpcPayDisplay
                 case grpc.CardTransactionType.Reload:
                     return payments.CardTransactionType.RELOAD;
                 default:
-                    throw new NotSupportedException();
+                    return default(payments.CardTransactionType);
             }
         }
 
@@ -247,12 +255,14 @@ namespace MockGrpcPayDisplay
                 case grpc.CardType.Other:
                     return payments.CardType.OTHER;
                 default:
-                    throw new NotSupportedException();
+                    return default(payments.CardType);
             }
         }
 
-        public static payments.CashAdvanceCustomerIdentification From(grpc.CashAdvanceCustomerIdentification src) =>
-            new payments.CashAdvanceCustomerIdentification
+        public static payments.CashAdvanceCustomerIdentification From(grpc.CashAdvanceCustomerIdentification src)
+        {
+            if (src == null) return null;
+            return new payments.CashAdvanceCustomerIdentification
             {
                 idType = From(src.IdType),
                 serialNumber = From(src.SerialNumber),
@@ -269,22 +279,29 @@ namespace MockGrpcPayDisplay
                 addressZipCode = From(src.AddressZipCode),
                 addressCountry = From(src.AddressCountry),
             };
+        }
 
-        public static payments.CashAdvanceExtra From(grpc.CashAdvanceExtra src) =>
-            new payments.CashAdvanceExtra
+        public static payments.CashAdvanceExtra From(grpc.CashAdvanceExtra src)
+        {
+            if (src == null) return null;
+            return new payments.CashAdvanceExtra
             {
                 cashAdvanceCustomerIdentification = From(src.CashAdvanceCustomerIdentification),
                 cashAdvanceSerialNum = From(src.CashAdvanceSerialNum),
                 paymentRef = From(src.PaymentRef),
             };
+        }
 
-        public static transport.Challenge From(grpc.Challenge src) =>
-            new transport.Challenge
+        public static transport.Challenge From(grpc.Challenge src)
+        {
+            if (src == null) return null;
+            return new transport.Challenge
             {
                 message = From(src.Message),
                 type = From(src.Type),
                 reason = From(src.Reason),
             };
+        }
 
         public static transport.ChallengeType From(grpc.ChallengeType src)
         {
@@ -295,12 +312,13 @@ namespace MockGrpcPayDisplay
                 case grpc.ChallengeType.OfflineChallenge:
                     return transport.ChallengeType.OFFLINE_CHALLENGE;
                 default:
-                    throw new NotSupportedException();
+                    return default(transport.ChallengeType);
             }
         }
 
         public static remotepay.ConfirmPaymentRequest From(grpc.ConfirmPaymentRequest src)
         {
+            if (src == null) return null;
             var result = new remotepay.ConfirmPaymentRequest
             {
                 Payment = From(src.Payment),
@@ -320,14 +338,16 @@ namespace MockGrpcPayDisplay
                 case grpc.DataEntryLocation.None:
                     return payments.DataEntryLocation.NONE;
                 default:
-                    throw new NotSupportedException();
+                    return default(payments.DataEntryLocation);
             }
         }
 
         public static payments.DataEntryLocation From(grpc.DataEntryLocation? src) => From(src.GetValueOrDefault());
 
-        public static payments.DCCInfo From(grpc.DccInfo src) =>
-            new payments.DCCInfo
+        public static payments.DCCInfo From(grpc.DccInfo src)
+        {
+            if (src == null) return null;
+            return new payments.DCCInfo
             {
                 inquiryRateId = From(src.InquiryRateId),
                 dccApplied = From(src.DccApplied),
@@ -340,18 +360,24 @@ namespace MockGrpcPayDisplay
                 paymentRef = From(src.PaymentRef),
                 creditRef = From(src.CreditRef),
             };
+        }
 
-        public static remotepay.DeviceInfo From(grpc.DeviceInfo src) =>
-            new remotepay.DeviceInfo
+        public static remotepay.DeviceInfo From(grpc.DeviceInfo src)
+        {
+            if (src == null) return null;
+            return new remotepay.DeviceInfo
             {
                 Name = From(src.Name),
                 Serial = From(src.Serial),
                 Model = From(src.Model),
                 SupportsAcks = From(src.SupportsAcks),
             };
+        }
 
-        public static payments.GermanInfo From(grpc.GermanInfo src) =>
-            new payments.GermanInfo
+        public static payments.GermanInfo From(grpc.GermanInfo src)
+        {
+            if (src == null) return null;
+            return new payments.GermanInfo
             {
                 cardTrack2 = From(src.CardTrack2),
                 cardSequenceNumber = From(src.CardSequenceNumber),
@@ -385,13 +411,17 @@ namespace MockGrpcPayDisplay
                 refundRef = From(src.RefundRef),
                 creditRefundRef = From(src.CreditRefundRef),
             };
+        }
 
-        public static customers.IdentityDocument From(grpc.IdentityDocument src) =>
-            new customers.IdentityDocument
+        public static customers.IdentityDocument From(grpc.IdentityDocument src)
+        {
+            if (src == null) return null;
+            return new customers.IdentityDocument
             {
                 Number = From(src.Number),
                 Type = From(src.Type),
             };
+        }
 
         public static payments.IdType From(grpc.IdType src)
         {
@@ -402,16 +432,19 @@ namespace MockGrpcPayDisplay
                 case grpc.IdType.Passport:
                     return payments.IdType.PASSPORT;
                 default:
-                    throw new NotSupportedException();
+                    return default(payments.IdType);
             }
         }
 
-        public static transport.InputOption From(grpc.InputOption src) =>
-            new transport.InputOption
+        public static transport.InputOption From(grpc.InputOption src)
+        {
+            if (src == null) return null;
+            return new transport.InputOption
             {
                 description = From(src.Description),
                 keyPress = From(src.KeyPress),
             };
+        }
 
         public static transport.KeyPress From(grpc.KeyPress src)
         {
@@ -462,12 +495,14 @@ namespace MockGrpcPayDisplay
                 case grpc.KeyPress.Digit0:
                     return transport.KeyPress.DIGIT_0;
                 default:
-                    throw new NotSupportedException();
+                    return default(transport.KeyPress);
             }
         }
 
-        public static payments.LineItemPayment From(grpc.LineItemPayment src) =>
-            new payments.LineItemPayment
+        public static payments.LineItemPayment From(grpc.LineItemPayment src)
+        {
+            if (src == null) return null;
+            return new payments.LineItemPayment
             {
                 id = From(src.Id),
                 lineItemRef = From(src.LineItemRef),
@@ -476,9 +511,12 @@ namespace MockGrpcPayDisplay
                 binName = From(src.BinName),
                 refunded = From(src.Refunded),
             };
+        }
 
-        public static remotepay.MerchantInfo From(grpc.MerchantInfo src) =>
-            new remotepay.MerchantInfo
+        public static remotepay.MerchantInfo From(grpc.MerchantInfo src)
+        {
+            if (src == null) return null;
+            return new remotepay.MerchantInfo
             {
                 Device = From(src.Device),
                 merchantID = From(src.MerchantId),
@@ -497,9 +535,11 @@ namespace MockGrpcPayDisplay
                 supportsAuth = From(src.SupportsAuth),
                 supportsVaultCard = From(src.SupportsVaultCard),
             };
+        }
 
         public static payments.Payment From(grpc.Payment src)
         {
+            if (src == null) return null;
             var result = new payments.Payment
             {
                 amount = From(src.Amount),
@@ -558,12 +598,14 @@ namespace MockGrpcPayDisplay
                 case grpc.PaymentResult.AuthCompleted:
                     return payments.Result.AUTH_COMPLETED;
                 default:
-                    throw new NotSupportedException();
+                    return default(payments.Result);
             }
         }
 
-        public static payments.PaymentTaxRate From(grpc.PaymentTaxRate src) =>
-            new payments.PaymentTaxRate
+        public static payments.PaymentTaxRate From(grpc.PaymentTaxRate src)
+        {
+            if (src == null) return null;
+            return new payments.PaymentTaxRate
             {
                 id = From(src.Id),
                 paymentRef = From(src.PaymentRef),
@@ -572,22 +614,30 @@ namespace MockGrpcPayDisplay
                 isDefault = From(src.IsDefault),
                 taxableAmount = From(src.TaxableAmount),
             };
+        }
 
-        public static transport.Signature2.Point From(grpc.Point src) =>
-            new transport.Signature2.Point
+        public static transport.Signature2.Point From(grpc.Point src)
+        {
+            if (src == null) return null;
+            return new transport.Signature2.Point
             {
                 x = From(src.X),
                 y = From(src.Y),
             };
+        }
 
-        public static base_.Reference From(grpc.Reference src) =>
-            new base_.Reference
+        public static base_.Reference From(grpc.Reference src)
+        {
+            if (src == null) return null;
+            return new base_.Reference
             {
                 id = From(src.Id),
             };
+        }
 
         public static payments.Refund From(grpc.Refund src)
         {
+            if (src == null) return null;
             var result = new payments.Refund
             {
                 id = From(src.Id),
@@ -622,7 +672,7 @@ namespace MockGrpcPayDisplay
                 case grpc.ResponseCode.Error:
                     return remotepay.ResponseCode.ERROR;
                 default:
-                    throw new NotSupportedException();
+                    return default(remotepay.ResponseCode);
             }
         }
 
@@ -639,12 +689,13 @@ namespace MockGrpcPayDisplay
                 case grpc.ReversalReason.OtherReason:
                     return payments.ReversalReason.OTHER_REASON;
                 default:
-                    throw new NotSupportedException();
+                    return default(payments.ReversalReason);
             }
         }
 
         public static remotepay.SaleRequest From(grpc.SaleRequest src)
         {
+            if (src == null) return null;
             var result = new remotepay.SaleRequest
             {
                 DisableCashback = From(src.DisableCashback),
@@ -664,7 +715,7 @@ namespace MockGrpcPayDisplay
                 CardNotPresent = From(src.Base.Base.CardNotPresent),
                 DisableRestartTransactionOnFail = From(src.Base.Base.DisableRestartTransactionOnFail),
                 Amount = From(src.Base.Base.Amount),
-                CardEntryMethods = From(src.Base.Base.CardEntryMethods),
+                CardEntryMethods = From<int?>(src.Base.Base.CardEntryMethods),
                 VaultedCard = From(src.Base.Base.VaultedCard),
                 ExternalId = From(src.Base.Base.ExternalId),
                 Type = From(src.Base.Base.Type),
@@ -676,12 +727,14 @@ namespace MockGrpcPayDisplay
             src.Base.Base.Extras.ToList().ForEach(kvp => result.Extras.Add(kvp.Key, kvp.Value));
             src.Base.Base.RegionalExtras.ToList().ForEach(kvp => result.RegionalExtras.Add(kvp.Key, kvp.Value));
             // HACK: BaseRequest.RequestId is protected (and doesn't look like it is used anywhere?!)
-            result.GetType().GetProperty("RequestId").SetValue(result, src.Base.Base.Base.RequestId);
+            result.GetType().GetProperty("RequestId", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(result, src.Base?.Base?.Base?.RequestId);
             return result;
         }
 
-        public static remotepay.SaleResponse From(grpc.SaleResponse src) =>
-            new remotepay.SaleResponse
+        public static remotepay.SaleResponse From(grpc.SaleResponse src)
+        {
+            if (src == null) return null;
+            return new remotepay.SaleResponse
             {
                 // PaymentResponse
                 Payment = From(src.Base.Payment),
@@ -692,6 +745,7 @@ namespace MockGrpcPayDisplay
                 Result = From(src.Base.Base.Result),
                 Success = From(src.Base.Base.Success),
             };
+        }
 
         public static payments.SelectedService From(grpc.SelectedService src)
         {
@@ -722,21 +776,25 @@ namespace MockGrpcPayDisplay
                 case grpc.SelectedService.CardholderDetection:
                     return payments.SelectedService.CARDHOLDER_DETECTION;
                 default:
-                    throw new NotSupportedException();
+                    return default(payments.SelectedService);
             }
         }
 
-        public static payments.ServiceChargeAmount From(grpc.ServiceChargeAmount src) =>
-            new payments.ServiceChargeAmount
+        public static payments.ServiceChargeAmount From(grpc.ServiceChargeAmount src)
+        {
+            if (src == null) return null;
+            return new payments.ServiceChargeAmount
             {
                 id = From(src.Id),
                 name = From(src.Name),
                 amount = From(src.Amount),
                 paymentRef = From(src.PaymentRef),
             };
+        }
 
         public static transport.Signature2 From(grpc.Signature src)
         {
+            if (src == null) return null;
             var result = new transport.Signature2
             {
                 height = From(src.Height),
@@ -748,6 +806,7 @@ namespace MockGrpcPayDisplay
 
         public static payments.SignatureDisclaimer From(grpc.SignatureDisclaimer src)
         {
+            if (src == null) return null;
             var result = new payments.SignatureDisclaimer
             {
                 disclaimerText = From(src.DisclaimerText),
@@ -760,13 +819,16 @@ namespace MockGrpcPayDisplay
 
         public static transport.Signature2.Stroke From(grpc.Stroke src)
         {
+            if (src == null) return null;
             var result = new transport.Signature2.Stroke();
             result.points = src.Points.Select(o => From(o)).ToList();
             return result;
         }
 
-        public static payments.TaxableAmountRate From(grpc.TaxableAmountRate src) =>
-            new payments.TaxableAmountRate
+        public static payments.TaxableAmountRate From(grpc.TaxableAmountRate src)
+        {
+            if (src == null) return null;
+            return new payments.TaxableAmountRate
             {
                 id = From(src.Id),
                 name = From(src.Name),
@@ -775,6 +837,7 @@ namespace MockGrpcPayDisplay
                 taxAmount = From(src.TaxAmount),
                 isVat = From(src.IsVat),
             };
+        }
 
         public static TResult From<TResult>(grpc.TipMode src)
         {
@@ -793,7 +856,7 @@ namespace MockGrpcPayDisplay
                     case grpc.TipMode.NoTip:
                         return (TResult)(object)payments.TipMode.NO_TIP;
                     default:
-                        throw new NotSupportedException();
+                        return default(TResult);
                 }
             }
             else if (typeof(TResult) == typeof(remotepay.TipMode))
@@ -807,24 +870,29 @@ namespace MockGrpcPayDisplay
                     case grpc.TipMode.NoTip:
                         return (TResult)(object)remotepay.TipMode.NO_TIP;
                     default:
-                        throw new NotSupportedException();
+                        return default(TResult);
                 }
             }
             else throw new NotSupportedException();
 
         }
 
-        public static merchant.TipSuggestion From(grpc.TipSuggestion src) =>
-            new merchant.TipSuggestion
+        public static merchant.TipSuggestion From(grpc.TipSuggestion src)
+        {
+            if (src == null) return null;
+            return new merchant.TipSuggestion
             {
                 id = From(src.Id),
                 name = From(src.Name),
                 percentage = From(src.Percentage),
                 isEnabled = From(src.IsEnabled),
             };
+        }
 
-        public static base_.Tender From(grpc.Tender src) =>
-            new base_.Tender
+        public static base_.Tender From(grpc.Tender src)
+        {
+            if (src == null) return null;
+            return new base_.Tender
             {
                 id = From(src.Id),
                 editable = From(src.Editable),
@@ -836,6 +904,7 @@ namespace MockGrpcPayDisplay
                 visible = From(src.Visible),
                 instructions = From(src.Instructions),
             };
+        }
 
         public static payments.TxFormat From(grpc.TransactionFormat src)
         {
@@ -846,12 +915,14 @@ namespace MockGrpcPayDisplay
                 case grpc.TransactionFormat.Nexo:
                     return payments.TxFormat.NEXO;
                 default:
-                    throw new NotSupportedException();
+                    return default(payments.TxFormat);
             }
         }
 
-        public static payments.TransactionInfo From(grpc.TransactionInfo src) =>
-            new payments.TransactionInfo
+        public static payments.TransactionInfo From(grpc.TransactionInfo src)
+        {
+            if (src == null) return null;
+            return new payments.TransactionInfo
             {
                 languageIndicator = From(src.LanguageIndicator),
                 transactionLocale = From(src.TransactionLocale),
@@ -890,6 +961,7 @@ namespace MockGrpcPayDisplay
                 origTransactionSequenceCounter = From(src.OrigTransactionSequenceCounter),
                 transactionSequenceCounterUpdate = From(src.TransactionSequenceCounterUpdate),
             };
+        }
 
         public static payments.TransactionResult From(grpc.TransactionResult src)
         {
@@ -910,12 +982,13 @@ namespace MockGrpcPayDisplay
                 case grpc.TransactionResult.None:
                     return payments.TransactionResult.NONE;
                 default:
-                    throw new NotSupportedException();
+                    return default(payments.TransactionResult);
             }
         }
 
         public static payments.TransactionSettings From(grpc.TransactionSettings src)
         {
+            if (src == null) return null;
             var result = new payments.TransactionSettings
             {
                 cardEntryMethods = From(src.CardEntryMethods),
@@ -957,12 +1030,14 @@ namespace MockGrpcPayDisplay
                 case grpc.TransactionType.CapturePreaut:
                     return transport.PayIntent.TransactionType.CAPTURE_PREAUTH;
                 default:
-                    throw new NotSupportedException();
+                    return default(transport.PayIntent.TransactionType);
             }
         }
 
-        public static payments.VaultedCard From(grpc.VaultedCard src) =>
-            new payments.VaultedCard
+        public static payments.VaultedCard From(grpc.VaultedCard src)
+        {
+            if (src == null) return null;
+            return new payments.VaultedCard
             {
                 first6 = From(src.First6),
                 last4 = From(src.Last4),
@@ -970,27 +1045,37 @@ namespace MockGrpcPayDisplay
                 expirationDate = From(src.ExpirationDate),
                 token = From(src.Token),
             };
+        }
 
-        public static remotepay.VerifySignatureRequest From(grpc.AcceptSignatureRequest src) =>
-            new remotepay.VerifySignatureRequest
+        public static remotepay.VerifySignatureRequest From(grpc.AcceptSignatureRequest src)
+        {
+            if (src == null) return null;
+            return new remotepay.VerifySignatureRequest
             {
                 Payment = From(src.Payment),
                 Signature = null,
             };
+        }
 
-        public static remotepay.VerifySignatureRequest From(grpc.RejectSignatureRequest src) =>
-            new remotepay.VerifySignatureRequest
+        public static remotepay.VerifySignatureRequest From(grpc.RejectSignatureRequest src)
+        {
+            if (src == null) return null;
+            return new remotepay.VerifySignatureRequest
             {
                 Payment = From(src.Payment),
                 Signature = null,
             };
+        }
 
-        public static remotepay.VerifySignatureRequest From(grpc.VerifySignatureRequest src) =>
-            new remotepay.VerifySignatureRequest
+        public static remotepay.VerifySignatureRequest From(grpc.VerifySignatureRequest src)
+        {
+            if (src == null) return null;
+            return new remotepay.VerifySignatureRequest
             {
                 Payment = From(src.Payment),
                 Signature = From(src.Signature),
             };
+        }
 
         public static order.VoidReason From(grpc.VoidReason src)
         {
@@ -1017,7 +1102,7 @@ namespace MockGrpcPayDisplay
                 case grpc.VoidReason.RejectOffline:
                     return order.VoidReason.REJECT_OFFLINE;
                 default:
-                    throw new NotSupportedException();
+                    return default(order.VoidReason);
             }
         }
     }

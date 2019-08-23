@@ -50,11 +50,10 @@ namespace MockGrpcPayDisplay
         private StreamHandler<sdk.VoidPaymentRefundResponse, VoidPaymentRefundResponse> VoidPaymentRefundResponseHandler { get; set; }
         private StreamHandler<sdk.VoidPaymentResponse, VoidPaymentResponse> VoidPaymentResponseHandler { get; set; }
 
-        #region Connection
-        public override Task<CreateResponse> Create(CreateRequest request, ServerCallContext context)
-        {
-            Program.WriteLine("Create");
 
+        #region Constructor
+        public PayDisplayImpl()
+        {
             listener = new Listener();
             listener.AuthResponse += (s, e) => AuthResponseHandler?.Invoke(e);
             listener.CapturePreAuthResponse += (s, e) => CapturePreAuthResponseHandler?.Invoke(e);
@@ -94,18 +93,24 @@ namespace MockGrpcPayDisplay
             listener.VerifySignatureRequest += (s, e) => VerifySignatureRequestHandler?.Invoke(e);
             listener.VoidPaymentRefundResponse += (s, e) => VoidPaymentRefundResponseHandler?.Invoke(e);
             listener.VoidPaymentResponse += (s, e) => VoidPaymentResponseHandler?.Invoke(e);
-
-            connector = sdk.CloverConnectorFactory.CreateUsbConnector("RAID", "POS", "Register1", true);
-            connector.AddCloverConnectorListener(listener);
-
-            return Task.FromResult(new CreateResponse());
         }
+        #endregion
 
-        public override Task<InitializeResponse> Initialize(InitializeRequest request, ServerCallContext context)
+
+        #region Connection
+        public override Task<CreateResponse> Create(CreateRequest request, ServerCallContext context)
         {
-            Program.WriteLine("Initialize");
-            connector.InitializeConnection();
-            return Task.FromResult(new InitializeResponse());
+            Program.WriteLine("Create");
+            if (connector == null)
+            {
+                connector = sdk.CloverConnectorFactory.CreateUsbConnector("RAID", "POS", "Register1", true);
+                connector.AddCloverConnectorListener(listener);
+                connector.InitializeConnection();
+            } else
+            {
+                DeviceReadyHandler.Reinvoke();
+            }
+            return Task.FromResult(new CreateResponse());
         }
 
         public override Task<DisposeResponse> Dispose(DisposeRequest request, ServerCallContext context)
@@ -189,11 +194,11 @@ namespace MockGrpcPayDisplay
             VoidPaymentResponseHandler?.Promise.TrySetResult(0);
             VoidPaymentResponseHandler = null;
 
-            connector.RemoveCloverConnectorListener(listener);
-            connector.Dispose();
+            //connector.RemoveCloverConnectorListener(listener);
+            //connector.Dispose();
 
-            connector = null;
-            listener = null;
+            //connector = null;
+            //listener = null;
 
             return Task.FromResult(new DisposeResponse());
         }
@@ -288,17 +293,28 @@ namespace MockGrpcPayDisplay
             );
             return SaleResponseHandler.Promise.Task;
         }
+
+        public override Task OnResetDeviceResponse(Empty request, IServerStreamWriter<ResetDeviceResponse> responseStream, ServerCallContext context)
+        {
+            ResetDeviceResponseHandler = new StreamHandler<sdk.ResetDeviceResponse, ResetDeviceResponse>(
+                responseStream,
+                o => Translate.From(o)
+            );
+            return ResetDeviceResponseHandler.Promise.Task;
+        }
         #endregion
     }
 
     public class StreamHandler<TSdk, TGrpc>
     {
+        private static TSdk Cache { get; set; }
+
         private readonly object Lock = new object();
         private Task writeTask = Task.FromResult(0);
 
-        public TaskCompletionSource<int> Promise { get; set; }
+        public TaskCompletionSource<int> Promise { get; set; } = new TaskCompletionSource<int>();
         public IServerStreamWriter<TGrpc> Stream { get; set; }
-                public Func<TSdk, TGrpc> ToGrpc { get; set; }
+        public Func<TSdk, TGrpc> ToGrpc { get; set; }
 
         public StreamHandler(IServerStreamWriter<TGrpc> stream, Func<TSdk, TGrpc> toGrpc)
         {
@@ -314,9 +330,12 @@ namespace MockGrpcPayDisplay
                 writeTask = Task.Run(() =>
                 {
                     oldTask.Wait();
+                    Cache = obj;
                     Stream.WriteAsync(ToGrpc(obj)).Wait();
                 });
             }
         }
+
+        public void Reinvoke() => Invoke(Cache);
     }
 }

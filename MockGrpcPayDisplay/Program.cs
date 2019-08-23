@@ -64,6 +64,21 @@ namespace MockGrpcPayDisplay
               __/ |            | |             __/ |
              |___/             |_|            |___/ 
 ".TrimStart('\r', '\n'), ConsoleColor.Cyan, ConsoleColor.Black);
+
+            var left = Console.CursorLeft;
+            var top = Console.CursorTop;
+
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.BackgroundColor = ConsoleColor.DarkCyan;
+
+            Console.SetCursorPosition(9, 1);
+            Console.Write(" M O C K ");
+
+            Console.SetCursorPosition(28, 1);
+            Console.Write(" g R P C ");
+
+            Console.ResetColor();
+            Console.SetCursorPosition(left, top);
         }
 
         public static void WriteLine(string message, ConsoleColor foreColor = ConsoleColor.Gray, ConsoleColor backColor = ConsoleColor.Black)
