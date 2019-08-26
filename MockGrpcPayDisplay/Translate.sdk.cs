@@ -8,6 +8,7 @@ using merchant = com.clover.sdk.v3.merchant;
 using order = com.clover.sdk.v3.order;
 using payments = com.clover.sdk.v3.payments;
 using remotepay = com.clover.remotepay.sdk;
+using sdk = com.clover.sdk.v3;
 using transport = com.clover.remotepay.transport;
 
 namespace MockGrpcPayDisplay
@@ -71,6 +72,42 @@ namespace MockGrpcPayDisplay
             };
         }
 
+        public static remotepay.AuthRequest From(grpc.AuthRequest src)
+        {
+            if (src == null) return null;
+            var result = new remotepay.AuthRequest
+            {
+                DisableCashback = From(src.DisableCashback),
+                TaxAmount = From(src.TaxAmount),
+                TippableAmount = From(src.TippableAmount),
+                AllowOfflinePayment = From(src.AllowOfflinePayment),
+                ApproveOfflinePaymentWithoutPrompt = From(src.ApproveOfflinePaymentWithoutPrompt),
+                ForceOfflinePayment = From(src.ForceOfflinePayment),
+                // TransactionRequest
+                SignatureThreshold = From(src.SignatureThreshold),
+                SignatureEntryLocation = From(src.SignatureEntryLocation),
+                AutoAcceptSignature = From(src.AutoAcceptSignature),
+                // BaseTransactionRequest
+                DisablePrinting = From(src.DisablePrinting),
+                CardNotPresent = From(src.CardNotPresent),
+                DisableRestartTransactionOnFail = From(src.DisableRestartTransactionOnFail),
+                Amount = From(src.Amount),
+                CardEntryMethods = From<int?>(src.CardEntryMethods),
+                VaultedCard = From(src.VaultedCard),
+                ExternalId = From(src.ExternalId),
+                Type = From(src.Type),
+                DisableDuplicateChecking = From(src.DisableDuplicateChecking),
+                DisableReceiptSelection = From(src.DisableReceiptSelection),
+                AutoAcceptPaymentConfirmations = From(src.AutoAcceptPaymentConfirmations),
+            };
+            result.TipSuggestions = src.TipSuggestions.Select(o => From(o)).ToList();
+            src.Extras.ToList().ForEach(kvp => result.Extras.Add(kvp.Key, kvp.Value));
+            src.RegionalExtras.ToList().ForEach(kvp => result.RegionalExtras.Add(kvp.Key, kvp.Value));
+            // HACK: BaseRequest.RequestId is protected (and doesn't look like it is used anywhere?!)
+            result.GetType().GetProperty("RequestId", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(result, src.RequestId);
+            return result;
+        }
+
         public static payments.AVSResult From(grpc.AvsResult src)
         {
             switch (src)
@@ -100,6 +137,20 @@ namespace MockGrpcPayDisplay
                 default:
                     return default(payments.AVSResult);
             }
+        }
+
+        public static remotepay.CapturePreAuthRequest From(grpc.CapturePreAuthRequest src)
+        {
+            if (src == null) return null;
+            var result = new remotepay.CapturePreAuthRequest
+            {
+                Amount = From(src.Amount),
+                PaymentID = From(src.PaymentID),
+                TipAmount = From(src.TipAmount),
+            };
+            // HACK: BaseRequest.RequestId is protected (and doesn't look like it is used anywhere?!)
+            result.GetType().GetProperty("RequestId", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(result, src.RequestId);
+            return result;
         }
 
         public static payments.CardEntryType From(grpc.CardEntryType src)
@@ -316,6 +367,16 @@ namespace MockGrpcPayDisplay
             }
         }
 
+        public static remotepay.CloseoutRequest From(grpc.CloseoutRequest src)
+        {
+            if (src == null) return null;
+            return new remotepay.CloseoutRequest
+            {
+                AllowOpenTabs = From(src.AllowOpenTabs),
+                BatchId = From(src.BatchId),
+            };
+        }
+
         public static remotepay.ConfirmPaymentRequest From(grpc.ConfirmPaymentRequest src)
         {
             if (src == null) return null;
@@ -343,6 +404,17 @@ namespace MockGrpcPayDisplay
         }
 
         public static payments.DataEntryLocation From(grpc.DataEntryLocation? src) => From(src.GetValueOrDefault());
+
+        public static sdk.DataProviderConfig From(grpc.DataProviderConfig src)
+        {
+            if (src == null) return null;
+            var result = new sdk.DataProviderConfig
+            {
+                type = From(src.Type),
+            };
+            result.configuration = src.Configuration?.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+            return result;
+        }
 
         public static payments.DCCInfo From(grpc.DccInfo src)
         {
@@ -372,6 +444,130 @@ namespace MockGrpcPayDisplay
                 Model = From(src.Model),
                 SupportsAcks = From(src.SupportsAcks),
             };
+        }
+
+        public static com.clover.remote.order.DisplayDiscount From(grpc.DisplayDiscount src)
+        {
+            if (src == null) return null;
+            var result = new com.clover.remote.order.DisplayDiscount
+            {
+                amount = From(src.Amount),
+                id = From(src.Id),
+                lineItemId = From(src.LineItemId),
+                name = From(src.Name),
+                percentage = From(src.Percentage),
+            };
+            return result;
+        }
+
+        public static com.clover.remote.order.DisplayLineItem From(grpc.DisplayLineItem src)
+        {
+            if (src == null) return null;
+            var result = new com.clover.remote.order.DisplayLineItem
+            {
+                alternateName = From(src.AlternateName),
+                binName = From(src.BinName),
+                discountAmount = From(src.DiscountAmount),
+                exchanged = From(src.Exchanged),
+                exchangedAmount = From(src.ExchangedAmount),
+                id = From(src.Id),
+                name = From(src.Name),
+                note = From(src.Note),
+                orderId = From(src.OrderId),
+                percent = From(src.Percent),
+                price = From(src.Price),
+                printed = From(src.Printed),
+                quantity = From(src.Quantity),
+                refunded = From(src.Refunded),
+                refundedAmount = From(src.RefundedAmount),
+                unitPrice = From(src.UnitPrice),
+                unitQuantity = From(src.UnitQuantity),
+                userData = From(src.UserData),
+            };
+            result.discounts = new com.clover.remote.order.ListWrapper<com.clover.remote.order.DisplayDiscount>();
+            src.Discounts.ToList().ForEach(o => result.discounts.Add(From(o)));
+            result.modifications = new com.clover.remote.order.ListWrapper<com.clover.remote.order.DisplayModification>();
+            src.Modifications.ToList().ForEach(o => result.modifications.Add(From(o)));
+            return result;
+        }
+
+        public static com.clover.remote.order.DisplayModification From(grpc.DisplayModification src)
+        {
+            if (src == null) return null;
+            return new com.clover.remote.order.DisplayModification
+            {
+                amount = From(src.Amount),
+                id = From(src.Id),
+                name = From(src.Name),
+            };
+        }
+
+        public static com.clover.remote.order.DisplayOrder From(grpc.DisplayOrder src)
+        {
+            if (src == null) return null;
+            var result = new com.clover.remote.order.DisplayOrder
+            {
+                id = From(src.Id),
+                currency = From(src.Currency),
+                employee = From(src.Employee),
+                subtotal = From(src.Subtotal),
+                tax = From(src.Tax),
+                total = From(src.Total),
+                title = From(src.Title),
+                note = From(src.Note),
+                serviceChargeName = From(src.ServiceChargeName),
+                serviceChargeAmount = From(src.ServiceChargeAmount),
+                amountRemaining = From(src.AmountRemaining),
+            };
+            result.discounts = new com.clover.remote.order.ListWrapper<com.clover.remote.order.DisplayDiscount>();
+            src.Discounts.ToList().ForEach(o => result.discounts.Add(From(o)));
+            result.lineItems = new com.clover.remote.order.ListWrapper<com.clover.remote.order.DisplayLineItem>();
+            src.LineItems.ToList().ForEach(o => result.lineItems.Add(From(o)));
+            result.payments = new com.clover.remote.order.ListWrapper<com.clover.remote.order.DisplayPayment>();
+            src.Payments.ToList().ForEach(o => result.payments.Add(From(o)));
+            return result;
+        }
+
+        public static com.clover.remote.order.DisplayPayment From(grpc.DisplayPayment src)
+        {
+            if (src == null) return null;
+            return new com.clover.remote.order.DisplayPayment {
+                amount = From(src.Amount),
+                id = From(src.Id),
+                label = From(src.Label),
+                taxAmount = From(src.TaxAmount),
+                tipAmount = From(src.TipAmount),
+            };
+        }
+
+        public static remotepay.DisplayPaymentReceiptOptionsRequest From(grpc.DisplayPaymentReceiptOptionsRequest src)
+        {
+            if (src == null) return null;
+            var result = new remotepay.DisplayPaymentReceiptOptionsRequest
+            {
+                DisablePrinting = From(src.DisablePrinting),
+                OrderID = From(src.OrderID),
+                PaymentID = From(src.PaymentID),
+            };
+            // HACK: BaseRequest.RequestId is protected (and doesn't look like it is used anywhere?!)
+            result.GetType().GetProperty("RequestId", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(result, src.RequestId);
+            return result;
+        }
+
+        public static remotepay.DisplayReceiptOptionsRequest From(grpc.DisplayReceiptOptionsRequest src)
+        {
+            if (src == null) return null;
+            var result = new remotepay.DisplayReceiptOptionsRequest
+            {
+                creditId = From(src.CreditId),
+                disablePrinting = From(src.DisablePrinting),
+                orderId = From(src.OrderId),
+                paymentId = From(src.PaymentId),
+                refundId = From(src.RefundId),
+            };
+            // HACK: BaseRequest.RequestId is protected (and doesn't look like it is used anywhere?!)
+            result.GetType().GetProperty("RequestId", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(result, src.RequestId);
+            return result;
         }
 
         public static payments.GermanInfo From(grpc.GermanInfo src)
@@ -513,6 +709,31 @@ namespace MockGrpcPayDisplay
             };
         }
 
+        public static remotepay.ManualRefundRequest From(grpc.ManualRefundRequest src)
+        {
+            if (src == null) return null;
+            var result = new remotepay.ManualRefundRequest
+            {
+                // BaseTransactionRequest
+                DisablePrinting = From(src.DisablePrinting),
+                CardNotPresent = From(src.CardNotPresent),
+                DisableRestartTransactionOnFail = From(src.DisableRestartTransactionOnFail),
+                Amount = From(src.Amount),
+                CardEntryMethods = From<int?>(src.CardEntryMethods),
+                VaultedCard = From(src.VaultedCard),
+                ExternalId = From(src.ExternalId),
+                Type = From(src.Type),
+                DisableDuplicateChecking = From(src.DisableDuplicateChecking),
+                DisableReceiptSelection = From(src.DisableReceiptSelection),
+                AutoAcceptPaymentConfirmations = From(src.AutoAcceptPaymentConfirmations),
+            };
+            src.Extras.ToList().ForEach(kvp => result.Extras.Add(kvp.Key, kvp.Value));
+            src.RegionalExtras.ToList().ForEach(kvp => result.RegionalExtras.Add(kvp.Key, kvp.Value));
+            // HACK: BaseRequest.RequestId is protected (and doesn't look like it is used anywhere?!)
+            result.GetType().GetProperty("RequestId", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(result, src.RequestId);
+            return result;
+        }
+
         public static remotepay.MerchantInfo From(grpc.MerchantInfo src)
         {
             if (src == null) return null;
@@ -534,6 +755,16 @@ namespace MockGrpcPayDisplay
                 supportsPreAuth = From(src.SupportsPreAuth),
                 supportsAuth = From(src.SupportsAuth),
                 supportsVaultCard = From(src.SupportsVaultCard),
+            };
+        }
+
+        public static remotepay.MessageToActivity From(grpc.SendMessageToActivityRequest src)
+        {
+            if (src == null) return null;
+            return new remotepay.MessageToActivity
+            {
+                Action = From(src.Action),
+                Payload = From(src.Payload),
             };
         }
 
@@ -579,29 +810,6 @@ namespace MockGrpcPayDisplay
             return result;
         }
 
-        public static payments.Result From(grpc.PaymentResult src)
-        {
-            switch (src)
-            {
-                case grpc.PaymentResult.Success:
-                    return payments.Result.SUCCESS;
-                case grpc.PaymentResult.Fail:
-                    return payments.Result.FAIL;
-                case grpc.PaymentResult.Initiated:
-                    return payments.Result.INITIATED;
-                case grpc.PaymentResult.Voided:
-                    return payments.Result.VOIDED;
-                case grpc.PaymentResult.Voiding:
-                    return payments.Result.VOIDING;
-                case grpc.PaymentResult.Auth:
-                    return payments.Result.AUTH;
-                case grpc.PaymentResult.AuthCompleted:
-                    return payments.Result.AUTH_COMPLETED;
-                default:
-                    return default(payments.Result);
-            }
-        }
-
         public static payments.PaymentTaxRate From(grpc.PaymentTaxRate src)
         {
             if (src == null) return null;
@@ -624,6 +832,85 @@ namespace MockGrpcPayDisplay
                 x = From(src.X),
                 y = From(src.Y),
             };
+        }
+
+        public static transport.PrintCategory From(grpc.PrintCategory src)
+        {
+            switch (src)
+            {
+                case grpc.PrintCategory.None:
+                    return transport.PrintCategory.NONE;
+                case grpc.PrintCategory.Order:
+                    return transport.PrintCategory.ORDER;
+                case grpc.PrintCategory.Receipt:
+                    return transport.PrintCategory.RECEIPT;
+                default:
+                    return transport.PrintCategory.NONE;
+            }
+        }
+
+        public static remotepay.PreAuthRequest From(grpc.PreAuthRequest src)
+        {
+            //var json = Newtonsoft.Json.JsonConvert.SerializeObject(src);
+            //var attempt = Newtonsoft.Json.JsonConvert.DeserializeObject<remotepay.SaleRequest>(json);
+
+            if (src == null) return null;
+            var result = new remotepay.PreAuthRequest
+            {
+                // BaseTransactionRequest
+                DisablePrinting = From(src.DisablePrinting),
+                CardNotPresent = From(src.CardNotPresent),
+                DisableRestartTransactionOnFail = From(src.DisableRestartTransactionOnFail),
+                Amount = From(src.Amount),
+                CardEntryMethods = From<int?>(src.CardEntryMethods),
+                VaultedCard = From(src.VaultedCard),
+                ExternalId = From(src.ExternalId),
+                Type = From(src.Type),
+                DisableDuplicateChecking = From(src.DisableDuplicateChecking),
+                DisableReceiptSelection = From(src.DisableReceiptSelection),
+                AutoAcceptPaymentConfirmations = From(src.AutoAcceptPaymentConfirmations),
+            };
+            src.Extras.ToList().ForEach(kvp => result.Extras.Add(kvp.Key, kvp.Value));
+            src.RegionalExtras.ToList().ForEach(kvp => result.RegionalExtras.Add(kvp.Key, kvp.Value));
+            // HACK: BaseRequest.RequestId is protected (and doesn't look like it is used anywhere?!)
+            result.GetType().GetProperty("RequestId", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(result, src.RequestId);
+            return result;
+        }
+
+        public static remotepay.PrintRequest From(grpc.PrintRequest src)
+        {
+            if (src == null) return null;
+            var result = new remotepay.PrintRequest
+            {
+                printDeviceId = From(src.PrintDeviceId),
+                printRequestId = From(src.PrintRequestId),
+            };
+            result.images = src.Images?.Select(o => From(o))?.ToList();
+            result.imageURLs = src.ImageUrls?.Select(o => From(o)).ToList();
+            result.text = src.Text?.Select(o => From(o)).ToList();
+            // HACK: BaseRequest.RequestId is protected (and doesn't look like it is used anywhere?!)
+            result.GetType().GetProperty("RequestId", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(result, src.RequestId);
+            return result;
+        }
+
+        public static remotepay.ReadCardDataRequest From(grpc.ReadCardDataRequest src)
+        {
+            if (src == null) return null;
+            return new remotepay.ReadCardDataRequest
+            {
+                CardEntryMethods = From(src.CardEntryMethods),
+                IsForceSwipePinEntry = From(src.IsForceSwipePinEntry),
+            };
+        }
+
+        public static remotepay.RegisterForCustomerProvidedDataRequest From(grpc.RegisterForCustomerProvidedDataRequest src)
+        {
+            if (src == null) return null;
+            var result = new remotepay.RegisterForCustomerProvidedDataRequest();
+            result.Configurations = src.Configurations.Select(o => From(o)).ToArray();
+            // HACK: BaseRequest.RequestId is protected (and doesn't look like it is used anywhere?!)
+            result.GetType().GetProperty("RequestId", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(result, src.RequestId);
+            return result;
         }
 
         public static base_.Reference From(grpc.Reference src)
@@ -657,6 +944,47 @@ namespace MockGrpcPayDisplay
             return result;
         }
 
+        public static remotepay.RefundPaymentRequest From(grpc.RefundPaymentRequest src)
+        {
+            if (src == null) return null;
+            var result = new remotepay.RefundPaymentRequest
+            {
+                Amount = From(src.Amount),
+                DisablePrinting = From(src.DisablePrinting),
+                DisableReceiptSelection = From(src.DisableReceiptSelection),
+                FullRefund = From(src.FullRefund),
+                OrderId = From(src.OrderId),
+                PaymentId = From(src.PaymentId),
+            };
+            src.Extras?.ToList()?.ForEach(kvp => result.Extras.Add(kvp.Key, kvp.Value));
+            // HACK: BaseRequest.RequestId is protected (and doesn't look like it is used anywhere?!)
+            result.GetType().GetProperty("RequestId", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(result, src.RequestId);
+            return result;
+        }
+
+        public static payments.Result From(grpc.PaymentResult src)
+        {
+            switch (src)
+            {
+                case grpc.PaymentResult.Success:
+                    return payments.Result.SUCCESS;
+                case grpc.PaymentResult.Fail:
+                    return payments.Result.FAIL;
+                case grpc.PaymentResult.Initiated:
+                    return payments.Result.INITIATED;
+                case grpc.PaymentResult.Voided:
+                    return payments.Result.VOIDED;
+                case grpc.PaymentResult.Voiding:
+                    return payments.Result.VOIDING;
+                case grpc.PaymentResult.Auth:
+                    return payments.Result.AUTH;
+                case grpc.PaymentResult.AuthCompleted:
+                    return payments.Result.AUTH_COMPLETED;
+                default:
+                    return default(payments.Result);
+            }
+        }
+
         public static remotepay.ResponseCode From(grpc.ResponseCode src)
         {
             switch (src)
@@ -674,6 +1002,46 @@ namespace MockGrpcPayDisplay
                 default:
                     return default(remotepay.ResponseCode);
             }
+        }
+
+        public static transport.RetrieveDeviceStatusRequest From(grpc.RetrieveDeviceStatusRequest src)
+        {
+            if (src == null) return null;
+            return new transport.RetrieveDeviceStatusRequest
+            {
+                sendLastMessage = From(src.SendLastMessage),
+            };
+
+        }
+
+        public static transport.RetrievePaymentRequest From(grpc.RetrievePaymentRequest src)
+        {
+            if (src == null) return null;
+            return new transport.RetrievePaymentRequest
+            {
+                externalPaymentId = From(src.ExternalPaymentId),
+            };
+        }
+
+        public static transport.RetrievePrintersRequest From(grpc.RetrievePrintersRequest src)
+        {
+            if (src == null) return null;
+            return new transport.RetrievePrintersRequest
+            {
+                category = From(src.Category),
+            };
+        }
+
+        public static remotepay.PrintJobStatusRequest From(grpc.RetrievePrintJobStatusRequest src)
+        {
+            if (src == null) return null;
+            var result = new remotepay.PrintJobStatusRequest
+            {
+                printRequestId = From(src.PrintRequestId),
+            };
+            // HACK: BaseRequest.RequestId is protected (and doesn't look like it is used anywhere?!)
+            result.GetType().GetProperty("RequestId", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(result, src.RequestId);
+            return result;
         }
 
         public static payments.ReversalReason From(grpc.ReversalReason src)
@@ -703,7 +1071,7 @@ namespace MockGrpcPayDisplay
             {
                 DisableCashback = From(src.DisableCashback),
                 TaxAmount = From(src.TaxAmount),
-                TippableAmount = From(src.TipAmount),
+                TippableAmount = From(src.TippableAmount),
                 AllowOfflinePayment = From(src.AllowOfflinePayment),
                 ApproveOfflinePaymentWithoutPrompt = From(src.ApproveOfflinePaymentWithoutPrompt),
                 TipAmount = From(src.TipAmount),

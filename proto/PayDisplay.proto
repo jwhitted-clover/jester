@@ -69,7 +69,6 @@ service PayDisplay {
   rpc OnManualRefundResponse (Empty) returns (stream ManualRefundResponse);
   rpc OnMessageFromActivity (Empty) returns (stream MessageFromActivity);
   rpc OnPreAuthResponse (Empty) returns (stream PreAuthResponse);
-  rpc OnPrintJobStatusRequest (Empty) returns (stream PrintJobStatusRequest);
   rpc OnPrintJobStatusResponse (Empty) returns (stream PrintJobStatusResponse);
   rpc OnPrintManualRefundDeclineReceipt (Empty) returns (stream PrintManualRefundDeclineReceiptMessage);
   rpc OnPrintManualRefundReceipt (Empty) returns (stream PrintManualRefundReceiptMessage);
@@ -154,6 +153,11 @@ message CapturePreAuthResponse {
   string PaymentId = 1;
   int64 Amount = 2;
   int64 TipAmount = 3;
+  // BaseResponse
+  bool Success = 4;
+  ResponseCode Result = 5;
+  string Reason = 6;
+  string Message = 7;
 }
 
 message CloseoutRequest {
@@ -455,7 +459,7 @@ message PrintRefundPaymentReceiptMessage {
 
 message PrintRequest {
   repeated bytes Images = 1;
-  repeated string ImageUrLs = 2;
+  repeated string ImageUrls = 2;
   repeated string Text = 3;
   string PrintRequestId = 4;
   string PrintDeviceId = 5;

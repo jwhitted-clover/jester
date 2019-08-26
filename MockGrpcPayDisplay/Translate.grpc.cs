@@ -2,10 +2,14 @@
 using base_ = com.clover.sdk.v3.base_;
 using customers = com.clover.sdk.v3.customers;
 using grpc = Clover.Grpc;
+using hours = com.clover.sdk.v3.hours;
+using inventory = com.clover.sdk.v3.inventory;
 using merchant = com.clover.sdk.v3.merchant;
 using order = com.clover.sdk.v3.order;
 using payments = com.clover.sdk.v3.payments;
+using printer = com.clover.sdk.v3.printer;
 using remotepay = com.clover.remotepay.sdk;
+using sdk = com.clover.sdk.v3;
 using transport = com.clover.remotepay.transport;
 
 namespace MockGrpcPayDisplay
@@ -48,6 +52,22 @@ namespace MockGrpcPayDisplay
             }
         }
 
+        public static grpc.Address From(customers.Address src)
+        {
+            if (src == null) return null;
+            return new grpc.Address
+            {
+                Address1 = From(src.address1),
+                Address2 = From(src.address2),
+                Address3 = From(src.address3),
+                City = From(src.city),
+                Country = From(src.country),
+                Id = From(src.id),
+                State = From(src.state),
+                Zip = From(src.zip),
+            };
+        }
+
         public static grpc.AppTracking From(payments.AppTracking src)
         {
             if (src == null) return null;
@@ -63,6 +83,22 @@ namespace MockGrpcPayDisplay
                 RefundRef = From(src.refundRef),
                 SourceSdk = From(src.sourceSDK),
                 SourceSdkVersion = From(src.sourceSDKVersion),
+            };
+        }
+
+        public static grpc.AuthResponse From(remotepay.AuthResponse src)
+        {
+            if (src == null) return null;
+            return new grpc.AuthResponse
+            {
+                // PaymentResponse
+                Payment = From(src.Payment),
+                Signature = From(src.Signature),
+                // BaseResponse
+                Message = From(src.Message),
+                Reason = From(src.Reason),
+                Result = From(src.Result),
+                Success = From(src.Success),
             };
         }
 
@@ -95,6 +131,163 @@ namespace MockGrpcPayDisplay
                 default:
                     return grpc.AvsResult.Unknown;
             }
+        }
+
+        public static grpc.Batch From(payments.Batch src)
+        {
+            if (src == null) return null;
+            return new grpc.Batch
+            {
+                AccountId = From(src.accountId),
+                BatchDetails = From(src.batchDetails),
+                BatchType = From(src.batchType),
+                CreatedTime = From(src.createdTime),
+                Devices = From(src.devices),
+                FirstGatewayTxId = From(src.firstGatewayTxId),
+                Id = From(src.id),
+                LastGatewayTxId = From(src.lastGatewayTxId),
+                MerchantId = From(src.merchantId),
+                ModifiedTime = From(src.modifiedTime),
+                State = From(src.state),
+                TotalBatchAmount = From(src.totalBatchAmount),
+                TxCount = From(src.txCount),
+            };
+        }
+
+        public static grpc.BatchCardTotal From(payments.BatchCardTotal src)
+        {
+            if (src == null) return null;
+            return new grpc.BatchCardTotal
+            {
+                CardType = From(src.cardType),
+                Count = From(src.count),
+                Total = From(src.total),
+            };
+        }
+
+        public static grpc.BatchDetail From(payments.BatchDetail src)
+        {
+            if (src == null) return null;
+            var result = new grpc.BatchDetail
+            {
+                BatchTotals = From(src.batchTotals),
+                OpenTabs = From(src.openTabs),
+                OpenTips = From(src.openTips),
+            };
+            src.cardTotals?.Select(o => From(o))?.ToList()?.ForEach(o => result.CardTotals.Add(o));
+            src.serverTotals?.Select(o => From(o))?.ToList()?.ForEach(o => result.ServerTotals.Add(o));
+            return result;
+        }
+
+        public static grpc.BatchState From(payments.BatchState src)
+        {
+            switch (src)
+            {
+                case payments.BatchState.OPEN:
+                    return grpc.BatchState.Open;
+                case payments.BatchState.QUEUED_FOR_PROCESSING:
+                    return grpc.BatchState.QueuedForProcessing;
+                case payments.BatchState.PROCESSING:
+                    return grpc.BatchState.Processing;
+                case payments.BatchState.CLOSED:
+                    return grpc.BatchState.Closed;
+                case payments.BatchState.FAILED:
+                    return grpc.BatchState.Failed;
+                default:
+                    return grpc.BatchState.Unknown;
+            }
+        }
+
+        public static grpc.BatchTotalStats From(payments.BatchTotalStats src)
+        {
+            if (src == null) return null;
+            return new grpc.BatchTotalStats
+            {
+                GiftCardCashOuts = From(src.giftCardCashOuts),
+                GiftCardLoads = From(src.giftCardLoads),
+                Net = From(src.net),
+                Refunds = From(src.refunds),
+                Sales = From(src.sales),
+                Tax = From(src.tax),
+                Tips = From(src.tips),
+            };
+        }
+
+        public static grpc.BatchTotalType From(payments.BatchTotalType src)
+        {
+            if (src == null) return null;
+            return new grpc.BatchTotalType
+            {
+                Count = From(src.count),
+                Total = From(src.total),
+            };
+        }
+
+        public static grpc.BatchType From(payments.BatchType src)
+        {
+            switch (src)
+            {
+                case payments.BatchType.MANUAL_CLOSE:
+                    return grpc.BatchType.ManualClose;
+                case payments.BatchType.AUTO_CLOSE:
+                    return grpc.BatchType.AutoClose;
+                default:
+                    return grpc.BatchType.Unknown;
+            }
+        }
+
+        public static grpc.CapturePreAuthResponse From(remotepay.CapturePreAuthResponse src)
+        {
+            if (src == null) return null;
+            return new grpc.CapturePreAuthResponse
+            {
+                Amount = From(src.Amount),
+                PaymentId = From(src.PaymentId),
+                TipAmount = From(src.TipAmount),
+                // BaseResponse
+                Message = From(src.Message),
+                Reason = From(src.Reason),
+                Result = From(src.Result),
+                Success = From(src.Success),
+            };
+        }
+
+        public static grpc.Card From(customers.Card src)
+        {
+            if (src == null) return null;
+            return new grpc.Card
+            {
+                CardType = From(src.cardType),
+                ExpirationDate = From(src.expirationDate),
+                First6 = From(src.first6),
+                FirstName = From(src.firstName),
+                Id = From(src.id),
+                Last4 = From(src.last4),
+                LastName = From(src.lastName),
+                Token = From(src.token),
+            };
+        }
+
+        public static grpc.CardData From(transport.CardData src)
+        {
+            if (src == null) return null;
+            return new grpc.CardData
+            {
+                CardholderName = From(src.CardholderName),
+                Encrypted = From(src.Encrypted),
+                Exp = From(src.Exp),
+                First6 = From(src.First6),
+                FirstName = From(src.FirstName),
+                Last4 = From(src.Last4),
+                LastName = From(src.LastName),
+                MaskedTrack1 = From(src.MaskedTrack1),
+                MaskedTrack2 = From(src.MaskedTrack2),
+                MaskedTrack3 = From(src.MaskedTrack3),
+                Pan = From(src.Pan),
+                Track1 = From(src.Track1),
+                Track2 = From(src.Track2),
+                Track3 = From(src.Track3),
+            };
         }
 
         public static grpc.CardEntryType From(payments.CardEntryType src)
@@ -311,6 +504,20 @@ namespace MockGrpcPayDisplay
             }
         }
 
+        public static grpc.CloseoutResponse From(remotepay.CloseoutResponse src)
+        {
+            if (src == null) return null;
+            return new grpc.CloseoutResponse
+            {
+                Batch = From(src.Batch),
+                // BaseResponse
+                Message = From(src.Message),
+                Reason = From(src.Reason),
+                Result = From(src.Result),
+                Success = From(src.Success),
+            };
+        }
+
         public static grpc.ConfirmPaymentRequest From(remotepay.ConfirmPaymentRequest src)
         {
             if (src == null) return null;
@@ -320,6 +527,80 @@ namespace MockGrpcPayDisplay
             };
             src.Challenges?.Select(o => From(o))?.ToList()?.ForEach(o => result.Challenges.Add(o));
             return result;
+        }
+
+        public static grpc.Credit From(payments.Credit src)
+        {
+            if (src == null) return null;
+            var result = new grpc.Credit
+            {
+                Amount = From(src.amount),
+                CardTransaction = From(src.cardTransaction),
+                ClientCreatedTime = From(src.clientCreatedTime),
+                CreatedTime = From(src.createdTime),
+                Customers = From(src.customers),
+                Device = From(src.device),
+                Employee = From(src.employee),
+                Id = From(src.id),
+                OrderRef = From(src.orderRef),
+                TaxAmount = From(src.taxAmount),
+                Tender = From(src.tender),
+                Voided = From(src.voided),
+                VoidReason = From(src.voidReason),
+            };
+            src.taxRates?.Select(o => From(o))?.ToList()?.ForEach(o => result.TaxRates.Add(o));
+            return result;
+        }
+
+        public static grpc.Customer From(customers.Customer src)
+        {
+            if (src == null) return null;
+            var result = new grpc.Customer
+            {
+                Id = From(src.id),
+                OrderRef = From(src.orderRef),
+                FirstName = From(src.firstName),
+                LastName = From(src.lastName),
+                MarketingAllowed = From(src.marketingAllowed),
+                CustomerSince = From(src.customerSince),
+            };
+            src.orders?.Select(o => From(o))?.ToList()?.ForEach(o => result.Orders.Add(o));
+            src.addresses?.Select(o => From(o))?.ToList()?.ForEach(o => result.Addresses.Add(o));
+            src.emailAddresses?.Select(o => From(o))?.ToList()?.ForEach(o => result.EmailAddresses.Add(o));
+            src.phoneNumbers?.Select(o => From(o))?.ToList()?.ForEach(o => result.PhoneNumbers.Add(o));
+            src.cards?.Select(o => From(o))?.ToList()?.ForEach(o => result.Cards.Add(o));
+            return result;
+        }
+
+        public static grpc.CustomerIdMethod From(order.CustomerIdMethod src)
+        {
+            switch (src)
+            {
+                case order.CustomerIdMethod.NAME:
+                    return grpc.CustomerIdMethod.Name;
+                case order.CustomerIdMethod.TABLE:
+                    return grpc.CustomerIdMethod.Table;
+                case order.CustomerIdMethod.NAME_TABLE:
+                    return grpc.CustomerIdMethod.NameTable;
+                default:
+                    return grpc.CustomerIdMethod.Unknown;
+            }
+        }
+
+        public static grpc.CustomerProvidedDataEvent From(remotepay.CustomerProvidedDataEvent src)
+        {
+            if (src == null) return null;
+            return new grpc.CustomerProvidedDataEvent
+            {
+                Config = From(src.config),
+                Data = From(src.data),
+                EventId = From(src.eventId),
+                // BaseResponse
+                Message = From(src.Message),
+                Reason = From(src.Reason),
+                Result = From(src.Result),
+                Success = From(src.Success),
+            };
         }
 
         public static grpc.DataEntryLocation From(payments.DataEntryLocation src)
@@ -338,6 +619,17 @@ namespace MockGrpcPayDisplay
         }
 
         public static grpc.DataEntryLocation From(payments.DataEntryLocation? src) => From(src.GetValueOrDefault());
+
+        public static grpc.DataProviderConfig From(sdk.DataProviderConfig src)
+        {
+            if (src == null) return null;
+            var result = new grpc.DataProviderConfig
+            {
+                Type = From(src.type),
+            };
+            src.configuration?.ToList()?.ForEach(kvp => result.Configuration.Add(kvp.Key, kvp.Value));
+            return result;
+        }
 
         public static grpc.DccInfo From(payments.DCCInfo src)
         {
@@ -509,6 +801,45 @@ namespace MockGrpcPayDisplay
             };
         }
 
+        public static grpc.Discount From(order.Discount src)
+        {
+            if (src == null) return null;
+            return new grpc.Discount
+            {
+                Amount = From(src.amount),
+                DiscountRef = From(src.discount),
+                Id = From(src.id),
+                LineItemRef = From(src.lineItemRef),
+                Name = From(src.name),
+                OrderRef = From(src.orderRef),
+                Percentage = From(src.percentage),
+            };
+        }
+
+        public static grpc.DisplayReceiptOptionsResponse From(remotepay.DisplayReceiptOptionsResponse src)
+        {
+            if (src == null) return null;
+            return new grpc.DisplayReceiptOptionsResponse
+            {
+                // BaseResponse
+                Message = From(src.Message),
+                Reason = From(src.Reason),
+                Result = From(src.Result),
+                Success = From(src.Success),
+            };
+        }
+
+        public static grpc.EmailAddress From(customers.EmailAddress src)
+        {
+            if (src == null) return null;
+            return new grpc.EmailAddress
+            {
+                Email = From(src.emailAddress),
+                Id = From(src.id),
+                VerifiedTime = From(src.verifiedTime),
+            };
+        }
+
         public static grpc.ExternalDeviceState From(remotepay.ExternalDeviceState src)
         {
             switch (src)
@@ -526,6 +857,16 @@ namespace MockGrpcPayDisplay
                 default:
                     return grpc.ExternalDeviceState.Unknown;
             }
+        }
+
+        public static grpc.ExternalDeviceStateData From(remotepay.ExternalDeviceStateData src)
+        {
+            if (src == null) return null;
+            return new grpc.ExternalDeviceStateData
+            {
+                CustomActivityId = From(src.CustomActivityId),
+                ExternalPaymentId = From(src.ExternalPaymentId),
+            };
         }
 
         public static grpc.GermanInfo From(payments.GermanInfo src)
@@ -565,6 +906,73 @@ namespace MockGrpcPayDisplay
                 RefundRef = From(src.refundRef),
                 CreditRefundRef = From(src.creditRefundRef),
             };
+        }
+
+        public static grpc.HourRange From(hours.HourRange src)
+        {
+            if (src == null) return null;
+            return new grpc.HourRange
+            {
+                End = From(src.end),
+                Start = From(src.start),
+            };
+        }
+
+        public static grpc.HoursAvailable From(order.HoursAvailable src)
+        {
+            switch (src)
+            {
+                case order.HoursAvailable.ALL:
+                    return grpc.HoursAvailable.All;
+                case order.HoursAvailable.BUSINESS:
+                    return grpc.HoursAvailable.Business;
+                case order.HoursAvailable.CUSTOM:
+                    return grpc.HoursAvailable.Custom;
+                default:
+                    return grpc.HoursAvailable.Unknown;
+            }
+        }
+
+        public static grpc.HoursReference From(hours.Reference src)
+        {
+            if (src == null) return null;
+            return new grpc.HoursReference
+            {
+                Id = From(src.id),
+                Type = From(src.type),
+            };
+        }
+
+        public static grpc.HoursReferenceType From(hours.ReferenceType src)
+        {
+            switch (src)
+            {
+                case hours.ReferenceType.ORDER_TYPE:
+                    return grpc.HoursReferenceType.OrderType;
+                case hours.ReferenceType.ITEM_GROUP:
+                    return grpc.HoursReferenceType.ItemGroup;
+                default:
+                    return grpc.HoursReferenceType.Unknown;
+            }
+        }
+
+        public static grpc.HoursSet From(hours.HoursSet src)
+        {
+            if (src == null) return null;
+            var result = new grpc.HoursSet
+            {
+                Id = From(src.id),
+                Name = From(src.name),
+                Reference = From(src.reference),
+            };
+            src.sunday?.Select(o => From(o))?.ToList()?.ForEach(o => result.Sunday.Add(o));
+            src.monday?.Select(o => From(o))?.ToList()?.ForEach(o => result.Monday.Add(o));
+            src.tuesday?.Select(o => From(o))?.ToList()?.ForEach(o => result.Tuesday.Add(o));
+            src.wednesday?.Select(o => From(o))?.ToList()?.ForEach(o => result.Wednesday.Add(o));
+            src.thursday?.Select(o => From(o))?.ToList()?.ForEach(o => result.Thursday.Add(o));
+            src.friday?.Select(o => From(o))?.ToList()?.ForEach(o => result.Friday.Add(o));
+            src.saturday?.Select(o => From(o))?.ToList()?.ForEach(o => result.Saturday.Add(o));
+            return result;
         }
 
         public static grpc.IdentityDocument From(customers.IdentityDocument src)
@@ -653,6 +1061,39 @@ namespace MockGrpcPayDisplay
             }
         }
 
+        public static grpc.LineItem From(order.LineItem src)
+        {
+            if (src == null) return null;
+            var result = new grpc.LineItem
+            {
+                AlternateName = From(src.alternateName),
+                BinName = From(src.binName),
+                CreatedTime = From(src.createdTime),
+                DiscountAmount = From(src.discountAmount),
+                Exchanged = From(src.exchanged),
+                ExchangedLineItem = From(src.exchangedLineItem),
+                Id = From(src.id),
+                IsRevenue = From(src.isRevenue),
+                Item = From(src.item),
+                ItemCode = From(src.itemCode),
+                Name = From(src.name),
+                Note = From(src.note),
+                OrderClientCreatedTime = From(src.orderClientCreatedTime),
+                OrderRef = From(src.orderRef),
+                Price = From(src.price),
+                Printed = From(src.printed),
+                Refunded = From(src.refunded),
+                UnitName = From(src.unitName),
+                UnitQty = From(src.unitQty),
+                UserData = From(src.userData),
+            };
+            src.discounts?.ForEach(o => result.Discounts.Add(From(o)));
+            src.modifications?.ForEach(o => result.Modifications.Add(From(o)));
+            src.payments?.ForEach(o => result.Payments.Add(From(o)));
+            src.taxRates?.ForEach(o => result.TaxRates.Add(From(o)));
+            return result;
+        }
+
         public static grpc.LineItemPayment From(payments.LineItemPayment src)
         {
             if (src == null) return null;
@@ -664,6 +1105,20 @@ namespace MockGrpcPayDisplay
                 Percentage = From(src.percentage),
                 BinName = From(src.binName),
                 Refunded = From(src.refunded),
+            };
+        }
+
+        public static grpc.ManualRefundResponse From(remotepay.ManualRefundResponse src)
+        {
+            if (src == null) return null;
+            return new grpc.ManualRefundResponse
+            {
+                Credit = From(src.Credit),
+                // BaseResponse
+                Message = From(src.Message),
+                Reason = From(src.Reason),
+                Result = From(src.Result),
+                Success = From(src.Success),
             };
         }
 
@@ -689,6 +1144,118 @@ namespace MockGrpcPayDisplay
                 SupportsAuth = From(src.supportsAuth),
                 SupportsVaultCard = From(src.supportsVaultCard),
             };
+        }
+
+        public static grpc.MessageFromActivity From(remotepay.MessageFromActivity src)
+        {
+            if (src == null) return null;
+            return new grpc.MessageFromActivity
+            {
+                Action = From(src.Action),
+                Payload = From(src.Payload),
+            };
+        }
+
+        public static grpc.Modification From(order.Modification src)
+        {
+            if (src == null) return null;
+            return new grpc.Modification
+            {
+                AlternateName = From(src.alternateName),
+                Amount = From(src.amount),
+                Id = From(src.id),
+                LineItemRef = From(src.lineItemRef),
+                Modifier = From(src.modifier),
+                Name = From(src.name),
+            };
+        }
+
+        public static grpc.Modifier From(inventory.Modifier src)
+        {
+            if (src == null) return null;
+            return new grpc.Modifier
+            {
+                AlternateName = From(src.alternateName),
+                Id = From(src.id),
+                ModifierGroup = From(src.modifierGroup),
+                Name = From(src.name),
+                Price = From(src.price),
+            };
+        }
+
+        public static grpc.Order From(order.Order src)
+        {
+            if (src == null) return null;
+            var result = new grpc.Order
+            {
+                Id = From(src.id),
+                Currency = From(src.currency),
+                Employee = From(src.employee),
+                Total = From(src.total),
+                Title = From(src.title),
+                Note = From(src.note),
+                OrderType = From(src.orderType),
+                TaxRemoved = From(src.taxRemoved),
+                IsVat = From(src.isVat),
+                State = From(src.state),
+                ManualTransaction = From(src.manualTransaction),
+                GroupLineItems = From(src.groupLineItems),
+                TestMode = From(src.testMode),
+                PayType = From(src.payType),
+                CreatedTime = From(src.createdTime),
+                ClientCreatedTime = From(src.clientCreatedTime),
+                ModifiedTime = From(src.modifiedTime),
+                DeletedTimestamp = From(src.deletedTimestamp),
+                ServiceCharge = From(src.serviceCharge),
+                Device = From(src.device),
+            };
+            src.customers?.ForEach(o => result.Customers.Add(From(o)));
+            src.discounts?.ForEach(o => result.Discounts.Add(From(o)));
+            src.lineItems?.ForEach(o => result.LineItems.Add(From(o)));
+            src.taxRates?.ForEach(o => result.TaxRates.Add(From(o)));
+            src.payments?.ForEach(o => result.Payments.Add(From(o)));
+            src.refunds?.ForEach(o => result.Refunds.Add(From(o)));
+            src.credits?.ForEach(o => result.Credits.Add(From(o)));
+            src.voids?.ForEach(o => result.Voids.Add(From(o)));
+            return result;
+        }
+
+        public static grpc.OrderTaxRate From(order.OrderTaxRate src)
+        {
+            if (src == null) return null;
+            return new grpc.OrderTaxRate
+            {
+                Amount = From(src.amount),
+                Id = From(src.id),
+                Name = From(src.name),
+            };
+        }
+
+        public static grpc.OrderType From(order.OrderType src)
+        {
+            if (src == null) return null;
+            var result = new grpc.OrderType
+            {
+                AvgOrderTime = From(src.avgOrderTime),
+                CustomerIdMethod = From(src.customerIdMethod),
+                Fee = From(src.fee),
+                FilterCategories = From(src.filterCategories),
+                Hours = From(src.hours),
+                HoursAvailable = From(src.hoursAvailable),
+                Id = From(src.id),
+                IsDefault = From(src.isDefault),
+                IsDeleted = From(src.isDeleted),
+                IsHidden = From(src.isHidden),
+                Label = From(src.label),
+                LabelKey = From(src.labelKey),
+                MaxOrderAmount = From(src.maxOrderAmount),
+                MaxRadius = From(src.maxRadius),
+                MinOrderAmount = From(src.minOrderAmount),
+                SystemOrderTypeId = From(src.systemOrderTypeId),
+                Taxable = From(src.taxable),
+            };
+            src.categories?.Select(o => From(o))?.ToList()?.ForEach(o => result.Categories.Add(o));
+            return result;
         }
 
         public static grpc.Payment From(payments.Payment src)
@@ -770,6 +1337,43 @@ namespace MockGrpcPayDisplay
             };
         }
 
+        public static grpc.PayType From(order.PayType src)
+        {
+            switch (src)
+            {
+                case order.PayType.SPLIT_GUEST:
+                    return grpc.PayType.SplitGuest;
+                case order.PayType.SPLIT_ITEM:
+                    return grpc.PayType.SplitItem;
+                case order.PayType.SPLIT_CUSTOM:
+                    return grpc.PayType.SplitCustom;
+                case order.PayType.FULL:
+                    return grpc.PayType.Full;
+                default:
+                    return grpc.PayType.Unknown;
+            }
+        }
+
+        public static grpc.PendingPaymentEntry From(transport.PendingPaymentEntry src)
+        {
+            if (src == null) return null;
+            return new grpc.PendingPaymentEntry
+            {
+                Amount = From(src.amount),
+                PaymentId = From(src.paymentId),
+            };
+        }
+
+        public static grpc.PhoneNumber From(customers.PhoneNumber src)
+        {
+            if (src == null) return null;
+            return new grpc.PhoneNumber
+            {
+                Id = From(src.id),
+                Phone = From(src.phoneNumber),
+            };
+        }
+
         public static grpc.Point From(transport.Signature2.Point src)
         {
             if (src == null) return null;
@@ -777,6 +1381,204 @@ namespace MockGrpcPayDisplay
             {
                 X = From(src.x),
                 Y = From(src.y),
+            };
+        }
+
+        public static grpc.PreAuthResponse From(remotepay.PreAuthResponse src)
+        {
+            if (src == null) return null;
+            return new grpc.PreAuthResponse
+            {
+                // PaymentResponse
+                Payment = From(src.Payment),
+                Signature = From(src.Signature),
+                // BaseResponse
+                Message = From(src.Message),
+                Reason = From(src.Reason),
+                Result = From(src.Result),
+                Success = From(src.Success),
+            };
+        }
+
+        public static grpc.Printer From(printer.Printer src)
+        {
+            if (src == null) return null;
+            return new grpc.Printer
+            {
+                Id = From(src.id),
+                IpAddress = From(src.ipAddress),
+                Mac = From(src.mac),
+                Model = From(src.model),
+                Name = From(src.name),
+                Type = From(src.type),
+            };
+        }
+
+        public static grpc.PrinterType From(printer.PrinterType src)
+        {
+            switch (src)
+            {
+                case printer.PrinterType.NETWORK:
+                    return grpc.PrinterType.Network;
+                case printer.PrinterType.MY_LOCAL:
+                    return grpc.PrinterType.MyLocal;
+                default:
+                    return grpc.PrinterType.Unknown;
+            }
+        }
+
+        public static grpc.PrintJobStatus From(remotepay.PrintJobStatus src)
+        {
+            switch (src)
+            {
+                case remotepay.PrintJobStatus.IN_QUEUE:
+                    return grpc.PrintJobStatus.InQueue;
+                case remotepay.PrintJobStatus.PRINTING:
+                    return grpc.PrintJobStatus.Printing;
+                case remotepay.PrintJobStatus.DONE:
+                    return grpc.PrintJobStatus.Done;
+                case remotepay.PrintJobStatus.ERROR:
+                    return grpc.PrintJobStatus.Error;
+                case remotepay.PrintJobStatus.UNKNOWN:
+                    return grpc.PrintJobStatus.Unknown;
+                case remotepay.PrintJobStatus.NOT_FOUND:
+                    return grpc.PrintJobStatus.NotFound;
+                default:
+                    return grpc.PrintJobStatus.Unknown;
+            }
+        }
+
+        public static grpc.PrintJobStatusResponse From(remotepay.PrintJobStatusResponse src)
+        {
+            if (src == null) return null;
+            return new grpc.PrintJobStatusResponse
+            {
+                PrintRequestId = From(src.printRequestId),
+                Status = From(src.status),
+
+                // BaseResponse
+                Message = From(src.Message),
+                Reason = From(src.Reason),
+                Result = From(src.Result),
+                Success = From(src.Success),
+            };
+        }
+
+        public static grpc.PrintManualRefundDeclineReceiptMessage From(remotepay.PrintManualRefundDeclineReceiptMessage src)
+        {
+            if (src == null) return null;
+            return new grpc.PrintManualRefundDeclineReceiptMessage
+            {
+                Credit = From(src.Credit),
+                // BaseResponse
+                Message = From(src.Message),
+                Reason = From(src.Reason),
+                Result = From(src.Result),
+                Success = From(src.Success),
+            };
+        }
+
+        public static grpc.PrintManualRefundReceiptMessage From(remotepay.PrintManualRefundReceiptMessage src)
+        {
+            if (src == null) return null;
+            return new grpc.PrintManualRefundReceiptMessage
+            {
+                Credit = From(src.Credit),
+                // BaseResponse
+                Message = From(src.Message),
+                Reason = From(src.Reason),
+                Result = From(src.Result),
+                Success = From(src.Success),
+            };
+        }
+
+        public static grpc.PrintPaymentDeclineReceiptMessage From(remotepay.PrintPaymentDeclineReceiptMessage src)
+        {
+            if (src == null) return null;
+            return new grpc.PrintPaymentDeclineReceiptMessage
+            {
+                Payment = From(src.Payment),
+                // BaseResponse
+                Message = From(src.Message),
+                Reason = From(src.Reason),
+                Result = From(src.Result),
+                Success = From(src.Success),
+            };
+        }
+
+        public static grpc.PrintPaymentMerchantCopyReceiptMessage From(remotepay.PrintPaymentMerchantCopyReceiptMessage src)
+        {
+            if (src == null) return null;
+            return new grpc.PrintPaymentMerchantCopyReceiptMessage
+            {
+                Payment = From(src.Payment),
+                // BaseResponse
+                Message = From(src.Message),
+                Reason = From(src.Reason),
+                Result = From(src.Result),
+                Success = From(src.Success),
+            };
+        }
+
+        public static grpc.PrintPaymentReceiptMessage From(remotepay.PrintPaymentReceiptMessage src)
+        {
+            if (src == null) return null;
+            return new grpc.PrintPaymentReceiptMessage
+            {
+                Order = From(src.Order),
+                Payment = From(src.Payment),
+                // BaseResponse
+                Message = From(src.Message),
+                Reason = From(src.Reason),
+                Result = From(src.Result),
+                Success = From(src.Success),
+            };
+        }
+
+        public static grpc.PrintRefundPaymentReceiptMessage From(remotepay.PrintRefundPaymentReceiptMessage src)
+        {
+            if (src == null) return null;
+            return new grpc.PrintRefundPaymentReceiptMessage
+            {
+                Order = From(src.Order),
+                Payment = From(src.Payment),
+                Refund = From(src.Refund),
+                // BaseResponse
+                Message = From(src.Message),
+                Reason = From(src.Reason),
+                Result = From(src.Result),
+                Success = From(src.Success),
+            };
+        }
+
+        public static grpc.QueryStatus From(transport.QueryStatus src)
+        {
+            switch (src)
+            {
+                case transport.QueryStatus.UNKNOWN:
+                    return grpc.QueryStatus.Unknown;
+                case transport.QueryStatus.FOUND:
+                    return grpc.QueryStatus.Found;
+                case transport.QueryStatus.NOT_FOUND:
+                    return grpc.QueryStatus.NotFound;
+                case transport.QueryStatus.IN_PROGRESS:
+                    return grpc.QueryStatus.InProgress;
+                default:
+                    return grpc.QueryStatus.Unknown;
+            }
+        }
+
+        public static grpc.ReadCardDataResponse From(remotepay.ReadCardDataResponse src)
+        {
+            if (src == null) return null;
+            return new grpc.ReadCardDataResponse
+            {
+                CardData = From(src.CardData),
+                // BaseResponse
+                Message = From(src.Message),
+                Reason = From(src.Reason),
+                Result = From(src.Result),
+                Success = From(src.Success),
             };
         }
 
@@ -842,6 +1644,67 @@ namespace MockGrpcPayDisplay
                 default:
                     return grpc.ResponseCode.Unknown;
             }
+        }
+
+        public static grpc.RetrieveDeviceStatusResponse From(remotepay.RetrieveDeviceStatusResponse src)
+        {
+            if (src == null) return null;
+            return new grpc.RetrieveDeviceStatusResponse
+            {
+                Data = From(src.Data),
+                State = From(src.State),
+                // BaseResponse
+                Message = From(src.Message),
+                Reason = From(src.Message),
+                Result = From(src.Result),
+                Success = From(src.Success),
+            };
+        }
+
+        public static grpc.RetrievePaymentResponse From(remotepay.RetrievePaymentResponse src)
+        {
+            if (src == null) return null;
+            return new grpc.RetrievePaymentResponse
+            {
+                ExternalPaymentId = From(src.ExternalPaymentId),
+                Payment = From(src.Payment),
+                QueryStatus = From(src.QueryStatus),
+                // BaseResponse
+                Message = From(src.Message),
+                Reason = From(src.Message),
+                Result = From(src.Result),
+                Success = From(src.Success),
+            };
+        }
+
+        public static grpc.RetrievePendingPaymentsResponse From(remotepay.RetrievePendingPaymentsResponse src)
+        {
+            if (src == null) return null;
+            var result = new grpc.RetrievePendingPaymentsResponse
+            {
+                // BaseResponse
+                Message = From(src.Message),
+                Reason = From(src.Reason),
+                Result = From(src.Result),
+                Success = From(src.Success),
+            };
+            src.PendingPayments?.ForEach(o => result.PendingPayments.Add(From(o)));
+            return result;
+        }
+
+        public static grpc.RetrievePrintersResponse From(remotepay.RetrievePrintersResponse src)
+        {
+            if (src == null) return null;
+            var result = new grpc.RetrievePrintersResponse
+            {
+                // BaseResponse
+                Message = From(src.Message),
+                Reason = From(src.Reason),
+                Result = From(src.Result),
+                Success = From(src.Success),
+            };
+            src.printers?.ForEach(o => result.Printers.Add(From(o)));
+            return result;
         }
 
         public static grpc.ReversalReason From(payments.ReversalReason src)
@@ -910,6 +1773,37 @@ namespace MockGrpcPayDisplay
             }
         }
 
+        public static grpc.ServerTotalStats From(payments.ServerTotalStats src)
+        {
+            if (src == null) return null;
+            return new grpc.ServerTotalStats
+            {
+                EmployeeId = From(src.employeeId),
+                EmployeeName = From(src.employeeName),
+                GiftCardCashOuts = From(src.giftCardCashOuts),
+                GiftCardLoads = From(src.giftCardLoads),
+                Net = From(src.net),
+                Refunds = From(src.refunds),
+                Sales = From(src.sales),
+                Tax = From(src.tax),
+                Tips = From(src.tips),
+            };
+        }
+
+        public static grpc.ServiceCharge From(base_.ServiceCharge src)
+        {
+            if (src == null) return null;
+            return new grpc.ServiceCharge
+            {
+                Enabled = From(src.enabled),
+                Id = From(src.id),
+                Name = From(src.name),
+                OrderRef = From(src.orderRef),
+                Percentage = From(src.percentage),
+                PercentageDecimal = From(src.percentageDecimal),
+            };
+        }
+
         public static grpc.ServiceChargeAmount From(payments.ServiceChargeAmount src)
         {
             if (src == null) return null;
@@ -967,6 +1861,21 @@ namespace MockGrpcPayDisplay
                 TaxAmount = From(src.taxAmount),
                 IsVat = From(src.isVat),
             };
+        }
+
+        public static grpc.TaxRate From(inventory.TaxRate src)
+        {
+            if (src == null) return null;
+            var result = new grpc.TaxRate
+            {
+                Id = From(src.id),
+                IsDefault = From(src.isDefault),
+                LineItemRef = From(src.lineItemRef),
+                Name = From(src.name),
+                Rate = From(src.rate),
+            };
+            src.items?.ForEach(o => result.Items.Add(From(o)));
+            return result;
         }
 
         public static grpc.TipMode From(payments.TipMode src)

@@ -1,9 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Clover.Grpc;
+using Grpc.Core;
 using sdk = com.clover.remotepay.sdk;
 using transport = com.clover.remotepay.transport;
-using Grpc.Core;
-using System;
 
 namespace MockGrpcPayDisplay
 {
@@ -11,6 +11,7 @@ namespace MockGrpcPayDisplay
     {
         private sdk.ICloverConnector connector;
         private Listener listener;
+        private StreamHandler<PingPacket, PingPacket> PingHandler { get; set; }
         private StreamHandler<sdk.AuthResponse, AuthResponse> AuthResponseHandler { get; set; }
         private StreamHandler<sdk.CapturePreAuthResponse, CapturePreAuthResponse> CapturePreAuthResponseHandler { get; set; }
         private StreamHandler<sdk.CloseoutResponse, CloseoutResponse> CloseoutResponseHandler { get; set; }
@@ -106,7 +107,8 @@ namespace MockGrpcPayDisplay
                 connector = sdk.CloverConnectorFactory.CreateUsbConnector("RAID", "POS", "Register1", true);
                 connector.AddCloverConnectorListener(listener);
                 connector.InitializeConnection();
-            } else
+            }
+            else
             {
                 DeviceReadyHandler.Reinvoke();
             }
@@ -202,6 +204,49 @@ namespace MockGrpcPayDisplay
 
             return Task.FromResult(new DisposeResponse());
         }
+
+        public override Task<InitializeResponse> Initialize(InitializeRequest request, ServerCallContext context)
+        {
+            Program.WriteLine("Initialize");
+            // NOTE: This is currently happening in `Create()`;
+            // connector.InitializeConnection();
+            return Task.FromResult(new InitializeResponse());
+        }
+
+        public override Task Ping(IAsyncStreamReader<PingPacket> requestStream, IServerStreamWriter<PingPacket> responseStream, ServerCallContext context)
+        {
+            Console.WriteLine("Ping");
+            PingHandler = new StreamHandler<PingPacket, PingPacket>(responseStream, o => o);
+
+            var clientPingTask = Task.Run(async () =>
+            {
+                while (await requestStream.MoveNext())
+                {
+                    if (PingHandler.Promise.Task.IsCompleted) return;
+                    PingHandler.Invoke(new PingPacket
+                    {
+                        Id = requestStream.Current.Id,
+                        Type = PingType.Pong,
+                    });
+                }
+            });
+
+            var serverPingTask = Task.Run(async () =>
+            {
+                int pingId = 0;
+                while (!PingHandler.Promise.Task.IsCompleted)
+                {
+                    PingHandler.Invoke(new PingPacket
+                    {
+                        Id = ++pingId,
+                        Type = PingType.Ping,
+                    });
+                    await Task.Delay(1000);
+                }
+            });
+
+            return PingHandler.Promise.Task;
+        }
         #endregion
 
 
@@ -220,6 +265,41 @@ namespace MockGrpcPayDisplay
             return Task.FromResult(new Empty());
         }
 
+        public override Task<Empty> Auth(AuthRequest request, ServerCallContext context)
+        {
+            Program.WriteLine("Auth");
+            connector.Auth(Translate.From(request));
+            return Task.FromResult(new Empty());
+        }
+
+        public override Task<Empty> CapturePreAuth(CapturePreAuthRequest request, ServerCallContext context)
+        {
+            Program.WriteLine("CapturePreAuth");
+            connector.CapturePreAuth(Translate.From(request));
+            return Task.FromResult(new Empty());
+        }
+
+        public override Task<Empty> Closeout(CloseoutRequest request, ServerCallContext context)
+        {
+            Program.WriteLine("Closeout");
+            connector.Closeout(Translate.From(request));
+            return Task.FromResult(new Empty());
+        }
+
+        public override Task<Empty> DisplayPaymentReceiptOptions(DisplayPaymentReceiptOptionsRequest request, ServerCallContext context)
+        {
+            Program.WriteLine("DisplayPaymentReceiptOptions");
+            connector.DisplayPaymentReceiptOptions(Translate.From(request));
+            return Task.FromResult(new Empty());
+        }
+
+        public override Task<Empty> DisplayReceiptOptions(DisplayReceiptOptionsRequest request, ServerCallContext context)
+        {
+            Program.WriteLine("DisplayReceiptOptions");
+            connector.DisplayReceiptOptions(Translate.From(request));
+            return Task.FromResult(new Empty());
+        }
+        
         public override Task<Empty> InvokeInputOption(InvokeInputOptionRequest request, ServerCallContext context)
         {
             Program.WriteLine("InvokeInputOption");
@@ -227,13 +307,56 @@ namespace MockGrpcPayDisplay
             return Task.FromResult(new Empty());
         }
 
+        public override Task<Empty> ManualRefund(ManualRefundRequest request, ServerCallContext context)
+        {
+            Program.WriteLine("ManualRefund");
+            connector.ManualRefund(Translate.From(request));
+            return Task.FromResult(new Empty());
+        }
+
+        public override Task<Empty> Print(PrintRequest request, ServerCallContext context)
+        {
+            Console.WriteLine("Print");
+            connector.Print(Translate.From(request));
+            return Task.FromResult(new Empty());
+        }
+
+        public override Task<Empty> PreAuth(PreAuthRequest request, ServerCallContext context)
+        {
+            Program.WriteLine("PreAuth");
+            connector.PreAuth(Translate.From(request));
+            return Task.FromResult(new Empty());
+        }
+
+        public override Task<Empty> ReadCardData(ReadCardDataRequest request, ServerCallContext context)
+        {
+            Program.WriteLine("ReadCardData");
+            connector.ReadCardData(Translate.From(request));
+            return Task.FromResult(new Empty());
+        }
+
+        public override Task<Empty> RefundPayment(RefundPaymentRequest request, ServerCallContext context)
+        {
+            Program.WriteLine("RefundPayment");
+            connector.RefundPayment(Translate.From(request));
+            return Task.FromResult(new Empty());
+        }
+
+        public override Task<Empty> RegisterForCustomerProvidedData(RegisterForCustomerProvidedDataRequest request, ServerCallContext context)
+        {
+            Program.WriteLine("RegisterForCustomerProvidedData");
+            connector.RegisterForCustomerProvidedData(Translate.From(request));
+            return Task.FromResult(new Empty());
+        }
+        
         public override Task<Empty> RejectPayment(RejectPaymentRequest request, ServerCallContext context)
+
         {
             Program.WriteLine("RejectPayment");
             connector.RejectPayment(Translate.From(request.Payment), Translate.From(request.Challenge));
             return Task.FromResult(new Empty());
         }
-
+        
         public override Task<Empty> RejectSignature(RejectSignatureRequest request, ServerCallContext context)
         {
             Program.WriteLine("RejectSignature");
@@ -241,10 +364,59 @@ namespace MockGrpcPayDisplay
             return Task.FromResult(new Empty());
         }
 
+        public override Task<Empty> RemoveDisplayOrder(RemoveDisplayOrderRequest request, ServerCallContext context)
+        {
+            Program.WriteLine("RemoveDisplayOrder");
+            connector.RemoveDisplayOrder(Translate.From(request.DisplayOrder));
+            return Task.FromResult(new Empty());
+        }
+
         public override Task<Empty> ResetDevice(ResetDeviceRequest request, ServerCallContext context)
         {
             Program.WriteLine("ResetDevice");
             connector.ResetDevice();
+            return Task.FromResult(new Empty());
+        }
+
+        public override Task<Empty> RetrieveDeviceStatus(RetrieveDeviceStatusRequest request, ServerCallContext context)
+        {
+            Program.WriteLine("RetrieveDeviceStatus");
+            connector.RetrieveDeviceStatus(Translate.From(request));
+            return Task.FromResult(new Empty());
+        }
+
+        public override Task<Empty> RetrievePayment(RetrievePaymentRequest request, ServerCallContext context)
+        {
+            Program.WriteLine("RetrievePayment");
+            connector.RetrievePayment(Translate.From(request));
+            return Task.FromResult(new Empty());
+        }
+
+        public override Task<Empty> RetrievePendingPayments(RetrievePendingPaymentsRequest request, ServerCallContext context)
+        {
+            Program.WriteLine("RetrievePendingPayments");
+            connector.RetrievePendingPayments();
+            return Task.FromResult(new Empty());
+        }
+
+        public override Task<Empty> RetrievePrinters(RetrievePrintersRequest request, ServerCallContext context)
+        {
+            Program.WriteLine("RetrievePrinters");
+            connector.RetrievePrinters(Translate.From(request));
+            return Task.FromResult(new Empty());
+        }
+
+        public override Task<Empty> RetrievePrintJobStatus(RetrievePrintJobStatusRequest request, ServerCallContext context)
+        {
+            Program.WriteLine("RetrievePrintJobStatus");
+            connector.RetrievePrintJobStatus(Translate.From(request));
+            return Task.FromResult(new Empty());
+        }
+
+        public override Task<Empty> SendMessageToActivity(SendMessageToActivityRequest request, ServerCallContext context)
+        {
+            Program.WriteLine("SendMessageToActivity");
+            connector.SendMessageToActivity(Translate.From(request));
             return Task.FromResult(new Empty());
         }
 
@@ -258,39 +430,141 @@ namespace MockGrpcPayDisplay
 
 
         #region Listener
+        public override Task OnAuthResponse(Empty request, IServerStreamWriter<AuthResponse> responseStream, ServerCallContext context)
+        {
+            AuthResponseHandler = new StreamHandler<sdk.AuthResponse, AuthResponse>(responseStream, o => Translate.From(o));
+            return AuthResponseHandler.Promise.Task;
+        }
+
+        public override Task OnCapturePreAuthResponse(Empty request, IServerStreamWriter<CapturePreAuthResponse> responseStream, ServerCallContext context)
+        {
+            CapturePreAuthResponseHandler = new StreamHandler<sdk.CapturePreAuthResponse, CapturePreAuthResponse>(responseStream, o => Translate.From(o));
+            return CapturePreAuthResponseHandler.Promise.Task;
+        }
+
+        public override Task OnCloseoutResponse(Empty request, IServerStreamWriter<CloseoutResponse> responseStream, ServerCallContext context)
+        {
+            CloseoutResponseHandler = new StreamHandler<sdk.CloseoutResponse, CloseoutResponse>(responseStream, o => Translate.From(o));
+            return CloseoutResponseHandler.Promise.Task;
+        }
+
+        public override Task OnCustomerProvidedData(Empty request, IServerStreamWriter<CustomerProvidedDataEvent> responseStream, ServerCallContext context)
+        {
+            CustomerProvidedDataHandler = new StreamHandler<sdk.CustomerProvidedDataEvent, CustomerProvidedDataEvent>(responseStream, o => Translate.From(o));
+            return CustomerProvidedDataHandler.Promise.Task;
+        }
+
         public override Task OnDeviceActivityStart(Empty request, IServerStreamWriter<DeviceEvent> responseStream, ServerCallContext context)
         {
-            DeviceActivityStartHandler = new StreamHandler<sdk.CloverDeviceEvent, DeviceEvent>(
-                responseStream,
-                o => Translate.From(o)
-            );
+            DeviceActivityStartHandler = new StreamHandler<sdk.CloverDeviceEvent, DeviceEvent>(responseStream, o => Translate.From(o));
             return DeviceActivityStartHandler.Promise.Task;
         }
 
         public override Task OnDeviceReady(Empty request, IServerStreamWriter<MerchantInfo> responseStream, ServerCallContext context)
         {
-            DeviceReadyHandler = new StreamHandler<sdk.MerchantInfo, MerchantInfo>(
-                responseStream,
-                o => Translate.From(o)
-            );
+            DeviceReadyHandler = new StreamHandler<sdk.MerchantInfo, MerchantInfo>(responseStream, o => Translate.From(o));
             return DeviceReadyHandler.Promise.Task;
+        }
+
+        public override Task OnDisplayReceiptOptionsResponse(Empty request, IServerStreamWriter<DisplayReceiptOptionsResponse> responseStream, ServerCallContext context)
+        {
+            DisplayReceiptOptionsResponseHandler = new StreamHandler<sdk.DisplayReceiptOptionsResponse, DisplayReceiptOptionsResponse>(responseStream, o => Translate.From(o));
+            return DisplayReceiptOptionsResponseHandler.Promise.Task;
         }
 
         public override Task OnConfirmPaymentRequest(Empty request, IServerStreamWriter<ConfirmPaymentRequest> responseStream, ServerCallContext context)
         {
-            ConfirmPaymentRequestHandler = new StreamHandler<sdk.ConfirmPaymentRequest, ConfirmPaymentRequest>(
-                responseStream,
-                o => Translate.From(o)
-            );
+            ConfirmPaymentRequestHandler = new StreamHandler<sdk.ConfirmPaymentRequest, ConfirmPaymentRequest>(responseStream, o => Translate.From(o));
             return ConfirmPaymentRequestHandler.Promise.Task;
+        }
+
+        public override Task OnManualRefundResponse(Empty request, IServerStreamWriter<ManualRefundResponse> responseStream, ServerCallContext context)
+        {
+            ManualRefundResponseHandler = new StreamHandler<sdk.ManualRefundResponse, ManualRefundResponse>(responseStream, o => Translate.From(o));
+            return ManualRefundResponseHandler.Promise.Task;
+        }
+
+        public override Task OnMessageFromActivity(Empty request, IServerStreamWriter<MessageFromActivity> responseStream, ServerCallContext context)
+        {
+            MessageFromActivityHandler = new StreamHandler<sdk.MessageFromActivity, MessageFromActivity>(responseStream, o => Translate.From(o));
+            return MessageFromActivityHandler.Promise.Task;
+        }
+
+        public override Task OnPrintJobStatusResponse(Empty request, IServerStreamWriter<PrintJobStatusResponse> responseStream, ServerCallContext context)
+        {
+            PrintJobStatusResponseHandler = new StreamHandler<sdk.PrintJobStatusResponse, PrintJobStatusResponse>(responseStream, o => Translate.From(o));
+            return PrintJobStatusResponseHandler.Promise.Task;
+        }
+
+        public override Task OnPrintManualRefundDeclineReceipt(Empty request, IServerStreamWriter<PrintManualRefundDeclineReceiptMessage> responseStream, ServerCallContext context)
+        {
+            PrintManualRefundDeclineReceiptHandler = new StreamHandler<sdk.PrintManualRefundDeclineReceiptMessage, PrintManualRefundDeclineReceiptMessage>(responseStream, o => Translate.From(o));
+            return PrintManualRefundDeclineReceiptHandler.Promise.Task;
+        }
+
+        public override Task OnPrintManualRefundReceipt(Empty request, IServerStreamWriter<PrintManualRefundReceiptMessage> responseStream, ServerCallContext context)
+        {
+            PrintManualRefundReceiptHandler = new StreamHandler<sdk.PrintManualRefundReceiptMessage, PrintManualRefundReceiptMessage>(responseStream, o => Translate.From(o));
+            return PrintManualRefundReceiptHandler.Promise.Task;
+        }
+
+        public override Task OnPrintPaymentDeclineReceipt(Empty request, IServerStreamWriter<PrintPaymentDeclineReceiptMessage> responseStream, ServerCallContext context)
+        {
+            PrintPaymentDeclineReceiptHandler = new StreamHandler<sdk.PrintPaymentDeclineReceiptMessage, PrintPaymentDeclineReceiptMessage>(responseStream, o => Translate.From(o));
+            return PrintPaymentDeclineReceiptHandler.Promise.Task;
+        }
+
+        public override Task OnPrintPaymentMerchantCopyReceipt(Empty request, IServerStreamWriter<PrintPaymentMerchantCopyReceiptMessage> responseStream, ServerCallContext context)
+        {
+            PrintPaymentMerchantCopyReceiptHandler = new StreamHandler<sdk.PrintPaymentMerchantCopyReceiptMessage, PrintPaymentMerchantCopyReceiptMessage>(responseStream, o => Translate.From(o));
+            return PrintPaymentMerchantCopyReceiptHandler.Promise.Task;
+        }
+
+        public override Task OnPrintPaymentReceipt(Empty request, IServerStreamWriter<PrintPaymentReceiptMessage> responseStream, ServerCallContext context)
+        {
+            PrintPaymentReceiptHandler = new StreamHandler<sdk.PrintPaymentReceiptMessage, PrintPaymentReceiptMessage>(responseStream, o => Translate.From(o));
+            return PrintPaymentReceiptHandler.Promise.Task;
+        }
+
+        public override Task OnPrintRefundPaymentReceipt(Empty request, IServerStreamWriter<PrintRefundPaymentReceiptMessage> responseStream, ServerCallContext context)
+        {
+            PrintRefundPaymentReceiptHandler = new StreamHandler<sdk.PrintRefundPaymentReceiptMessage, PrintRefundPaymentReceiptMessage>(responseStream, o => Translate.From(o));
+            return PrintRefundPaymentReceiptHandler.Promise.Task;
+        }
+
+        public override Task OnReadCardDataResponse(Empty request, IServerStreamWriter<ReadCardDataResponse> responseStream, ServerCallContext context)
+        {
+            ReadCardDataResponseHandler = new StreamHandler<sdk.ReadCardDataResponse, ReadCardDataResponse>(responseStream, o => Translate.From(o));
+            return ReadCardDataResponseHandler.Promise.Task;
+        }
+
+        public override Task OnRetrieveDeviceStatusResponse(Empty request, IServerStreamWriter<RetrieveDeviceStatusResponse> responseStream, ServerCallContext context)
+        {
+            RetrieveDeviceStatusResponseHandler = new StreamHandler<sdk.RetrieveDeviceStatusResponse, RetrieveDeviceStatusResponse>(responseStream, o => Translate.From(o));
+            return RetrieveDeviceStatusResponseHandler.Promise.Task;
+        }
+
+        public override Task OnRetrievePaymentResponse(Empty request, IServerStreamWriter<RetrievePaymentResponse> responseStream, ServerCallContext context)
+        {
+            RetrievePaymentResponseHandler = new StreamHandler<sdk.RetrievePaymentResponse, RetrievePaymentResponse>(responseStream, o => Translate.From(o));
+            return RetrievePaymentResponseHandler.Promise.Task;
+        }
+
+        public override Task OnRetrievePendingPaymentsResponse(Empty request, IServerStreamWriter<RetrievePendingPaymentsResponse> responseStream, ServerCallContext context)
+        {
+            RetrievePendingPaymentsResponseHandler = new StreamHandler<sdk.RetrievePendingPaymentsResponse, RetrievePendingPaymentsResponse>(responseStream, o => Translate.From(o));
+            return RetrievePendingPaymentsResponseHandler.Promise.Task;
+        }
+
+        public override Task OnRetrievePrintersResponse(Empty request, IServerStreamWriter<RetrievePrintersResponse> responseStream, ServerCallContext context)
+        {
+            RetrievePrintersResponseHandler = new StreamHandler<sdk.RetrievePrintersResponse, RetrievePrintersResponse>(responseStream, o => Translate.From(o));
+            return RetrievePrintersResponseHandler.Promise.Task;
         }
 
         public override Task OnVerifySignatureRequest(Empty request, IServerStreamWriter<VerifySignatureRequest> responseStream, ServerCallContext context)
         {
-            VerifySignatureRequestHandler = new StreamHandler<sdk.VerifySignatureRequest, VerifySignatureRequest>(
-                responseStream,
-                o => Translate.From(o)
-            );
+            VerifySignatureRequestHandler = new StreamHandler<sdk.VerifySignatureRequest, VerifySignatureRequest>(responseStream, o => Translate.From(o));
             return VerifySignatureRequestHandler.Promise.Task;
         }
 
@@ -305,10 +579,7 @@ namespace MockGrpcPayDisplay
 
         public override Task OnResetDeviceResponse(Empty request, IServerStreamWriter<ResetDeviceResponse> responseStream, ServerCallContext context)
         {
-            ResetDeviceResponseHandler = new StreamHandler<sdk.ResetDeviceResponse, ResetDeviceResponse>(
-                responseStream,
-                o => Translate.From(o)
-            );
+            ResetDeviceResponseHandler = new StreamHandler<sdk.ResetDeviceResponse, ResetDeviceResponse>(responseStream, o => Translate.From(o));
             return ResetDeviceResponseHandler.Promise.Task;
         }
         #endregion
@@ -333,7 +604,7 @@ namespace MockGrpcPayDisplay
 
         public void Invoke(TSdk obj)
         {
-            lock(Lock)
+            lock (Lock)
             {
                 var oldTask = writeTask;
                 writeTask = Task.Run(() =>

@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Drawing;
+using System.IO;
+using Google.Protobuf;
 
 namespace MockGrpcPayDisplay
 {
@@ -18,6 +21,13 @@ namespace MockGrpcPayDisplay
         {
             if (typeof(TResult) == typeof(int?)) return src == 0 ? (int?)null : src;
             else throw new NotSupportedException();
+        }
+
+        public static Bitmap From(ByteString byteString)
+        {
+            var bytes = byteString.ToByteArray();
+            var stream = new MemoryStream(bytes);
+            return new Bitmap(stream);
         }
     }
 }

@@ -86,7 +86,7 @@ message BatchCardTotal {
 }
 
 message BatchDetail {
-  repeated BatchTotalStats batchTotals = 1;
+  BatchTotalStats batchTotals = 1;
   repeated ServerTotalStats serverTotals = 2;
   repeated BatchCardTotal cardTotals = 3;
   int64 openTips = 4;
@@ -451,7 +451,7 @@ message Discount {
   string Id = 1;
   Reference OrderRef = 2;
   Reference LineItemRef = 3;
-  Reference Discount = 4;
+  Reference DiscountRef = 4;
   string Name = 5;
   int64 Amount = 6;
   int64 Percentage = 7;
@@ -521,7 +521,7 @@ message DisplayOrder {
 
 message EmailAddress {
   string Id = 1;
-  string EmailAddress = 2;
+  string Email = 2;
   int64 VerifiedTime = 3;
 }
 
@@ -584,10 +584,21 @@ message HourRange {
   int32 end = 2;
 }
 
+message HoursReference {
+  string Id = 1;
+  HoursReferenceType Type = 2;
+}
+
+enum HoursReferenceType {
+  HOURSREFERENCETYPE_UNKNOWN = 0;
+  HOURSREFERENCETYPE_ORDER_TYPE = 1;
+  HOURSREFERENCETYPE_ITEM_GROUP = 2;
+}
+
 message HoursSet {
   string Id = 1;
   string Name = 2;
-  Reference Reference = 3;
+  HoursReference Reference = 3;
   repeated HourRange Sunday = 4;
   repeated HourRange Monday = 5;
   repeated HourRange Tuesday = 6;
@@ -914,7 +925,7 @@ message PendingPaymentEntry {
 
 message PhoneNumber {
   string Id = 1;
-  string PhoneNumber = 2;
+  string Phone = 2;
 }
 
 enum PingType {
