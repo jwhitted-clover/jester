@@ -525,16 +525,46 @@ namespace MockGrpcPayDisplay
             return CloseoutResponseHandler.Promise.Task;
         }
 
+        public override Task OnCustomActivityResponse(Empty request, IServerStreamWriter<CustomActivityResponse> responseStream, ServerCallContext context)
+        {
+            CustomActivityResponseHandler = new StreamHandler<sdk.CustomActivityResponse, CustomActivityResponse>(responseStream, o => Translate.From(o));
+            return CustomActivityResponseHandler.Promise.Task;
+        }
+
         public override Task OnCustomerProvidedData(Empty request, IServerStreamWriter<CustomerProvidedDataEvent> responseStream, ServerCallContext context)
         {
             CustomerProvidedDataHandler = new StreamHandler<sdk.CustomerProvidedDataEvent, CustomerProvidedDataEvent>(responseStream, o => Translate.From(o));
             return CustomerProvidedDataHandler.Promise.Task;
         }
 
+        public override Task OnDeviceActivityEnd(Empty request, IServerStreamWriter<DeviceEvent> responseStream, ServerCallContext context)
+        {
+            DeviceActivityEndHandler = new StreamHandler<sdk.CloverDeviceEvent, DeviceEvent>(responseStream, o => Translate.From(o));
+            return DeviceActivityEndHandler.Promise.Task;
+        }
+
         public override Task OnDeviceActivityStart(Empty request, IServerStreamWriter<DeviceEvent> responseStream, ServerCallContext context)
         {
             DeviceActivityStartHandler = new StreamHandler<sdk.CloverDeviceEvent, DeviceEvent>(responseStream, o => Translate.From(o));
             return DeviceActivityStartHandler.Promise.Task;
+        }
+
+        public override Task OnDeviceConnected(Empty request, IServerStreamWriter<Empty> responseStream, ServerCallContext context)
+        {
+            DeviceConnectedHandler = new StreamHandler<EventArgs, Empty>(responseStream, o => new Empty());
+            return DeviceConnectedHandler.Promise.Task;
+        }
+
+        public override Task OnDeviceDisconnected(Empty request, IServerStreamWriter<Empty> responseStream, ServerCallContext context)
+        {
+            DeviceDisconnectedHandler = new StreamHandler<EventArgs, Empty>(responseStream, o => new Empty());
+            return DeviceDisconnectedHandler.Promise.Task;
+        }
+
+        public override Task OnDeviceError(Empty request, IServerStreamWriter<DeviceErrorEvent> responseStream, ServerCallContext context)
+        {
+            DeviceErrorHandler = new StreamHandler<sdk.CloverDeviceErrorEvent, DeviceErrorEvent>(responseStream, o => Translate.From(o));
+            return DeviceErrorHandler.Promise.Task;
         }
 
         public override Task OnDeviceReady(Empty request, IServerStreamWriter<MerchantInfo> responseStream, ServerCallContext context)

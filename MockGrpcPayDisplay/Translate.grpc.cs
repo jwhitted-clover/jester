@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using base_ = com.clover.sdk.v3.base_;
 using customers = com.clover.sdk.v3.customers;
 using grpc = Clover.Grpc;
@@ -552,6 +553,21 @@ namespace MockGrpcPayDisplay
             return result;
         }
 
+        public static grpc.CustomActivityResponse From(remotepay.CustomActivityResponse src)
+        {
+            if (src == null) return null;
+            return new grpc.CustomActivityResponse
+            {
+                Action = From(src.Action),
+                Payload = From(src.Payload),
+                // BaseResponse
+                Message = From(src.Message),
+                Reason = From(src.Reason),
+                Result = From(src.Result),
+                Success = From(src.Success),
+            };
+        }
+
         public static grpc.Customer From(customers.Customer src)
         {
             if (src == null) return null;
@@ -647,6 +663,141 @@ namespace MockGrpcPayDisplay
                 PaymentRef = From(src.paymentRef),
                 CreditRef = From(src.creditRef),
             };
+        }
+
+        public static grpc.DeviceErrorEvent From(remotepay.CloverDeviceErrorEvent src)
+        {
+            if (src == null) return null;
+
+            grpc.DeviceErrorCode code;
+            switch (src.Code)
+            {
+                case -16384:
+                    code = grpc.DeviceErrorCode.InvalidConfig;
+                    break;
+                case -16383:
+                    code = grpc.DeviceErrorCode.IoSyncFailed;
+                    break;
+                case -16382:
+                    code = grpc.DeviceErrorCode.GetString;
+                    break;
+                case -16381:
+                    code = grpc.DeviceErrorCode.InvalidEndpoint;
+                    break;
+                case -16380:
+                    code = grpc.DeviceErrorCode.AbortEndpoint;
+                    break;
+                case -16379:
+                    code = grpc.DeviceErrorCode.DeviceIoControl;
+                    break;
+                case -16378:
+                    code = grpc.DeviceErrorCode.GetOverlappedResult;
+                    break;
+                case -16377:
+                    code = grpc.DeviceErrorCode.ReceiveThreadTerminated;
+                    break;
+                case -16376:
+                    code = grpc.DeviceErrorCode.WriteFailed;
+                    break;
+                case -16375:
+                    code = grpc.DeviceErrorCode.ReadFailed;
+                    break;
+                case -16374:
+                    code = grpc.DeviceErrorCode.IoControlMessage;
+                    break;
+                case -16373:
+                    code = grpc.DeviceErrorCode.CancelIoFailed;
+                    break;
+                case -16372:
+                    code = grpc.DeviceErrorCode.IoCancelled;
+                    break;
+                case -16371:
+                    code = grpc.DeviceErrorCode.IoTimedOut;
+                    break;
+                case -16370:
+                    code = grpc.DeviceErrorCode.IoEndpointGlobalCancelRedo;
+                    break;
+                case -16369:
+                    code = grpc.DeviceErrorCode.GetDeviceKeyValueFailed;
+                    break;
+                case -16368:
+                    code = grpc.DeviceErrorCode.SetDeviceKeyValueFailed;
+                    break;
+                case -16367:
+                    code = grpc.DeviceErrorCode.Win32Error;
+                    break;
+                case -16366:
+                    code = grpc.DeviceErrorCode.DeviceAllreadyLocked;
+                    break;
+                case -16365:
+                    code = grpc.DeviceErrorCode.EndpointAllreadyLocked;
+                    break;
+                case -16364:
+                    code = grpc.DeviceErrorCode.DeviceNotFound;
+                    break;
+                case -16363:
+                    code = grpc.DeviceErrorCode.UserAborted;
+                    break;
+                case -16362:
+                    code = grpc.DeviceErrorCode.InvalidParam;
+                    break;
+                case -16361:
+                    code = grpc.DeviceErrorCode.AccessDenied;
+                    break;
+                case -16360:
+                    code = grpc.DeviceErrorCode.ResourceBusy;
+                    break;
+                case -16359:
+                    code = grpc.DeviceErrorCode.Overflow;
+                    break;
+                case -16358:
+                    code = grpc.DeviceErrorCode.PipeError;
+                    break;
+                case -16357:
+                    code = grpc.DeviceErrorCode.Interrupted;
+                    break;
+                case -16356:
+                    code = grpc.DeviceErrorCode.InsufficientMemory;
+                    break;
+                case -16355:
+                    code = grpc.DeviceErrorCode.NotSupported;
+                    break;
+                case -16354:
+                    code = grpc.DeviceErrorCode.UnknownError;
+                    break;
+                case -16353:
+                    code = grpc.DeviceErrorCode.MonoApiError;
+                    break;
+                case 0:
+                    code = grpc.DeviceErrorCode.None;
+                    break;
+                default:
+                    code = grpc.DeviceErrorCode.None;
+                    break;
+            }
+
+            return new grpc.DeviceErrorEvent
+            {
+                Cause = From(src.Cause),
+                Code = code,
+                ErrorType = From(src.ErrorType),
+                Message = From(src.Message),
+            };
+        }
+
+        public static grpc.DeviceErrorType From(remotepay.CloverDeviceErrorEvent.CloverDeviceErrorType src)
+        {
+            switch (src)
+            {
+                case remotepay.CloverDeviceErrorEvent.CloverDeviceErrorType.COMMUNICATION_ERROR:
+                    return grpc.DeviceErrorType.CommunicationError;
+                case remotepay.CloverDeviceErrorEvent.CloverDeviceErrorType.VALIDATION_ERROR:
+                    return grpc.DeviceErrorType.ValidationError;
+                case remotepay.CloverDeviceErrorEvent.CloverDeviceErrorType.EXCEPTION:
+                    return grpc.DeviceErrorType.Exception;
+                default:
+                    return grpc.DeviceErrorType.Unknown;
+            }
         }
 
         public static grpc.DeviceEvent From(remotepay.CloverDeviceEvent src)
@@ -1371,6 +1522,15 @@ namespace MockGrpcPayDisplay
             {
                 Id = From(src.id),
                 Phone = From(src.phoneNumber),
+            };
+        }
+
+        public static grpc.PlatformError From(Exception src)
+        {
+            if (src == null) return null;
+            return new grpc.PlatformError
+            {
+                Message = src.Message,
             };
         }
 
