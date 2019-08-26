@@ -307,14 +307,6 @@ enum CustomerIdMethod {
   CUSTOMERIDMETHOD_NAME_TABLE = 3;
 }
 
-message CustomerInfo {
-  Customer Customer = 1;
-  string DisplayString = 2;
-  string ExternalId = 3;
-  string ExternalSystemName = 4;
-  map<string, string> Extras = 5;
-}
-
 enum DataEntryLocation {
   DATAENTRYLOCATION_UNKNOWN = 0;
   DATAENTRYLOCATION_ON_SCREEN = 1;

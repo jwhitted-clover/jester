@@ -54,6 +54,22 @@ namespace MockGrpcPayDisplay
             }
         }
 
+        public static customers.Address From(grpc.Address src)
+        {
+            if (src == null) return null;
+            return new customers.Address
+            {
+                address1 = From(src.Address1),
+                address2 = From(src.Address2),
+                address3 = From(src.Address3),
+                city = From(src.City),
+                country = From(src.Country),
+                id = From(src.Id),
+                state = From(src.State),
+                zip = From(src.Zip),
+            };
+        }
+
         public static payments.AppTracking From(grpc.AppTracking src)
         {
             if (src == null) return null;
@@ -151,6 +167,22 @@ namespace MockGrpcPayDisplay
             // HACK: BaseRequest.RequestId is protected (and doesn't look like it is used anywhere?!)
             result.GetType().GetProperty("RequestId", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(result, src.RequestId);
             return result;
+        }
+
+        public static customers.Card From(grpc.Card src)
+        {
+            if (src == null) return null;
+            return new customers.Card
+            {
+                cardType = From(src.CardType),
+                expirationDate = From(src.ExpirationDate),
+                first6 = From(src.First6),
+                firstName = From(src.FirstName),
+                id = From(src.Id),
+                last4 = From(src.Last4),
+                lastName = From(src.LastName),
+                token = From(src.Token),
+            };
         }
 
         public static payments.CardEntryType From(grpc.CardEntryType src)
@@ -350,7 +382,7 @@ namespace MockGrpcPayDisplay
             {
                 message = From(src.Message),
                 type = From(src.Type),
-                reason = From(src.Reason),
+                reason = From<order.VoidReason>(src.Reason),
             };
         }
 
@@ -385,6 +417,26 @@ namespace MockGrpcPayDisplay
                 Payment = From(src.Payment),
             };
             result.Challenges = src.Challenges.Select(o => From(o)).ToList();
+            return result;
+        }
+
+        public static customers.Customer From(grpc.Customer src)
+        {
+            if (src == null) return null;
+            var result = new customers.Customer
+            {
+                id = From(src.Id),
+                orderRef = From(src.OrderRef),
+                firstName = From(src.FirstName),
+                lastName = From(src.LastName),
+                marketingAllowed = From(src.MarketingAllowed),
+                customerSince = From(src.CustomerSince),
+            };
+            result.orders = src.Orders.Select(o => From(o))?.ToList();
+            result.addresses = src.Addresses.Select(o => From(o))?.ToList();
+            result.emailAddresses = src.EmailAddresses.Select(o => From(o))?.ToList();
+            result.phoneNumbers = src.PhoneNumbers.Select(o => From(o))?.ToList();
+            result.cards = src.Cards.Select(o => From(o))?.ToList();
             return result;
         }
 
@@ -531,7 +583,8 @@ namespace MockGrpcPayDisplay
         public static com.clover.remote.order.DisplayPayment From(grpc.DisplayPayment src)
         {
             if (src == null) return null;
-            return new com.clover.remote.order.DisplayPayment {
+            return new com.clover.remote.order.DisplayPayment
+            {
                 amount = From(src.Amount),
                 id = From(src.Id),
                 label = From(src.Label),
@@ -568,6 +621,17 @@ namespace MockGrpcPayDisplay
             // HACK: BaseRequest.RequestId is protected (and doesn't look like it is used anywhere?!)
             result.GetType().GetProperty("RequestId", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(result, src.RequestId);
             return result;
+        }
+
+        public static customers.EmailAddress From(grpc.EmailAddress src)
+        {
+            if (src == null) return null;
+            return new customers.EmailAddress
+            {
+                emailAddress = From(src.Email),
+                id = From(src.Id),
+                verifiedTime = From(src.VerifiedTime),
+            };
         }
 
         public static payments.GermanInfo From(grpc.GermanInfo src)
@@ -768,6 +832,18 @@ namespace MockGrpcPayDisplay
             };
         }
 
+        public static remotepay.OpenCashDrawerRequest From(grpc.OpenCashDrawerRequest src)
+        {
+            if (src == null) return null;
+            var result = new remotepay.OpenCashDrawerRequest(src.Reason)
+            {
+                printerId = From(src.PrinterId),
+            };
+            // HACK: BaseRequest.RequestId is protected (and doesn't look like it is used anywhere?!)
+            result.GetType().GetProperty("RequestId", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(result, src.RequestId);
+            return result;
+        }
+
         public static payments.Payment From(grpc.Payment src)
         {
             if (src == null) return null;
@@ -801,7 +877,7 @@ namespace MockGrpcPayDisplay
                 tipAmount = From(src.TipAmount),
                 transactionInfo = From(src.TransactionInfo),
                 transactionSettings = From(src.TransactionSettings),
-                voidReason = From(src.VoidReason),
+                voidReason = From<order.VoidReason>(src.VoidReason),
             };
             result.additionalCharges = src.AdditionalCharges.Select(o => From(o)).ToList();
             result.lineItemPayments = src.LineItemPayments.Select(o => From(o)).ToList();
@@ -831,6 +907,16 @@ namespace MockGrpcPayDisplay
             {
                 x = From(src.X),
                 y = From(src.Y),
+            };
+        }
+
+        public static customers.PhoneNumber From(grpc.PhoneNumber src)
+        {
+            if (src == null) return null;
+            return new customers.PhoneNumber
+            {
+                id = From(src.Id),
+                phoneNumber = From(src.Phone),
             };
         }
 
@@ -1163,6 +1249,20 @@ namespace MockGrpcPayDisplay
             };
         }
 
+        public static remotepay.SetCustomerInfoRequest From(grpc.SetCustomerInfoRequest src)
+        {
+            if (src == null) return null;
+            var result = new remotepay.SetCustomerInfoRequest
+            {
+                customer = From(src.Customer),
+                displayString = From(src.DisplayString),
+                externalId = From(src.ExternalId),
+                externalSystemName = From(src.ExternalSystemName),
+            };
+            result.extras = src.Extras.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+            return result;
+        }
+
         public static transport.Signature2 From(grpc.Signature src)
         {
             if (src == null) return null;
@@ -1194,6 +1294,17 @@ namespace MockGrpcPayDisplay
             var result = new transport.Signature2.Stroke();
             result.points = src.Points.Select(o => From(o)).ToList();
             return result;
+        }
+
+        public static remotepay.CustomActivityRequest From(grpc.StartCustomActivityRequest src)
+        {
+            if (src == null) return null;
+            return new remotepay.CustomActivityRequest
+            {
+                Action = From(src.Action),
+                NonBlocking = From(src.NonBlocking),
+                Payload = From(src.Payload),
+            };
         }
 
         public static payments.TaxableAmountRate From(grpc.TaxableAmountRate src)
@@ -1274,6 +1385,17 @@ namespace MockGrpcPayDisplay
                 enabled = From(src.Enabled),
                 visible = From(src.Visible),
                 instructions = From(src.Instructions),
+            };
+        }
+
+        public static remotepay.TipAdjustAuthRequest From(grpc.TipAdjustAuthRequest src)
+        {
+            if (src == null) return null;
+            return new remotepay.TipAdjustAuthRequest
+            {
+                OrderID = From(src.OrderID),
+                PaymentID = From(src.PaymentID),
+                TipAmount = From(src.TipAmount),
             };
         }
 
@@ -1418,6 +1540,11 @@ namespace MockGrpcPayDisplay
             };
         }
 
+        public static int? From(grpc.VaultCardRequest src)
+        {
+            return src == null || src.CardEntryMethods == 0 ? (int?)null : src.CardEntryMethods;
+        }
+
         public static remotepay.VerifySignatureRequest From(grpc.AcceptSignatureRequest src)
         {
             if (src == null) return null;
@@ -1448,33 +1575,100 @@ namespace MockGrpcPayDisplay
             };
         }
 
-        public static order.VoidReason From(grpc.VoidReason src)
+        public static remotepay.VoidPaymentRequest From(grpc.VoidPaymentRequest src)
         {
-            switch (src)
+            if (src == null) return null;
+            var result = new remotepay.VoidPaymentRequest
             {
-                case grpc.VoidReason.UserCancel:
-                    return order.VoidReason.USER_CANCEL;
-                case grpc.VoidReason.TransportError:
-                    return order.VoidReason.TRANSPORT_ERROR;
-                case grpc.VoidReason.RejectSignature:
-                    return order.VoidReason.REJECT_SIGNATURE;
-                case grpc.VoidReason.RejectPartialAuth:
-                    return order.VoidReason.REJECT_PARTIAL_AUTH;
-                case grpc.VoidReason.NotApproved:
-                    return order.VoidReason.NOT_APPROVED;
-                case grpc.VoidReason.Failed:
-                    return order.VoidReason.FAILED;
-                case grpc.VoidReason.AuthClosedNewCard:
-                    return order.VoidReason.AUTH_CLOSED_NEW_CARD;
-                case grpc.VoidReason.DeveloperPayPartialAuth:
-                    return order.VoidReason.DEVELOPER_PAY_PARTIAL_AUTH;
-                case grpc.VoidReason.RejectDuplicate:
-                    return order.VoidReason.REJECT_DUPLICATE;
-                case grpc.VoidReason.RejectOffline:
-                    return order.VoidReason.REJECT_OFFLINE;
-                default:
-                    return default(order.VoidReason);
+                EmployeeId = From(src.EmployeeId),
+                OrderId = From(src.OrderId),
+                PaymentId = From(src.PaymentId),
+                VoidReason = From<string>(src.VoidReason),
+            };
+            src.Extras.ToList().ForEach(kvp => result.Extras.Add(kvp.Key, kvp.Value));
+            // HACK: BaseRequest.RequestId is protected (and doesn't look like it is used anywhere?!)
+            result.GetType().GetProperty("RequestId", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(result, src.RequestId);
+            return result;
+        }
+
+        public static remotepay.VoidPaymentRefundRequest From(grpc.VoidPaymentRefundRequest src)
+        {
+            if (src == null) return null;
+            var result = new remotepay.VoidPaymentRefundRequest
+            {
+                DisablePrinting = From(src.DisablePrinting),
+                DisableReceiptSelection = From(src.DisableReceiptSelection),
+                EmployeeId = From(src.EmployeeId),
+                OrderId = From(src.OrderId),
+                RefundId = From(src.RefundId),
+            };
+            src.Extras.ToList().ForEach(kvp => result.Extras.Add(kvp.Key, kvp.Value));
+            // HACK: BaseRequest.RequestId is protected (and doesn't look like it is used anywhere?!)
+            result.GetType().GetProperty("RequestId", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(result, src.RequestId);
+            return result;
+        }
+
+        public static TResult From<TResult>(grpc.VoidReason src)
+        {
+            if (typeof(TResult) == typeof(string))
+            {
+                switch (src)
+                {
+                    case grpc.VoidReason.Unknown:
+                        return (TResult)(object)remotepay.VoidPaymentRequest.FAILED;
+                    case grpc.VoidReason.UserCancel:
+                        return (TResult)(object)remotepay.VoidPaymentRequest.USER_CANCEL;
+                    case grpc.VoidReason.TransportError:
+                        return (TResult)(object)remotepay.VoidPaymentRequest.TRANSPORT_ERROR;
+                    case grpc.VoidReason.RejectSignature:
+                        return (TResult)(object)remotepay.VoidPaymentRequest.REJECT_SIGNATURE;
+                    case grpc.VoidReason.RejectPartialAuth:
+                        return (TResult)(object)remotepay.VoidPaymentRequest.REJECT_PARTIAL_AUTH;
+                    case grpc.VoidReason.NotApproved:
+                        return (TResult)(object)remotepay.VoidPaymentRequest.NOT_APPROVED;
+                    case grpc.VoidReason.Failed:
+                        return (TResult)(object)remotepay.VoidPaymentRequest.FAILED;
+                    case grpc.VoidReason.AuthClosedNewCard:
+                        return (TResult)(object)remotepay.VoidPaymentRequest.AUTH_CLOSED_NEW_CARD;
+                    case grpc.VoidReason.DeveloperPayPartialAuth:
+                        return (TResult)(object)remotepay.VoidPaymentRequest.DEVELOPER_PAY_PARTIAL_AUTH;
+                    case grpc.VoidReason.RejectDuplicate:
+                        return (TResult)(object)remotepay.VoidPaymentRequest.REJECT_DUPLICATE;
+                    case grpc.VoidReason.RejectOffline:
+                        return (TResult)(object)remotepay.VoidPaymentRequest.REJECT_OFFLINE;
+                    default:
+                        return (TResult)(object)remotepay.VoidPaymentRequest.FAILED;
+                }
             }
+            else if (typeof(TResult) == typeof(order.VoidReason))
+            {
+                switch (src)
+                {
+                    case grpc.VoidReason.UserCancel:
+                        return (TResult)(object)order.VoidReason.USER_CANCEL;
+                    case grpc.VoidReason.TransportError:
+                        return (TResult)(object)order.VoidReason.TRANSPORT_ERROR;
+                    case grpc.VoidReason.RejectSignature:
+                        return (TResult)(object)order.VoidReason.REJECT_SIGNATURE;
+                    case grpc.VoidReason.RejectPartialAuth:
+                        return (TResult)(object)order.VoidReason.REJECT_PARTIAL_AUTH;
+                    case grpc.VoidReason.NotApproved:
+                        return (TResult)(object)order.VoidReason.NOT_APPROVED;
+                    case grpc.VoidReason.Failed:
+                        return (TResult)(object)order.VoidReason.FAILED;
+                    case grpc.VoidReason.AuthClosedNewCard:
+                        return (TResult)(object)order.VoidReason.AUTH_CLOSED_NEW_CARD;
+                    case grpc.VoidReason.DeveloperPayPartialAuth:
+                        return (TResult)(object)order.VoidReason.DEVELOPER_PAY_PARTIAL_AUTH;
+                    case grpc.VoidReason.RejectDuplicate:
+                        return (TResult)(object)order.VoidReason.REJECT_DUPLICATE;
+                    case grpc.VoidReason.RejectOffline:
+                        return (TResult)(object)order.VoidReason.REJECT_OFFLINE;
+                    default:
+                        return (TResult)(object)default(order.VoidReason);
+                }
+            }
+            else throw new NotSupportedException();
         }
     }
 }

@@ -314,6 +314,13 @@ namespace MockGrpcPayDisplay
             return Task.FromResult(new Empty());
         }
 
+        public override Task<Empty> OpenCashDrawer(OpenCashDrawerRequest request, ServerCallContext context)
+        {
+            Program.WriteLine("OpenCashDrawer");
+            connector.OpenCashDrawer(Translate.From(request));
+            return Task.FromResult(new Empty());
+        }
+
         public override Task<Empty> Print(PrintRequest request, ServerCallContext context)
         {
             Console.WriteLine("Print");
@@ -413,6 +420,13 @@ namespace MockGrpcPayDisplay
             return Task.FromResult(new Empty());
         }
 
+        public override Task<Empty> Sale(SaleRequest request, ServerCallContext context)
+        {
+            Program.WriteLine("Sale");
+            connector.Sale(Translate.From(request));
+            return Task.FromResult(new Empty());
+        }
+
         public override Task<Empty> SendMessageToActivity(SendMessageToActivityRequest request, ServerCallContext context)
         {
             Program.WriteLine("SendMessageToActivity");
@@ -420,10 +434,73 @@ namespace MockGrpcPayDisplay
             return Task.FromResult(new Empty());
         }
 
-        public override Task<Empty> Sale(SaleRequest request, ServerCallContext context)
+        public override Task<Empty> SetCustomerInfo(SetCustomerInfoRequest request, ServerCallContext context)
         {
-            Program.WriteLine("Sale");
-            connector.Sale(Translate.From(request));
+            Program.WriteLine("SetCustomerInfo");
+            connector.SetCustomerInfo(Translate.From(request));
+            return Task.FromResult(new Empty());
+        }
+
+        public override Task<Empty> ShowDisplayOrder(ShowDisplayOrderRequest request, ServerCallContext context)
+        {
+            Program.WriteLine("ShowDisplayOrder");
+            connector.ShowDisplayOrder(Translate.From(request.DisplayOrder));
+            return Task.FromResult(new Empty());
+        }
+
+        public override Task<Empty> ShowMessage(ShowMessageRequest request, ServerCallContext context)
+        {
+            Program.WriteLine("ShowMessage");
+            connector.ShowMessage(request.Message);
+            return Task.FromResult(new Empty());
+        }
+
+        public override Task<Empty> ShowThankYouScreen(ShowThankYouScreenRequest request, ServerCallContext context)
+        {
+            Program.WriteLine("ShowThankYouScreen");
+            connector.ShowThankYouScreen();
+            return Task.FromResult(new Empty());
+        }
+
+        public override Task<Empty> ShowWelcomeScreen(ShowWelcomeScreenRequest request, ServerCallContext context)
+        {
+            Program.WriteLine("ShowWelcomeScreen");
+            connector.ShowWelcomeScreen();
+            return Task.FromResult(new Empty());
+        }
+
+        public override Task<Empty> StartCustomActivity(StartCustomActivityRequest request, ServerCallContext context)
+        {
+            Program.WriteLine("StartCustomActivity");
+            connector.StartCustomActivity(Translate.From(request));
+            return Task.FromResult(new Empty());
+        }
+
+        public override Task<Empty> TipAdjustAuth(TipAdjustAuthRequest request, ServerCallContext context)
+        {
+            Program.WriteLine("TipAdjustAuth");
+            connector.TipAdjustAuth(Translate.From(request));
+            return Task.FromResult(new Empty());
+        }
+
+        public override Task<Empty> VaultCard(VaultCardRequest request, ServerCallContext context)
+        {
+            Program.WriteLine("VaultCard");
+            connector.VaultCard(Translate.From(request));
+            return Task.FromResult(new Empty());
+        }
+
+        public override Task<Empty> VoidPayment(VoidPaymentRequest request, ServerCallContext context)
+        {
+            Program.WriteLine("VoidPayment");
+            connector.VoidPayment(Translate.From(request));
+            return Task.FromResult(new Empty());
+        }
+
+        public override Task<Empty> VoidPaymentRefund(VoidPaymentRefundRequest request, ServerCallContext context)
+        {
+            Program.WriteLine("VoidPaymentRefund");
+            connector.VoidPaymentRefund(Translate.From(request));
             return Task.FromResult(new Empty());
         }
         #endregion
