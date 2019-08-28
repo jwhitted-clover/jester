@@ -2,6 +2,7 @@
 using System.Linq;
 using base_ = com.clover.sdk.v3.base_;
 using customers = com.clover.sdk.v3.customers;
+using data = com.clover.remotepay.data;
 using grpc = Clover.Grpc;
 using hours = com.clover.sdk.v3.hours;
 using inventory = com.clover.sdk.v3.inventory;
@@ -1159,6 +1160,22 @@ namespace MockGrpcPayDisplay
             };
         }
 
+        public static grpc.InvalidStateTransitionNotification From(remotepay.InvalidStateTransitionNotification src)
+        {
+            if (src == null) return null;
+            return new grpc.InvalidStateTransitionNotification
+            {
+                Data = From(src.Data),
+                Message = From(src.Message),
+                Reason = From(src.Reason),
+                RequestedTransition = From(src.RequestedTransition),
+                Result = From(src.Result),
+                State = From(src.State),
+                Substate = From(src.Substate),
+                Success = From(src.Success),
+            };
+        }
+
         public static grpc.KeyPress From(transport.KeyPress src)
         {
             switch (src)
@@ -1305,6 +1322,185 @@ namespace MockGrpcPayDisplay
                 Action = From(src.Action),
                 Payload = From(src.Payload),
             };
+        }
+
+        public static grpc.Methods From(data.Methods src)
+        {
+            switch (src)
+            {
+                case data.Methods.AAA_NULL:
+                    return grpc.Methods.AaaNull;
+                case data.Methods.ACK:
+                    return grpc.Methods.Ack;
+                case data.Methods.CLOSEOUT_RESPONSE:
+                    return grpc.Methods.CloseoutResponse;
+                case data.Methods.CLOSEOUT_REQUEST:
+                    return grpc.Methods.CloseoutRequest;
+                case data.Methods.CAPTURE_PREAUTH_RESPONSE:
+                    return grpc.Methods.CapturePreAuthResponse;
+                case data.Methods.CAPTURE_PREAUTH:
+                    return grpc.Methods.CapturePreAuth;
+                case data.Methods.LAST_MSG_REQUEST:
+                    return grpc.Methods.LastMsgRequest;
+                case data.Methods.LAST_MSG_RESPONSE:
+                    return grpc.Methods.LastMsgResponse;
+                case data.Methods.TIP_ADJUST:
+                    return grpc.Methods.TipAdjust;
+                case data.Methods.TIP_ADJUST_RESPONSE:
+                    return grpc.Methods.TipAdjustResponse;
+                case data.Methods.OPEN_CASH_DRAWER:
+                    return grpc.Methods.OpenCashDrawer;
+                case data.Methods.SHOW_PAYMENT_RECEIPT_OPTIONS:
+                    return grpc.Methods.ShowPaymentReceiptOptions;
+                case data.Methods.SHOW_REFUND_RECEIPT_OPTIONS:
+                    return grpc.Methods.ShowRefundReceiptOptions;
+                case data.Methods.SHOW_CREDIT_RECEIPT_OPTIONS:
+                    return grpc.Methods.ShowCreditReceiptOptions;
+                case data.Methods.REFUND_RESPONSE:
+                    return grpc.Methods.RefundResponse;
+                case data.Methods.REFUND_REQUEST:
+                    return grpc.Methods.RefundRequest;
+                case data.Methods.TX_START:
+                    return grpc.Methods.TxStart;
+                case data.Methods.TX_START_RESPONSE:
+                    return grpc.Methods.TxStartResponse;
+                case data.Methods.KEY_PRESS:
+                    return grpc.Methods.KeyPress;
+                case data.Methods.UI_STATE:
+                    return grpc.Methods.UiState;
+                case data.Methods.TX_STATE:
+                    return grpc.Methods.TxState;
+                case data.Methods.FINISH_OK:
+                    return grpc.Methods.FinishOk;
+                case data.Methods.FINISH_CANCEL:
+                    return grpc.Methods.FinishCancel;
+                case data.Methods.DISCOVERY_REQUEST:
+                    return grpc.Methods.DiscoveryRequest;
+                case data.Methods.DISCOVERY_RESPONSE:
+                    return grpc.Methods.DiscoveryResponse;
+                case data.Methods.TIP_ADDED:
+                    return grpc.Methods.TipAdded;
+                case data.Methods.VERIFY_SIGNATURE:
+                    return grpc.Methods.VerifySignature;
+                case data.Methods.SIGNATURE_VERIFIED:
+                    return grpc.Methods.SignatureVerified;
+                case data.Methods.PAYMENT_VOIDED:
+                    return grpc.Methods.PaymentVoided;
+                case data.Methods.PRINT_PAYMENT:
+                    return grpc.Methods.PrintPayment;
+                case data.Methods.REFUND_PRINT_PAYMENT:
+                    return grpc.Methods.RefundPrintPayment;
+                case data.Methods.PRINT_PAYMENT_MERCHANT_COPY:
+                    return grpc.Methods.PrintPaymentMerchantCopy;
+                case data.Methods.PRINT_CREDIT:
+                    return grpc.Methods.PrintCredit;
+                case data.Methods.PRINT_PAYMENT_DECLINE:
+                    return grpc.Methods.PrintPaymentDecline;
+                case data.Methods.PRINT_CREDIT_DECLINE:
+                    return grpc.Methods.PrintCreditDecline;
+                case data.Methods.PRINT_TEXT:
+                    return grpc.Methods.PrintText;
+                case data.Methods.PRINT_IMAGE:
+                    return grpc.Methods.PrintImage;
+                case data.Methods.TERMINAL_MESSAGE:
+                    return grpc.Methods.TerminalMessage;
+                case data.Methods.SHOW_WELCOME_SCREEN:
+                    return grpc.Methods.ShowWelcomeScreen;
+                case data.Methods.SHOW_THANK_YOU_SCREEN:
+                    return grpc.Methods.ShowThankYouScreen;
+                case data.Methods.SHOW_ORDER_SCREEN:
+                    return grpc.Methods.ShowOrderScreen;
+                case data.Methods.BREAK:
+                    return grpc.Methods.Break;
+                case data.Methods.CASHBACK_SELECTED:
+                    return grpc.Methods.CashbackSelected;
+                case data.Methods.PARTIAL_AUTH:
+                    return grpc.Methods.PartialAuth;
+                case data.Methods.VOID_PAYMENT:
+                    return grpc.Methods.VoidPayment;
+                case data.Methods.VOID_PAYMENT_RESPONSE:
+                    return grpc.Methods.VoidPaymentResponse;
+                case data.Methods.ORDER_ACTION_ADD_DISCOUNT:
+                    return grpc.Methods.OrderActionAddDiscount;
+                case data.Methods.ORDER_ACTION_REMOVE_DISCOUNT:
+                    return grpc.Methods.OrderActionRemoveDiscount;
+                case data.Methods.ORDER_ACTION_ADD_LINE_ITEM:
+                    return grpc.Methods.OrderActionAddLineItem;
+                case data.Methods.ORDER_ACTION_REMOVE_LINE_ITEM:
+                    return grpc.Methods.OrderActionRemoveLineItem;
+                case data.Methods.ORDER_ACTION_RESPONSE:
+                    return grpc.Methods.OrderActionResponse;
+                case data.Methods.VAULT_CARD:
+                    return grpc.Methods.VaultCard;
+                case data.Methods.VAULT_CARD_RESPONSE:
+                    return grpc.Methods.VaultCardResponse;
+                case data.Methods.CARD_DATA:
+                    return grpc.Methods.CardData;
+                case data.Methods.CARD_DATA_RESPONSE:
+                    return grpc.Methods.CardDataResponse;
+                case data.Methods.LOG_MESSAGE:
+                    return grpc.Methods.LogMessage;
+                case data.Methods.CONFIRM_PAYMENT_MESSAGE:
+                    return grpc.Methods.ConfirmPaymentMessage;
+                case data.Methods.PAYMENT_CONFIRMED:
+                    return grpc.Methods.PaymentConfirmed;
+                case data.Methods.PAYMENT_REJECTED:
+                    return grpc.Methods.PaymentRejected;
+                case data.Methods.RETRIEVE_PENDING_PAYMENTS:
+                    return grpc.Methods.RetrievePendingPayments;
+                case data.Methods.RETRIEVE_PENDING_PAYMENTS_RESPONSE:
+                    return grpc.Methods.RetrievePendingPaymentsResponse;
+                case data.Methods.ACTIVITY_REQUEST:
+                    return grpc.Methods.ActivityRequest;
+                case data.Methods.ACTIVITY_RESPONSE:
+                    return grpc.Methods.ActivityResponse;
+                case data.Methods.REMOTE_ERROR:
+                    return grpc.Methods.RemoteError;
+                case data.Methods.RETRIEVE_DEVICE_STATUS_REQUEST:
+                    return grpc.Methods.RetrieveDeviceStatusRequest;
+                case data.Methods.RETRIEVE_DEVICE_STATUS_RESPONSE:
+                    return grpc.Methods.RetrieveDeviceStatusResponse;
+                case data.Methods.CONFIGURATION_CHANGE:
+                    return grpc.Methods.ConfigurationChange;
+                case data.Methods.RESET_DEVICE_RESPONSE:
+                    return grpc.Methods.ResetDeviceResponse;
+                case data.Methods.ACTIVITY_MESSAGE_TO_ACTIVITY:
+                    return grpc.Methods.ActivityMessageToActivity;
+                case data.Methods.ACTIVITY_MESSAGE_FROM_ACTIVITY:
+                    return grpc.Methods.ActivityMessageFromActivity;
+                case data.Methods.RETRIEVE_PAYMENT_REQUEST:
+                    return grpc.Methods.RetrievePaymentRequest;
+                case data.Methods.RETRIEVE_PAYMENT_RESPONSE:
+                    return grpc.Methods.RetrievePaymentResponse;
+                case data.Methods.PRINT_JOB_STATUS_REQUEST:
+                    return grpc.Methods.PrintJobStatusRequest;
+                case data.Methods.PRINT_JOB_STATUS_RESPONSE:
+                    return grpc.Methods.PrintJobStatusResponse;
+                case data.Methods.GET_PRINTERS_REQUEST:
+                    return grpc.Methods.GetPrintersRequest;
+                case data.Methods.GET_PRINTERS_RESPONSE:
+                    return grpc.Methods.GetPrintersResponse;
+                case data.Methods.CLOVER_DEVICE_LOG_REQUEST:
+                    return grpc.Methods.CloverDeviceLogRequest;
+                case data.Methods.SHOW_RECEIPT_OPTIONS:
+                    return grpc.Methods.ShowReceiptOptions;
+                case data.Methods.SHOW_RECEIPT_OPTIONS_RESPONSE:
+                    return grpc.Methods.ShowReceiptOptionsResponse;
+                case data.Methods.VOID_PAYMENT_REFUND:
+                    return grpc.Methods.VoidPaymentRefund;
+                case data.Methods.VOID_PAYMENT_REFUND_RESPONSE:
+                    return grpc.Methods.VoidPaymentRefundResponse;
+                case data.Methods.REGISTER_FOR_CUST_DATA:
+                    return grpc.Methods.RegisterForCustData;
+                case data.Methods.CUSTOMER_INFO_MESSAGE:
+                    return grpc.Methods.CustomerInfoMessage;
+                case data.Methods.CUSTOMER_PROVIDED_DATA_MESSAGE:
+                    return grpc.Methods.CustomerProvidedDataMessage;
+                case data.Methods.INVALID_STATE_TRANSITION:
+                    return grpc.Methods.InvalidStateTransition;
+                default:
+                    return grpc.Methods.Unknown;
+            }
         }
 
         public static grpc.Modification From(order.Modification src)
@@ -1773,6 +1969,22 @@ namespace MockGrpcPayDisplay
             return result;
         }
 
+        public static grpc.RefundPaymentResponse From(remotepay.RefundPaymentResponse src)
+        {
+            if (src == null) return null;
+            return new grpc.RefundPaymentResponse
+            {
+                OrderId = From(src.OrderId),
+                PaymentId = From(src.PaymentId),
+                Refund = From(src.Refund),
+                // BaseResponse
+                Message = From(src.Message),
+                Reason = From(src.Reason),
+                Result = From(src.Result),
+                Success = From(src.Success),
+            };
+        }
+
         public static grpc.ResetDeviceResponse From(remotepay.ResetDeviceResponse src)
         {
             if (src == null) return null;
@@ -2038,6 +2250,32 @@ namespace MockGrpcPayDisplay
             return result;
         }
 
+        public static grpc.TipAddedMessage From(transport.TipAddedMessage src)
+        {
+            if (src == null) return null;
+            return new grpc.TipAddedMessage
+            {
+                Method = From(src.method),
+                TipAmount = From(src.tipAmount),
+                Version = From(src.version),
+            };
+        }
+
+        public static grpc.TipAdjustAuthResponse From(remotepay.TipAdjustAuthResponse src)
+        {
+            if (src == null) return null;
+            return new grpc.TipAdjustAuthResponse
+            {
+                PaymentId = From(src.PaymentId),
+                TipAmount = From(src.TipAmount),
+                // BaseResponse
+                Message = From(src.Message),
+                Reason = From(src.Reason),
+                Result = From(src.Result),
+                Success = From(src.Success),
+            };
+        }
+
         public static grpc.TipMode From(payments.TipMode src)
         {
             switch (src)
@@ -2208,6 +2446,20 @@ namespace MockGrpcPayDisplay
             };
         }
 
+        public static grpc.VaultCardResponse From(remotepay.VaultCardResponse src)
+        {
+            if (src == null) return null;
+            return new grpc.VaultCardResponse
+            {
+                Card = From(src.Card),
+                // BaseResponse
+                Message = From(src.Message),
+                Reason = From(src.Reason),
+                Result = From(src.Result),
+                Success = From(src.Success),
+            };
+        }
+
         public static grpc.VerifySignatureRequest From(remotepay.VerifySignatureRequest src)
         {
             if (src == null) return null;
@@ -2215,6 +2467,36 @@ namespace MockGrpcPayDisplay
             {
                 Payment = From(src.Payment),
                 Signature = From(src.Signature),
+            };
+        }
+
+        public static grpc.VoidPaymentRefundResponse From(remotepay.VoidPaymentRefundResponse src)
+        {
+            if (src == null) return null;
+            return new grpc.VoidPaymentRefundResponse
+            {
+                RefundId = From(src.RefundId),
+                // BaseResponse
+                Message = From(src.Message),
+                Reason = From(src.Reason),
+                Result = From(src.Result),
+                Success = From(src.Success),
+
+            };
+        }
+
+        public static grpc.VoidPaymentResponse From(remotepay.VoidPaymentResponse src)
+        {
+            if (src == null) return null;
+            return new grpc.VoidPaymentResponse
+            {
+                Payment = From(src.Payment),
+                PaymentId = From(src.PaymentId),
+                // BaseResponse
+                Message = From(src.Message),
+                Reason = From(src.Reason),
+                Result = From(src.Result),
+                Success = From(src.Success),
             };
         }
 

@@ -525,6 +525,12 @@ namespace MockGrpcPayDisplay
             return CloseoutResponseHandler.Promise.Task;
         }
 
+        public override Task OnConfirmPaymentRequest(Empty request, IServerStreamWriter<ConfirmPaymentRequest> responseStream, ServerCallContext context)
+        {
+            ConfirmPaymentRequestHandler = new StreamHandler<sdk.ConfirmPaymentRequest, ConfirmPaymentRequest>(responseStream, o => Translate.From(o));
+            return ConfirmPaymentRequestHandler.Promise.Task;
+        }
+
         public override Task OnCustomActivityResponse(Empty request, IServerStreamWriter<CustomActivityResponse> responseStream, ServerCallContext context)
         {
             CustomActivityResponseHandler = new StreamHandler<sdk.CustomActivityResponse, CustomActivityResponse>(responseStream, o => Translate.From(o));
@@ -579,10 +585,10 @@ namespace MockGrpcPayDisplay
             return DisplayReceiptOptionsResponseHandler.Promise.Task;
         }
 
-        public override Task OnConfirmPaymentRequest(Empty request, IServerStreamWriter<ConfirmPaymentRequest> responseStream, ServerCallContext context)
+        public override Task OnInvalidStateTransitionResponse(Empty request, IServerStreamWriter<InvalidStateTransitionNotification> responseStream, ServerCallContext context)
         {
-            ConfirmPaymentRequestHandler = new StreamHandler<sdk.ConfirmPaymentRequest, ConfirmPaymentRequest>(responseStream, o => Translate.From(o));
-            return ConfirmPaymentRequestHandler.Promise.Task;
+            InvalidStateTransitionResponseHandler = new StreamHandler<sdk.InvalidStateTransitionNotification, InvalidStateTransitionNotification>(responseStream, o => Translate.From(o));
+            return InvalidStateTransitionResponseHandler.Promise.Task;
         }
 
         public override Task OnManualRefundResponse(Empty request, IServerStreamWriter<ManualRefundResponse> responseStream, ServerCallContext context)
@@ -595,6 +601,12 @@ namespace MockGrpcPayDisplay
         {
             MessageFromActivityHandler = new StreamHandler<sdk.MessageFromActivity, MessageFromActivity>(responseStream, o => Translate.From(o));
             return MessageFromActivityHandler.Promise.Task;
+        }
+
+        public override Task OnPreAuthResponse(Empty request, IServerStreamWriter<PreAuthResponse> responseStream, ServerCallContext context)
+        {
+            PreAuthResponseHandler = new StreamHandler<sdk.PreAuthResponse, PreAuthResponse>(responseStream, o => Translate.From(o));
+            return PreAuthResponseHandler.Promise.Task;
         }
 
         public override Task OnPrintJobStatusResponse(Empty request, IServerStreamWriter<PrintJobStatusResponse> responseStream, ServerCallContext context)
@@ -645,6 +657,12 @@ namespace MockGrpcPayDisplay
             return ReadCardDataResponseHandler.Promise.Task;
         }
 
+        public override Task OnRefundPaymentResponse(Empty request, IServerStreamWriter<RefundPaymentResponse> responseStream, ServerCallContext context)
+        {
+            RefundPaymentResponseHandler = new StreamHandler<sdk.RefundPaymentResponse, RefundPaymentResponse>(responseStream, o => Translate.From(o));
+            return RefundPaymentResponseHandler.Promise.Task;
+        }
+
         public override Task OnRetrieveDeviceStatusResponse(Empty request, IServerStreamWriter<RetrieveDeviceStatusResponse> responseStream, ServerCallContext context)
         {
             RetrieveDeviceStatusResponseHandler = new StreamHandler<sdk.RetrieveDeviceStatusResponse, RetrieveDeviceStatusResponse>(responseStream, o => Translate.From(o));
@@ -688,6 +706,36 @@ namespace MockGrpcPayDisplay
         {
             ResetDeviceResponseHandler = new StreamHandler<sdk.ResetDeviceResponse, ResetDeviceResponse>(responseStream, o => Translate.From(o));
             return ResetDeviceResponseHandler.Promise.Task;
+        }
+
+        public override Task OnTipAdded(Empty request, IServerStreamWriter<TipAddedMessage> responseStream, ServerCallContext context)
+        {
+            TipAddedHandler = new StreamHandler<transport.TipAddedMessage, TipAddedMessage>(responseStream, o => Translate.From(o));
+            return TipAddedHandler.Promise.Task;
+        }
+
+        public override Task OnTipAdjustAuthResponse(Empty request, IServerStreamWriter<TipAdjustAuthResponse> responseStream, ServerCallContext context)
+        {
+            TipAdjustAuthResponseHandler = new StreamHandler<sdk.TipAdjustAuthResponse, TipAdjustAuthResponse>(responseStream, o => Translate.From(o));
+            return TipAdjustAuthResponseHandler.Promise.Task;
+        }
+
+        public override Task OnVaultCardResponse(Empty request, IServerStreamWriter<VaultCardResponse> responseStream, ServerCallContext context)
+        {
+            VaultCardResponseHandler = new StreamHandler<sdk.VaultCardResponse, VaultCardResponse>(responseStream, o => Translate.From(o));
+            return VaultCardResponseHandler.Promise.Task;
+        }
+
+        public override Task OnVoidPaymentRefundResponse(Empty request, IServerStreamWriter<VoidPaymentRefundResponse> responseStream, ServerCallContext context)
+        {
+            VoidPaymentRefundResponseHandler = new StreamHandler<sdk.VoidPaymentRefundResponse, VoidPaymentRefundResponse>(responseStream, o => Translate.From(o));
+            return VoidPaymentRefundResponseHandler.Promise.Task;
+        }
+
+        public override Task OnVoidPaymentResponse(Empty request, IServerStreamWriter<VoidPaymentResponse> responseStream, ServerCallContext context)
+        {
+            VoidPaymentResponseHandler = new StreamHandler<sdk.VoidPaymentResponse, VoidPaymentResponse>(responseStream, o => Translate.From(o));
+            return VoidPaymentResponseHandler.Promise.Task;
         }
         #endregion
     }

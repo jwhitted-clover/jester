@@ -1520,7 +1520,7 @@ namespace MockGrpcPayDisplay
                     return transport.PayIntent.TransactionType.DATA;
                 case grpc.TransactionType.BalanceInquiry:
                     return transport.PayIntent.TransactionType.BALANCE_INQUIRY;
-                case grpc.TransactionType.CapturePreaut:
+                case grpc.TransactionType.CapturePreAuth:
                     return transport.PayIntent.TransactionType.CAPTURE_PREAUTH;
                 default:
                     return default(transport.PayIntent.TransactionType);

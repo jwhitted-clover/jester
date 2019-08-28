@@ -676,8 +676,10 @@ message StartCustomActivityRequest {
 }
 
 message TipAddedMessage {
-  Message Message = 1;
-  int64 tipAmount = 2;
+  int64 tipAmount = 1;
+  // Message
+  int32 Version = 2;
+  Methods method = 3;
 }
 
 message TipAdjustAuthRequest {

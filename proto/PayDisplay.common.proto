@@ -677,11 +677,6 @@ message LineItemPayment {
   bool Refunded = 6;
 }
 
-message Message {
-  int32 Version = 1;
-  Methods method = 2;
-}
-
 enum Methods {
   METHODS_UNKNOWN = 0;
   METHODS_AAA_NULL = 1;
@@ -1207,7 +1202,7 @@ enum TransactionType {
   TRANSACTIONTYPE_AUTH = 3;
   TRANSACTIONTYPE_DATA = 4;
   TRANSACTIONTYPE_BALANCE_INQUIRY = 5;
-  TRANSACTIONTYPE_CAPTURE_PREAUT = 6;
+  TRANSACTIONTYPE_CAPTURE_PRE_AUTH = 6;
 }
 
 message VaultedCard {
