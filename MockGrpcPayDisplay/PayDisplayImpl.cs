@@ -9,8 +9,9 @@ namespace MockGrpcPayDisplay
 {
     public class PayDisplayImpl : PayDisplay.PayDisplayBase
     {
-        private sdk.ICloverConnector connector;
-        private Listener listener;
+        #region Properties
+        private sdk.ICloverConnector Connector { get; set; }
+        private Listener Listener { get; set; }
         private StreamHandler<PingPacket, PingPacket> PingHandler { get; set; }
         private StreamHandler<sdk.AuthResponse, AuthResponse> AuthResponseHandler { get; set; }
         private StreamHandler<sdk.CapturePreAuthResponse, CapturePreAuthResponse> CapturePreAuthResponseHandler { get; set; }
@@ -50,50 +51,51 @@ namespace MockGrpcPayDisplay
         private StreamHandler<sdk.VerifySignatureRequest, VerifySignatureRequest> VerifySignatureRequestHandler { get; set; }
         private StreamHandler<sdk.VoidPaymentRefundResponse, VoidPaymentRefundResponse> VoidPaymentRefundResponseHandler { get; set; }
         private StreamHandler<sdk.VoidPaymentResponse, VoidPaymentResponse> VoidPaymentResponseHandler { get; set; }
+        #endregion
 
 
         #region Constructor
         public PayDisplayImpl()
         {
-            listener = new Listener();
-            listener.AuthResponse += (s, e) => AuthResponseHandler?.Invoke(e);
-            listener.CapturePreAuthResponse += (s, e) => CapturePreAuthResponseHandler?.Invoke(e);
-            listener.CloseoutResponse += (s, e) => CloseoutResponseHandler?.Invoke(e);
-            listener.ConfirmPaymentRequest += (s, e) => ConfirmPaymentRequestHandler?.Invoke(e);
-            listener.CustomActivityResponse += (s, e) => CustomActivityResponseHandler?.Invoke(e);
-            listener.CustomerProvidedData += (s, e) => CustomerProvidedDataHandler?.Invoke(e);
-            listener.DeviceActivityEnd += (s, e) => DeviceActivityEndHandler?.Invoke(e);
-            listener.DeviceActivityStart += (s, e) => DeviceActivityStartHandler?.Invoke(e);
-            listener.DeviceConnected += (s, e) => DeviceConnectedHandler?.Invoke(e);
-            listener.DeviceDisconnected += (s, e) => DeviceDisconnectedHandler?.Invoke(e);
-            listener.DeviceError += (s, e) => DeviceErrorHandler?.Invoke(e);
-            listener.DeviceReady += (s, e) => DeviceReadyHandler?.Invoke(e);
-            listener.DisplayReceiptOptionsResponse += (s, e) => DisplayReceiptOptionsResponseHandler?.Invoke(e);
-            listener.InvalidStateTransitionResponse += (s, e) => InvalidStateTransitionResponseHandler?.Invoke(e);
-            listener.ManualRefundResponse += (s, e) => ManualRefundResponseHandler?.Invoke(e);
-            listener.MessageFromActivity += (s, e) => MessageFromActivityHandler?.Invoke(e);
-            listener.PreAuthResponse += (s, e) => PreAuthResponseHandler?.Invoke(e);
-            listener.PrintJobStatusResponse += (s, e) => PrintJobStatusResponseHandler?.Invoke(e);
-            listener.PrintManualRefundDeclineReceipt += (s, e) => PrintManualRefundDeclineReceiptHandler?.Invoke(e);
-            listener.PrintManualRefundReceipt += (s, e) => PrintManualRefundReceiptHandler?.Invoke(e);
-            listener.PrintPaymentDeclineReceipt += (s, e) => PrintPaymentDeclineReceiptHandler?.Invoke(e);
-            listener.PrintPaymentMerchantCopyReceipt += (s, e) => PrintPaymentMerchantCopyReceiptHandler?.Invoke(e);
-            listener.PrintPaymentReceipt += (s, e) => PrintPaymentReceiptHandler?.Invoke(e);
-            listener.PrintRefundPaymentReceipt += (s, e) => PrintRefundPaymentReceiptHandler?.Invoke(e);
-            listener.ReadCardDataResponse += (s, e) => ReadCardDataResponseHandler?.Invoke(e);
-            listener.RefundPaymentResponse += (s, e) => RefundPaymentResponseHandler?.Invoke(e);
-            listener.ResetDeviceResponse += (s, e) => ResetDeviceResponseHandler?.Invoke(e);
-            listener.RetrieveDeviceStatusResponse += (s, e) => RetrieveDeviceStatusResponseHandler?.Invoke(e);
-            listener.RetrievePaymentResponse += (s, e) => RetrievePaymentResponseHandler?.Invoke(e);
-            listener.RetrievePendingPaymentsResponse += (s, e) => RetrievePendingPaymentsResponseHandler?.Invoke(e);
-            listener.RetrievePrintersResponse += (s, e) => RetrievePrintersResponseHandler?.Invoke(e);
-            listener.SaleResponse += (s, e) => SaleResponseHandler?.Invoke(e);
-            listener.TipAdded += (s, e) => TipAddedHandler?.Invoke(e);
-            listener.TipAdjustAuthResponse += (s, e) => TipAdjustAuthResponseHandler?.Invoke(e);
-            listener.VaultCardResponse += (s, e) => VaultCardResponseHandler?.Invoke(e);
-            listener.VerifySignatureRequest += (s, e) => VerifySignatureRequestHandler?.Invoke(e);
-            listener.VoidPaymentRefundResponse += (s, e) => VoidPaymentRefundResponseHandler?.Invoke(e);
-            listener.VoidPaymentResponse += (s, e) => VoidPaymentResponseHandler?.Invoke(e);
+            Listener = new Listener();
+            Listener.AuthResponse += (s, e) => AuthResponseHandler?.Invoke(e);
+            Listener.CapturePreAuthResponse += (s, e) => CapturePreAuthResponseHandler?.Invoke(e);
+            Listener.CloseoutResponse += (s, e) => CloseoutResponseHandler?.Invoke(e);
+            Listener.ConfirmPaymentRequest += (s, e) => ConfirmPaymentRequestHandler?.Invoke(e);
+            Listener.CustomActivityResponse += (s, e) => CustomActivityResponseHandler?.Invoke(e);
+            Listener.CustomerProvidedData += (s, e) => CustomerProvidedDataHandler?.Invoke(e);
+            Listener.DeviceActivityEnd += (s, e) => DeviceActivityEndHandler?.Invoke(e);
+            Listener.DeviceActivityStart += (s, e) => DeviceActivityStartHandler?.Invoke(e);
+            Listener.DeviceConnected += (s, e) => DeviceConnectedHandler?.Invoke(e);
+            Listener.DeviceDisconnected += (s, e) => DeviceDisconnectedHandler?.Invoke(e);
+            Listener.DeviceError += (s, e) => DeviceErrorHandler?.Invoke(e);
+            Listener.DeviceReady += (s, e) => DeviceReadyHandler?.Invoke(e);
+            Listener.DisplayReceiptOptionsResponse += (s, e) => DisplayReceiptOptionsResponseHandler?.Invoke(e);
+            Listener.InvalidStateTransitionResponse += (s, e) => InvalidStateTransitionResponseHandler?.Invoke(e);
+            Listener.ManualRefundResponse += (s, e) => ManualRefundResponseHandler?.Invoke(e);
+            Listener.MessageFromActivity += (s, e) => MessageFromActivityHandler?.Invoke(e);
+            Listener.PreAuthResponse += (s, e) => PreAuthResponseHandler?.Invoke(e);
+            Listener.PrintJobStatusResponse += (s, e) => PrintJobStatusResponseHandler?.Invoke(e);
+            Listener.PrintManualRefundDeclineReceipt += (s, e) => PrintManualRefundDeclineReceiptHandler?.Invoke(e);
+            Listener.PrintManualRefundReceipt += (s, e) => PrintManualRefundReceiptHandler?.Invoke(e);
+            Listener.PrintPaymentDeclineReceipt += (s, e) => PrintPaymentDeclineReceiptHandler?.Invoke(e);
+            Listener.PrintPaymentMerchantCopyReceipt += (s, e) => PrintPaymentMerchantCopyReceiptHandler?.Invoke(e);
+            Listener.PrintPaymentReceipt += (s, e) => PrintPaymentReceiptHandler?.Invoke(e);
+            Listener.PrintRefundPaymentReceipt += (s, e) => PrintRefundPaymentReceiptHandler?.Invoke(e);
+            Listener.ReadCardDataResponse += (s, e) => ReadCardDataResponseHandler?.Invoke(e);
+            Listener.RefundPaymentResponse += (s, e) => RefundPaymentResponseHandler?.Invoke(e);
+            Listener.ResetDeviceResponse += (s, e) => ResetDeviceResponseHandler?.Invoke(e);
+            Listener.RetrieveDeviceStatusResponse += (s, e) => RetrieveDeviceStatusResponseHandler?.Invoke(e);
+            Listener.RetrievePaymentResponse += (s, e) => RetrievePaymentResponseHandler?.Invoke(e);
+            Listener.RetrievePendingPaymentsResponse += (s, e) => RetrievePendingPaymentsResponseHandler?.Invoke(e);
+            Listener.RetrievePrintersResponse += (s, e) => RetrievePrintersResponseHandler?.Invoke(e);
+            Listener.SaleResponse += (s, e) => SaleResponseHandler?.Invoke(e);
+            Listener.TipAdded += (s, e) => TipAddedHandler?.Invoke(e);
+            Listener.TipAdjustAuthResponse += (s, e) => TipAdjustAuthResponseHandler?.Invoke(e);
+            Listener.VaultCardResponse += (s, e) => VaultCardResponseHandler?.Invoke(e);
+            Listener.VerifySignatureRequest += (s, e) => VerifySignatureRequestHandler?.Invoke(e);
+            Listener.VoidPaymentRefundResponse += (s, e) => VoidPaymentRefundResponseHandler?.Invoke(e);
+            Listener.VoidPaymentResponse += (s, e) => VoidPaymentResponseHandler?.Invoke(e);
         }
         #endregion
 
@@ -102,11 +104,11 @@ namespace MockGrpcPayDisplay
         public override Task<CreateResponse> Create(CreateRequest request, ServerCallContext context)
         {
             Program.WriteLine("Create");
-            if (connector == null)
+            if (Connector == null)
             {
-                connector = sdk.CloverConnectorFactory.CreateUsbConnector("RAID", "POS", "Register1", true);
-                connector.AddCloverConnectorListener(listener);
-                connector.InitializeConnection();
+                Connector = sdk.CloverConnectorFactory.CreateUsbConnector("RAID", "POS", "Register1", true);
+                Connector.AddCloverConnectorListener(Listener);
+                Connector.InitializeConnection();
             }
             else
             {
@@ -254,105 +256,105 @@ namespace MockGrpcPayDisplay
         public override Task<Empty> AcceptPayment(AcceptPaymentRequest request, ServerCallContext context)
         {
             Program.WriteLine("AcceptPayment");
-            connector.AcceptPayment(Translate.From(request.Payment));
+            Connector.AcceptPayment(Translate.From(request.Payment));
             return Task.FromResult(new Empty());
         }
 
         public override Task<Empty> AcceptSignature(AcceptSignatureRequest request, ServerCallContext context)
         {
             Program.WriteLine("AcceptSignature");
-            connector.AcceptSignature(Translate.From(request));
+            Connector.AcceptSignature(Translate.From(request));
             return Task.FromResult(new Empty());
         }
 
         public override Task<Empty> Auth(AuthRequest request, ServerCallContext context)
         {
             Program.WriteLine("Auth");
-            connector.Auth(Translate.From(request));
+            Connector.Auth(Translate.From(request));
             return Task.FromResult(new Empty());
         }
 
         public override Task<Empty> CapturePreAuth(CapturePreAuthRequest request, ServerCallContext context)
         {
             Program.WriteLine("CapturePreAuth");
-            connector.CapturePreAuth(Translate.From(request));
+            Connector.CapturePreAuth(Translate.From(request));
             return Task.FromResult(new Empty());
         }
 
         public override Task<Empty> Closeout(CloseoutRequest request, ServerCallContext context)
         {
             Program.WriteLine("Closeout");
-            connector.Closeout(Translate.From(request));
+            Connector.Closeout(Translate.From(request));
             return Task.FromResult(new Empty());
         }
 
         public override Task<Empty> DisplayPaymentReceiptOptions(DisplayPaymentReceiptOptionsRequest request, ServerCallContext context)
         {
             Program.WriteLine("DisplayPaymentReceiptOptions");
-            connector.DisplayPaymentReceiptOptions(Translate.From(request));
+            Connector.DisplayPaymentReceiptOptions(Translate.From(request));
             return Task.FromResult(new Empty());
         }
 
         public override Task<Empty> DisplayReceiptOptions(DisplayReceiptOptionsRequest request, ServerCallContext context)
         {
             Program.WriteLine("DisplayReceiptOptions");
-            connector.DisplayReceiptOptions(Translate.From(request));
+            Connector.DisplayReceiptOptions(Translate.From(request));
             return Task.FromResult(new Empty());
         }
         
         public override Task<Empty> InvokeInputOption(InvokeInputOptionRequest request, ServerCallContext context)
         {
             Program.WriteLine("InvokeInputOption");
-            connector.InvokeInputOption(Translate.From(request.InputOption));
+            Connector.InvokeInputOption(Translate.From(request.InputOption));
             return Task.FromResult(new Empty());
         }
 
         public override Task<Empty> ManualRefund(ManualRefundRequest request, ServerCallContext context)
         {
             Program.WriteLine("ManualRefund");
-            connector.ManualRefund(Translate.From(request));
+            Connector.ManualRefund(Translate.From(request));
             return Task.FromResult(new Empty());
         }
 
         public override Task<Empty> OpenCashDrawer(OpenCashDrawerRequest request, ServerCallContext context)
         {
             Program.WriteLine("OpenCashDrawer");
-            connector.OpenCashDrawer(Translate.From(request));
+            Connector.OpenCashDrawer(Translate.From(request));
             return Task.FromResult(new Empty());
         }
 
         public override Task<Empty> Print(PrintRequest request, ServerCallContext context)
         {
             Console.WriteLine("Print");
-            connector.Print(Translate.From(request));
+            Connector.Print(Translate.From(request));
             return Task.FromResult(new Empty());
         }
 
         public override Task<Empty> PreAuth(PreAuthRequest request, ServerCallContext context)
         {
             Program.WriteLine("PreAuth");
-            connector.PreAuth(Translate.From(request));
+            Connector.PreAuth(Translate.From(request));
             return Task.FromResult(new Empty());
         }
 
         public override Task<Empty> ReadCardData(ReadCardDataRequest request, ServerCallContext context)
         {
             Program.WriteLine("ReadCardData");
-            connector.ReadCardData(Translate.From(request));
+            Connector.ReadCardData(Translate.From(request));
             return Task.FromResult(new Empty());
         }
 
         public override Task<Empty> RefundPayment(RefundPaymentRequest request, ServerCallContext context)
         {
             Program.WriteLine("RefundPayment");
-            connector.RefundPayment(Translate.From(request));
+            Connector.RefundPayment(Translate.From(request));
             return Task.FromResult(new Empty());
         }
 
         public override Task<Empty> RegisterForCustomerProvidedData(RegisterForCustomerProvidedDataRequest request, ServerCallContext context)
         {
             Program.WriteLine("RegisterForCustomerProvidedData");
-            connector.RegisterForCustomerProvidedData(Translate.From(request));
+            Connector.RegisterForCustomerProvidedData(Translate.From(request));
             return Task.FromResult(new Empty());
         }
         
@@ -360,147 +362,147 @@ namespace MockGrpcPayDisplay
 
         {
             Program.WriteLine("RejectPayment");
-            connector.RejectPayment(Translate.From(request.Payment), Translate.From(request.Challenge));
+            Connector.RejectPayment(Translate.From(request.Payment), Translate.From(request.Challenge));
             return Task.FromResult(new Empty());
         }
         
         public override Task<Empty> RejectSignature(RejectSignatureRequest request, ServerCallContext context)
         {
             Program.WriteLine("RejectSignature");
-            connector.RejectSignature(Translate.From(request));
+            Connector.RejectSignature(Translate.From(request));
             return Task.FromResult(new Empty());
         }
 
         public override Task<Empty> RemoveDisplayOrder(RemoveDisplayOrderRequest request, ServerCallContext context)
         {
             Program.WriteLine("RemoveDisplayOrder");
-            connector.RemoveDisplayOrder(Translate.From(request.DisplayOrder));
+            Connector.RemoveDisplayOrder(Translate.From(request.DisplayOrder));
             return Task.FromResult(new Empty());
         }
 
         public override Task<Empty> ResetDevice(ResetDeviceRequest request, ServerCallContext context)
         {
             Program.WriteLine("ResetDevice");
-            connector.ResetDevice();
+            Connector.ResetDevice();
             return Task.FromResult(new Empty());
         }
 
         public override Task<Empty> RetrieveDeviceStatus(RetrieveDeviceStatusRequest request, ServerCallContext context)
         {
             Program.WriteLine("RetrieveDeviceStatus");
-            connector.RetrieveDeviceStatus(Translate.From(request));
+            Connector.RetrieveDeviceStatus(Translate.From(request));
             return Task.FromResult(new Empty());
         }
 
         public override Task<Empty> RetrievePayment(RetrievePaymentRequest request, ServerCallContext context)
         {
             Program.WriteLine("RetrievePayment");
-            connector.RetrievePayment(Translate.From(request));
+            Connector.RetrievePayment(Translate.From(request));
             return Task.FromResult(new Empty());
         }
 
         public override Task<Empty> RetrievePendingPayments(RetrievePendingPaymentsRequest request, ServerCallContext context)
         {
             Program.WriteLine("RetrievePendingPayments");
-            connector.RetrievePendingPayments();
+            Connector.RetrievePendingPayments();
             return Task.FromResult(new Empty());
         }
 
         public override Task<Empty> RetrievePrinters(RetrievePrintersRequest request, ServerCallContext context)
         {
             Program.WriteLine("RetrievePrinters");
-            connector.RetrievePrinters(Translate.From(request));
+            Connector.RetrievePrinters(Translate.From(request));
             return Task.FromResult(new Empty());
         }
 
         public override Task<Empty> RetrievePrintJobStatus(RetrievePrintJobStatusRequest request, ServerCallContext context)
         {
             Program.WriteLine("RetrievePrintJobStatus");
-            connector.RetrievePrintJobStatus(Translate.From(request));
+            Connector.RetrievePrintJobStatus(Translate.From(request));
             return Task.FromResult(new Empty());
         }
 
         public override Task<Empty> Sale(SaleRequest request, ServerCallContext context)
         {
             Program.WriteLine("Sale");
-            connector.Sale(Translate.From(request));
+            Connector.Sale(Translate.From(request));
             return Task.FromResult(new Empty());
         }
 
         public override Task<Empty> SendMessageToActivity(SendMessageToActivityRequest request, ServerCallContext context)
         {
             Program.WriteLine("SendMessageToActivity");
-            connector.SendMessageToActivity(Translate.From(request));
+            Connector.SendMessageToActivity(Translate.From(request));
             return Task.FromResult(new Empty());
         }
 
         public override Task<Empty> SetCustomerInfo(SetCustomerInfoRequest request, ServerCallContext context)
         {
             Program.WriteLine("SetCustomerInfo");
-            connector.SetCustomerInfo(Translate.From(request));
+            Connector.SetCustomerInfo(Translate.From(request));
             return Task.FromResult(new Empty());
         }
 
         public override Task<Empty> ShowDisplayOrder(ShowDisplayOrderRequest request, ServerCallContext context)
         {
             Program.WriteLine("ShowDisplayOrder");
-            connector.ShowDisplayOrder(Translate.From(request.DisplayOrder));
+            Connector.ShowDisplayOrder(Translate.From(request.DisplayOrder));
             return Task.FromResult(new Empty());
         }
 
         public override Task<Empty> ShowMessage(ShowMessageRequest request, ServerCallContext context)
         {
             Program.WriteLine("ShowMessage");
-            connector.ShowMessage(request.Message);
+            Connector.ShowMessage(request.Message);
             return Task.FromResult(new Empty());
         }
 
         public override Task<Empty> ShowThankYouScreen(ShowThankYouScreenRequest request, ServerCallContext context)
         {
             Program.WriteLine("ShowThankYouScreen");
-            connector.ShowThankYouScreen();
+            Connector.ShowThankYouScreen();
             return Task.FromResult(new Empty());
         }
 
         public override Task<Empty> ShowWelcomeScreen(ShowWelcomeScreenRequest request, ServerCallContext context)
         {
             Program.WriteLine("ShowWelcomeScreen");
-            connector.ShowWelcomeScreen();
+            Connector.ShowWelcomeScreen();
             return Task.FromResult(new Empty());
         }
 
         public override Task<Empty> StartCustomActivity(StartCustomActivityRequest request, ServerCallContext context)
         {
             Program.WriteLine("StartCustomActivity");
-            connector.StartCustomActivity(Translate.From(request));
+            Connector.StartCustomActivity(Translate.From(request));
             return Task.FromResult(new Empty());
         }
 
         public override Task<Empty> TipAdjustAuth(TipAdjustAuthRequest request, ServerCallContext context)
         {
             Program.WriteLine("TipAdjustAuth");
-            connector.TipAdjustAuth(Translate.From(request));
+            Connector.TipAdjustAuth(Translate.From(request));
             return Task.FromResult(new Empty());
         }
 
         public override Task<Empty> VaultCard(VaultCardRequest request, ServerCallContext context)
         {
             Program.WriteLine("VaultCard");
-            connector.VaultCard(Translate.From(request));
+            Connector.VaultCard(Translate.From(request));
             return Task.FromResult(new Empty());
         }
 
         public override Task<Empty> VoidPayment(VoidPaymentRequest request, ServerCallContext context)
         {
             Program.WriteLine("VoidPayment");
-            connector.VoidPayment(Translate.From(request));
+            Connector.VoidPayment(Translate.From(request));
             return Task.FromResult(new Empty());
         }
 
         public override Task<Empty> VoidPaymentRefund(VoidPaymentRefundRequest request, ServerCallContext context)
         {
             Program.WriteLine("VoidPaymentRefund");
-            connector.VoidPaymentRefund(Translate.From(request));
+            Connector.VoidPaymentRefund(Translate.From(request));
             return Task.FromResult(new Empty());
         }
         #endregion
@@ -738,39 +740,5 @@ namespace MockGrpcPayDisplay
             return VoidPaymentResponseHandler.Promise.Task;
         }
         #endregion
-    }
-
-    public class StreamHandler<TSdk, TGrpc>
-    {
-        private static TSdk Cache { get; set; }
-
-        private readonly object Lock = new object();
-        private Task writeTask = Task.FromResult(0);
-
-        public TaskCompletionSource<int> Promise { get; set; } = new TaskCompletionSource<int>();
-        public IServerStreamWriter<TGrpc> Stream { get; set; }
-        public Func<TSdk, TGrpc> ToGrpc { get; set; }
-
-        public StreamHandler(IServerStreamWriter<TGrpc> stream, Func<TSdk, TGrpc> toGrpc)
-        {
-            Stream = stream;
-            ToGrpc = toGrpc;
-        }
-
-        public void Invoke(TSdk obj)
-        {
-            lock (Lock)
-            {
-                var oldTask = writeTask;
-                writeTask = Task.Run(() =>
-                {
-                    oldTask.Wait();
-                    Cache = obj;
-                    Stream.WriteAsync(ToGrpc(obj)).Wait();
-                });
-            }
-        }
-
-        public void Reinvoke() => Invoke(Cache);
     }
 }
