@@ -89,6 +89,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="StreamHandler.cs" />
     <Compile Include="Translate.cs" />
     <Compile Include="Listener.cs" />
     <Compile Include="PayDisplayImpl.cs" />

@@ -60,7 +60,6 @@ namespace WindowsGrpcPayDisplayClient
 
             client.Sale(new SaleRequest
             {
-            
                 ExternalId = ExternalId(),
                 Amount = 123,
             });
